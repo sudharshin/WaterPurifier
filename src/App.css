@@ -135,10 +135,11 @@ button, .btn {
 
 /* === Responsive square box === */
 .aspect-ratio-box {
-  width: 70%;
+  width: 280px;
+  height:"60px";
   padding-top: 70%; /* This creates a square box */
   background-color: #eee;
-  border: 8px ;
+  border: 100px ;
 }
 
 
