@@ -130,3 +130,16 @@ button, .btn {
     font-size: 1.8rem;
   }
 }
+/* Creates responsive square boxes */
+/* App.css */
+
+/* === Responsive square box === */
+.aspect-ratio-box {
+  width: 70%;
+  padding-top: 70%; /* This creates a square box */
+  background-color: #eee;
+  border: 8px ;
+}
+
+
+

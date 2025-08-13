@@ -11,7 +11,7 @@ import Footer from '../components/Footer';
 import FAQSection from './FAQSection';
 const Home = () => {
   return (
-    <div className="container py-4">
+    <div className="container-fluid">
       <Navbar />
       <HeroSection/>
       <TopSellingProducts />
