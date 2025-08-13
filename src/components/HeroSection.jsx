@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { BsArrowRight, BsChevronLeft, BsChevronRight } from "react-icons/bs"; // Fixed import
+import purifier from "../assets/WaterPurifierimg.jpg";
 
 const HeroSection = () => {
   return (
@@ -61,7 +62,7 @@ const HeroSection = () => {
           {/* Right Side - Image */}
           <Col md={8} className="text-center">
             <img
-              src="/src/assets/WaterPurifierimg.jpg"
+              src={ purifier}
               alt="Water Purifier"
               style={{
                 width: "100%",

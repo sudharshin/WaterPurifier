@@ -13,9 +13,8 @@ const ClientsSection = () => {
             <div
               style={{
                 backgroundColor: "#d9d9d9",
-                width: "280px",
-                height:"60px",
-                paddingTop: "70%", // Makes it a square
+                width: "75%",
+                paddingTop: "80%", // Makes it a square
                 borderRadius: "8px",
               }}
             ></div>

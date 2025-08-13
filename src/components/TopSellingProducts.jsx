@@ -1,17 +1,18 @@
 import React, { useRef } from 'react'
 import { Container, Button } from 'react-bootstrap'
+import purifier from "../assets/WaterPurifierimg.jpg";
 
 const TopSellingProducts = () => {
   const scrollRef = useRef(null)
 
   const products = [
-    { title: 'Purifier Model 1', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 2', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 3', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 4', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 5', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 6', image: '/src/assets/WaterPurifierimg.jpg' },
-    { title: 'Purifier Model 7', image: '/src/assets/WaterPurifierimg.jpg' },
+    { title: 'Purifier Model 1', image: purifier },
+    { title: 'Purifier Model 2', image: purifier },
+    { title: 'Purifier Model 3', image: purifier },
+    { title: 'Purifier Model 4', image: purifier },
+    { title: 'Purifier Model 5', image: purifier },
+    { title: 'Purifier Model 6', image: purifier },
+    { title: 'Purifier Model 7', image: purifier },
   ]
 
   const scroll = (direction) => {

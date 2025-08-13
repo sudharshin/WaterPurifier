@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import purifier from "/src/assets/WaterPurifierimg.jpg";
+import purifier from "../assets/WaterPurifierimg.jpg";
 
 const ProductHighlight = () => {
   return (
