@@ -1,121 +1,83 @@
 import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import { BsArrowRight, BsChevronLeft, BsChevronRight } from "react-icons/bs"; // Fixed import
+import { Carousel, Container, Row, Col, Button } from "react-bootstrap";
+import { BsArrowRight } from "react-icons/bs";
 import purifier from "../assets/WaterPurifierimg.jpg";
+import purifier2 from "../assets/waterpurifierimg2.jpg";
+import "../assets/css/HeroSection.css"; // custom styles
 
 const HeroSection = () => {
+  const slides = [
+    {
+      title: "Clean Water,",
+      highlight: "Healthy Life.",
+      text: "Advanced purification technologies for home and commercial needs.",
+      img: purifier,
+      bg: "linear-gradient(135deg, #1a73e8, #4dabff)",
+    },
+    {
+      title: "Pure Taste,",
+      highlight: "Every Drop.",
+      text: "Experience fresh, mineral-rich water for you and your family.",
+      img: purifier2,
+      bg: "linear-gradient(135deg, #0d6efd, #3bc9db)",
+    },
+  ];
+
   return (
-    <section
-      style={{
-        background: "linear-gradient(90deg, #1a73e8, #3a8dfd)",
-        color: "#fff",
-        position: "relative",
-        overflow: "hidden",
-        padding: "60px 0"
-      }}
-    >
-      <Container>
-        <Row className="align-items-center">
-          {/* Left Side - Text */}
-          <Col md={3}>
-            <h1 style={{ fontWeight: "bold", fontSize: "3rem", lineHeight: "1.2" }}>
-              Clean Water,{" "}
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontStyle: "italic",
-                  color: "#bfe6ff"
-                }}
+    <Carousel fade interval={5000} indicators={false} className="hero-carousel">
+      {slides.map((slide, index) => (
+        <Carousel.Item
+          key={index}
+          style={{
+            background: slide.bg,
+            color: "#fff",
+            padding: "60px 30px", // <-- added horizontal spacing
+            minHeight: "500px",
+          }}
+        >
+          <Container fluid className="px-lg-5 px-3">
+            <Row className="align-items-center">
+              {/* Left Side - Text */}
+              <Col md={5} className="text-md-start text-center">
+                <h1 className="fw-bold display-4">
+                  {slide.title}{" "}
+                  <span className="fst-italic" style={{ color: "#bfe6ff" }}>
+                    {slide.highlight}
+                  </span>
+                </h1>
+                <p className="mt-3 fs-5">{slide.text}</p>
+                <Button
+                  variant="light"
+                  className="rounded-pill fw-semibold mt-4 px-4 py-2 d-inline-flex align-items-center gap-2"
+                >
+                  Shop Now <BsArrowRight />
+                </Button>
+              </Col>
+
+              {/* Right Side - Image */}
+              <Col
+                md={7}
+                className="d-flex justify-content-end align-items-center"
               >
-                Healthy Life.
-              </span>
-            </h1>
-            <p
-              style={{
-                color: "#e0f0ff",
-                fontSize: "1.1rem",
-                marginTop: "15px"
-              }}
-            >
-              Advanced purification technologies for home and commercial needs
-            </p>
-
-            <div className="mt-4">
-              <Button
-                style={{
-                  backgroundColor: "#fff",
-                  color: "#1a73e8",
-                  border: "none",
-                  borderRadius: "50px",
-                  padding: "10px 20px",
-                  fontWeight: "600",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px"
-                }}
-              >
-                Shop Now <BsArrowRight />
-              </Button>
-            </div>
-          </Col>
-
-          {/* Right Side - Image */}
-          <Col md={8} className="text-center">
-            <img
-              src={ purifier}
-              alt="Water Purifier"
-              style={{
-                width: "100%",
-                maxHeight: "450px",
-                objectFit: "contain"
-              }}
-              className="img-fluid"
-            />
-          </Col>
-        </Row>
-      </Container>
-
-      {/* Slider Nav Buttons */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "20px",
-          transform: "translateY(-50%)",
-          background: "#fff",
-          borderRadius: "50%",
-          width: "40px",
-          height: "40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-        }}
-      >
-        <BsChevronLeft color="#1a73e8" size={20} />
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          right: "20px",
-          transform: "translateY(-50%)",
-          background: "#fff",
-          borderRadius: "50%",
-          width: "40px",
-          height: "40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
-        }}
-      >
-        <BsChevronRight color="#1a73e8" size={20} />
-      </div>
-    </section>
+                <img
+                  src={slide.img}
+                  alt="Water Purifier"
+                  style={{
+                    height: "420px",
+                    width: "420px",
+                    objectFit: "contain",
+                    backgroundColor: "white",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.3))",
+                  }}
+                />
+              </Col>
+            </Row>
+          </Container>
+        </Carousel.Item>
+      ))}
+    </Carousel>
   );
 };
 

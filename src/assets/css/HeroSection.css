@@ -1,0 +1,17 @@
+.hero-carousel .carousel-control-prev,
+.hero-carousel .carousel-control-next {
+  width: auto; /* prevent big empty click area */
+}
+
+.hero-carousel .carousel-control-prev {
+  left: 10; /* push to the very left */
+}
+
+.hero-carousel .carousel-control-next {
+  right: 10; /* push to the very right */
+}
+
+.hero-carousel .carousel-control-prev-icon,
+.hero-carousel .carousel-control-next-icon {
+  background-size: 100%, 100%;
+}

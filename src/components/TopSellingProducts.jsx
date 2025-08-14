@@ -1,17 +1,18 @@
 import React, { useRef } from 'react'
 import { Container, Button } from 'react-bootstrap'
 import purifier from "../assets/WaterPurifierimg.jpg";
+import purifier2 from "../assets/WaterPurifierimg2.jpg";
 
 const TopSellingProducts = () => {
   const scrollRef = useRef(null)
 
   const products = [
     { title: 'Purifier Model 1', image: purifier },
-    { title: 'Purifier Model 2', image: purifier },
+    { title: 'Purifier Model 2', image: purifier2 },
     { title: 'Purifier Model 3', image: purifier },
-    { title: 'Purifier Model 4', image: purifier },
+    { title: 'Purifier Model 4', image: purifier2 },
     { title: 'Purifier Model 5', image: purifier },
-    { title: 'Purifier Model 6', image: purifier },
+    { title: 'Purifier Model 6', image: purifier2 },
     { title: 'Purifier Model 7', image: purifier },
   ]
 
@@ -26,7 +27,7 @@ const TopSellingProducts = () => {
 
   return (
     <section className="py-5" style={{ background: '#f9fafb' }}>
-      <Container>
+      <Container fluid className="px-6">
         {/* Title & Buttons */}
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h3 className="fw-bold mb-0">Top-Selling Products</h3>
@@ -62,7 +63,7 @@ const TopSellingProducts = () => {
             <div
               key={index}
               className="px-2"
-              style={{ flex: '0 0 25%', maxWidth: '250px', minWidth: '200px' }}
+              style={{ flex: '0 0 25%' }} // exactly 4 per row
             >
               <div
                 className="bg-white shadow-sm rounded p-3 h-100 d-flex flex-column justify-content-between align-items-center"
