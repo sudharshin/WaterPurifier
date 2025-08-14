@@ -2,7 +2,7 @@ import React from "react";
 import { Carousel, Container, Row, Col, Button } from "react-bootstrap";
 import { BsArrowRight } from "react-icons/bs";
 import purifier from "../assets/WaterPurifierimg.jpg";
-import purifier2 from "../assets/waterpurifierimg2.jpg";
+import purifier2 from "../assets/WaterPurifierimg2.jpg";
 import "../assets/css/HeroSection.css"; // custom styles
 
 const HeroSection = () => {
