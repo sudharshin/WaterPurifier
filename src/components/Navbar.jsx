@@ -11,6 +11,7 @@ const NavbarComponent = () => {
           <Nav className="ms-auto">
             <Nav.Link href="#">Home</Nav.Link>
             <Nav.Link href="#">About Us</Nav.Link>
+            
             <NavDropdown title="Products" id="basic-nav-dropdown">
               <NavDropdown.Item href="#">Home Purifiers</NavDropdown.Item>
               <NavDropdown.Item href="#">Commercial Purifiers</NavDropdown.Item>

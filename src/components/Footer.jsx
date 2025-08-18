@@ -1,19 +1,132 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Container, Row, Col } from "react-bootstrap";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <div
+    <footer
       style={{
-        backgroundColor: "#d9d9d9",
-        padding: "20px 0",
-        textAlign: "center",
-        fontWeight: "600",
+        background: "linear-gradient(135deg, #2D7BA5, #357CA5)",
+        color: "#fff",
+        padding: "50px 0 20px 0",
+        borderTopLeftRadius: "40px",
+        borderTopRightRadius: "40px",
       }}
     >
-      Footer
-    </div>
+      <Container>
+        {/* Top Section */}
+        <Row className="mb-4 text-center text-md-start">
+          {/* Company Info */}
+          <Col xs={12} md={3} className="mb-4 mb-md-0">
+            <h4 className="fw-bold">Opor</h4>
+            <p style={{ fontSize: "14px", lineHeight: "1.6" }}>
+              Connecting you to trusted suppliers with quality products, easy
+              details, and quick enquiries – all in one place.
+            </p>
+
+            {/* Social Icons */}
+            <div className="d-flex justify-content-center justify-content-md-start gap-3 mt-3 flex-wrap">
+              <a href="#" style={iconStyle}>
+                <FaFacebookF />
+              </a>
+              <a href="#" style={iconStyle}>
+                <FaTwitter />
+              </a>
+              <a href="#" style={iconStyle}>
+                <FaInstagram />
+              </a>
+              <a href="#" style={iconStyle}>
+                <FaLinkedinIn />
+              </a>
+            </div>
+          </Col>
+
+          {/* Quick Links */}
+          <Col xs={6} md={3} className="mb-4 mb-md-0">
+            <h6 className="fw-bold mb-3">Quick Links</h6>
+            <ul className="list-unstyled" style={{ fontSize: "14px" }}>
+              <li><a href="#" style={linkStyle}>Home</a></li>
+              <li><a href="#" style={linkStyle}>About Us</a></li>
+              <li><a href="#" style={linkStyle}>Products</a></li>
+              <li><a href="#" style={linkStyle}>Enquiry Form</a></li>
+              <li><a href="#" style={linkStyle}>Testimonials</a></li>
+              <li><a href="#" style={linkStyle}>FAQs</a></li>
+              <li><a href="#" style={linkStyle}>Contact Us</a></li>
+            </ul>
+          </Col>
+
+          {/* Products */}
+          <Col xs={6} md={3} className="mb-4 mb-md-0">
+            <h6 className="fw-bold mb-3">Products</h6>
+            <ul className="list-unstyled" style={{ fontSize: "14px" }}>
+              <li><a href="#" style={linkStyle}>Water Purifiers</a></li>
+              <li><a href="#" style={linkStyle}>Filters</a></li>
+              <li><a href="#" style={linkStyle}>Accessories</a></li>
+              <li><a href="#" style={linkStyle}>Spare Parts</a></li>
+            </ul>
+          </Col>
+
+          {/* Address */}
+          <Col xs={12} md={3}>
+            <h6 className="fw-bold mb-3">Address</h6>
+            <p style={{ fontSize: "14px" }}>
+              45 / 5, Bharathiyar 5th street <br />
+              Sankarankovil, Tenkasi
+            </p>
+            <a href="#" style={{ color: "#fff", fontSize: "14px" }}>
+              See on Google Map
+            </a>
+
+            <h6 className="fw-bold mt-3">Office Hours</h6>
+            <p style={{ fontSize: "14px" }}>Mon – Fri ( 8AM – 6PM )</p>
+          </Col>
+        </Row>
+
+        {/* Divider */}
+        <hr style={{ borderColor: "rgba(255,255,255,0.2)" }} />
+
+        {/* Bottom Section */}
+        <Row className="d-flex justify-content-between align-items-center text-center text-md-start">
+          <Col xs={12} md={6} className="mb-2 mb-md-0">
+            <p style={{ margin: 0, fontSize: "14px" }}>
+              Copyright 2025 all rights reserved
+            </p>
+          </Col>
+          <Col xs={12} md={6} className="text-center text-md-end">
+            <a href="#" style={linkStyle}>Privacy</a> &nbsp;&nbsp;
+            <a href="#" style={linkStyle}>Security</a> &nbsp;&nbsp;
+            <a href="#" style={linkStyle}>Terms</a> &nbsp;&nbsp;
+            <span style={{ fontSize: "14px" }}>Made with examplename</span>
+          </Col>
+        </Row>
+      </Container>
+    </footer>
   );
+};
+
+// ✅ Styles
+const iconStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "35px",
+  height: "35px",
+  borderRadius: "50%",
+  backgroundColor: "#fff",
+  color: "#2D7BA5",
+  fontSize: "16px",
+  textDecoration: "none",
+};
+
+const linkStyle = {
+  color: "#fff",
+  textDecoration: "none",
+  transition: "color 0.3s ease",
 };
 
 export default Footer;

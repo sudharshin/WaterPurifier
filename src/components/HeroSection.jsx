@@ -1,9 +1,7 @@
 import React from "react";
 import { Carousel, Container, Row, Col, Button } from "react-bootstrap";
 import { BsArrowRight } from "react-icons/bs";
-import purifier from "../assets/WaterPurifierimg.jpg";
-import purifier2 from "../assets/WaterPurifierimg2.jpg";
-import "../assets/css/HeroSection.css"; // custom styles
+import purifier from "../assets/WaterPurifierImgHeroSection.png";
 
 const HeroSection = () => {
   const slides = [
@@ -12,34 +10,40 @@ const HeroSection = () => {
       highlight: "Healthy Life.",
       text: "Advanced purification technologies for home and commercial needs.",
       img: purifier,
-      bg: "linear-gradient(135deg, #1a73e8, #4dabff)",
+      bg: "linear-gradient(135deg, #1a73e8, #4dabff)", // blue gradient
     },
     {
       title: "Pure Taste,",
       highlight: "Every Drop.",
       text: "Experience fresh, mineral-rich water for you and your family.",
-      img: purifier2,
-      bg: "linear-gradient(135deg, #0d6efd, #3bc9db)",
+      img: purifier,
+      bg: "linear-gradient(135deg, #0d6efd, #3bc9db)", // blue gradient
     },
   ];
-
   return (
     <Carousel fade interval={5000} indicators={false} className="hero-carousel">
       {slides.map((slide, index) => (
         <Carousel.Item
           key={index}
           style={{
+            position: "relative",
+            minHeight: "100vh", // Full screen height
             background: slide.bg,
             color: "#fff",
-            padding: "60px 30px", // <-- added horizontal spacing
-            minHeight: "500px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <Container fluid className="px-lg-5 px-3">
             <Row className="align-items-center">
               {/* Left Side - Text */}
-              <Col md={5} className="text-md-start text-center">
-                <h1 className="fw-bold display-4">
+              <Col
+                xs={12}
+                md={5}
+                className="text-md-start text-center mb-4 mb-md-0"
+                
+              >
+                <h1 className="fw-bold display-5 display-md-4">
                   {slide.title}{" "}
                   <span className="fst-italic" style={{ color: "#bfe6ff" }}>
                     {slide.highlight}
@@ -50,31 +54,46 @@ const HeroSection = () => {
                   variant="light"
                   className="rounded-pill fw-semibold mt-4 px-4 py-2 d-inline-flex align-items-center gap-2"
                 >
-                  Shop Now <BsArrowRight />
+                  Explore Our Products <BsArrowRight />
                 </Button>
               </Col>
 
               {/* Right Side - Image */}
               <Col
+                xs={12}
                 md={7}
-                className="d-flex justify-content-end align-items-center"
+                className="d-flex justify-content-center align-items-center"
               >
                 <img
                   src={slide.img}
                   alt="Water Purifier"
+                  className="img-fluid"
                   style={{
-                    height: "420px",
-                    width: "420px",
+                    width: "100%",
+                    maxWidth: "650px", // keeps it balanced on large screens
+                    height: "auto",
+                    maxHeight: "85vh",
                     objectFit: "contain",
-                    backgroundColor: "white",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.3))",
+                    position: "relative",
+                    zIndex: 3, // ensure above ash strip
                   }}
                 />
               </Col>
             </Row>
           </Container>
+
+          {/* Ash Strip at Bottom */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              height: "130px",
+              width: "100%",
+              backgroundColor: "#e5e5e5",
+              zIndex: 1,
+            }}
+          />
         </Carousel.Item>
       ))}
     </Carousel>
