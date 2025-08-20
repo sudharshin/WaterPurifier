@@ -22,7 +22,6 @@ const Home = () => {
       <HeroSection/>
       <ProductSection />
       <EnquirySection />
-      <ProductDetailsPage title="Our Products" description="Browse our best picks" />
     </div>
   );
 };

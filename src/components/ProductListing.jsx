@@ -1,17 +1,17 @@
 import React, { useRef } from "react";
 import { Container, Button } from "react-bootstrap";
-import ProductCard from "./ProductCard"; // ⬅️ import the new card component
+import { useNavigate } from "react-router-dom";  // ⬅️ for navigation
+import ProductCard from "./ProductCard";
 
 const ProductListing = ({ title, description, products }) => {
   const scrollRef = useRef(null);
- 
+  const navigate = useNavigate();
+
   const scroll = (direction) => {
     if (scrollRef.current) {
       if (direction === "all") {
-        scrollRef.current.scrollTo({
-          left: scrollRef.current.scrollWidth,
-          behavior: "smooth",
-        });
+        // Instead of scrolling → route to details page
+        navigate("/products", { state: { products, title, description } });
       } else {
         scrollRef.current.scrollBy({
           left: direction === "left" ? -300 : 300,
@@ -42,7 +42,6 @@ const ProductListing = ({ title, description, products }) => {
               whiteSpace: "nowrap",
             }}
             onClick={() => scroll("all")}
-           
           >
             View All <span style={{ fontSize: "1rem" }}>→</span>
           </Button>
