@@ -56,7 +56,6 @@ const ProductDetailsPage = () => {
 
   return (
     <section className="py-5" style={{ background: "#fff" }}>
-      <HeroSection />
       <Container fluid>
         <Row>
           {/* ✅ Sidebar Filters */}
