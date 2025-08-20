@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import ProductDetailsCard from "./ProductDetailsCard";
 
-/** Build dynamic filter buckets from product fields */
+// Extract dynamic filters
 const extractFilters = (products = []) => {
   const filters = {};
   products.forEach((p) => {
@@ -16,7 +16,7 @@ const extractFilters = (products = []) => {
   return filters;
 };
 
-/** Robust price parser: handles ₹, commas, Rs., $ etc. */
+// Clean price values
 const toPriceNumber = (val) => {
   if (typeof val === "number") return val;
   if (!val) return 0;
@@ -33,7 +33,7 @@ const ProductDetailsPage = () => {
 
   const [openFilters, setOpenFilters] = useState({});
   const [activeFilters, setActiveFilters] = useState({});
-  const [sortBy, setSortBy] = useState("relevance"); // relevance | lowToHigh | highToLow
+  const [sortBy, setSortBy] = useState("relevance");
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +41,6 @@ const ProductDetailsPage = () => {
     setOpenFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  /** Add/remove values; remove key entirely when its last value is unchecked */
   const handleFilterChange = (filterKey, value) => {
     setActiveFilters((prev) => {
       const prevValues = prev[filterKey] || [];
@@ -57,19 +56,16 @@ const ProductDetailsPage = () => {
     });
   };
 
-  /** Fully reset: filters, sort, and collapse sections */
   const resetFilters = () => {
     setActiveFilters({});
     setSortBy("relevance");
     setOpenFilters({});
   };
 
-  /** Filter + sort with a lightweight loading effect */
   useEffect(() => {
     setLoading(true);
 
     const timer = setTimeout(() => {
-      // Filter
       let next = products.filter((product) =>
         Object.keys(activeFilters).every((filterKey) => {
           const vals = activeFilters[filterKey];
@@ -78,7 +74,6 @@ const ProductDetailsPage = () => {
         })
       );
 
-      // Sort
       if (sortBy === "lowToHigh") {
         next = [...next].sort(
           (a, b) => toPriceNumber(a.price) - toPriceNumber(b.price)
@@ -88,7 +83,6 @@ const ProductDetailsPage = () => {
           (a, b) => toPriceNumber(b.price) - toPriceNumber(a.price)
         );
       }
-      // relevance -> keep original order from `products`
 
       setFilteredProducts(next);
       setLoading(false);
@@ -98,12 +92,22 @@ const ProductDetailsPage = () => {
   }, [products, activeFilters, sortBy]);
 
   return (
-    <section className="py-5" style={{ background: "#fff" }}>
+    <section
+      className="pt-5 mt-4"
+      style={{
+        background: "#fff",
+        minHeight: "calc(100vh - 120px)", // Adjust based on header + footer height
+        paddingBottom: "60px", // Extra bottom padding to avoid footer overlap
+      }}
+    >
       <Container fluid>
         <Row>
           {/* Sidebar */}
           <Col md={3} className="mb-4">
-            <div className="p-3 border rounded shadow-sm sticky-top" style={{ top: "80px" }}>
+            <div
+              className="p-3 border rounded shadow-sm sticky-top bg-white"
+              style={{ top: "80px" }}
+            >
               <h5 className="fw-bold mb-3">Filters</h5>
 
               {Object.keys(filtersData).map((filterKey, idx) => (
@@ -149,20 +153,22 @@ const ProductDetailsPage = () => {
                 </div>
               ))}
 
-              {/* Reset */}
-              {Object.keys(activeFilters).length > 0 || sortBy !== "relevance" ? (
+              {(Object.keys(activeFilters).length > 0 || sortBy !== "relevance") && (
                 <div className="text-center mt-3">
-                  <button className="btn btn-outline-danger btn-sm w-100" onClick={resetFilters}>
+                  <button
+                    className="btn btn-outline-danger btn-sm w-100"
+                    onClick={resetFilters}
+                  >
                     Reset Filters
                   </button>
                 </div>
-              ) : null}
+              )}
             </div>
           </Col>
 
-          {/* Products */}
+          {/* Products Section */}
           <Col md={9}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
               <p className="mb-0">
                 Showing {filteredProducts.length} of {products.length} results
               </p>
@@ -170,7 +176,7 @@ const ProductDetailsPage = () => {
                 aria-label="Sort products"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                style={{ width: 220 }}
+                style={{ maxWidth: "220px" }}
               >
                 <option value="relevance">Sort by: Relevance</option>
                 <option value="lowToHigh">Price: Low to High</option>
@@ -178,25 +184,33 @@ const ProductDetailsPage = () => {
               </Form.Select>
             </div>
 
-            <Row>
+            <Row className="gx-4 gy-4">
               {loading ? (
-                <div className="text-center mt-5">
+                <div className="text-center mt-5 w-100">
                   <Spinner animation="border" />
                   <p className="mt-2">Loading products...</p>
                 </div>
               ) : filteredProducts.length ? (
                 filteredProducts.map((p, index) => (
-                  <Col key={index} xs={12} sm={6} md={4} className="mb-4">
-                    <ProductDetailsCard
-                      image={p.image}
-                      title={p.title}
-                      desc={p.desc}
-                      price={p.price}
-                    />
+                  <Col
+                    key={index}
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    className="d-flex align-items-stretch"
+                  >
+                    <div className="w-100 h-100 d-flex flex-column">
+                      <ProductDetailsCard
+                        image={p.image}
+                        title={p.title}
+                        desc={p.desc}
+                        price={p.price}
+                      />
+                    </div>
                   </Col>
                 ))
               ) : (
-                <p className="text-center mt-4">No products found</p>
+                <p className="text-center mt-4 w-100">No products found</p>
               )}
             </Row>
           </Col>
