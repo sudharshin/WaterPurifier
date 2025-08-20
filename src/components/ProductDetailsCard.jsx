@@ -73,7 +73,7 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
               fontSize: "0.9rem",
             }}
           >
-            ₹ {price}
+            {price}
           </span>
         </div>
       </Card.Body>
