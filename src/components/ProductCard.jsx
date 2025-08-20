@@ -14,6 +14,7 @@ const ProductCard = ({ image, title, desc, price }) => {
           height: "300px",
           border: "1px solid #ccc",
           backgroundColor: "#fff",
+          overflow: "hidden", // ✅ prevents image from overflowing when scaled
         }}
       >
         <div
@@ -30,10 +31,12 @@ const ProductCard = ({ image, title, desc, price }) => {
             src={image}
             alt={title}
             style={{
-              width: "180px",   // ✅ Fixed width
-              height: "180px",  // ✅ Fixed height (same for all images)
+              width: "180px",
+              height: "180px",
               objectFit: "contain",
+              transition: "transform 0.3s ease-in-out", // ✅ smooth transition
             }}
+            className="product-image"
           />
         </div>
       </Card>
@@ -57,6 +60,15 @@ const ProductCard = ({ image, title, desc, price }) => {
           </div>
         </div>
       </div>
+
+      {/* ✅ Inline hover style using CSS */}
+      <style>
+        {`
+          .product-image:hover {
+            transform: scale(1.1);
+          }
+        `}
+      </style>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import enquiryImg from "../assets/EnquirySectionImg.png"; // ✅ Replace with your image path
 
@@ -6,6 +6,9 @@ const EnquirySection = () => {
   const phoneNumber = "+1234567890"; // ✅ Replace with your number
   const email = "support@example.com"; // ✅ Replace with your email
   const whatsappNumber = "+1234567890"; // ✅ Replace with your WhatsApp number
+
+  // Track which button is active
+  const [activeBtn, setActiveBtn] = useState(null);
 
   return (
     <section
@@ -33,9 +36,12 @@ const EnquirySection = () => {
               {/* Call Button */}
               <Button
                 href={`tel:${phoneNumber}`}
+                onClick={() => setActiveBtn("call")}
                 style={{
-                  backgroundColor: "#115470",
-                  border: "none",
+                  backgroundColor:
+                    activeBtn === "call" ? "#003366" : "#fff",
+                  color: activeBtn === "call" ? "#fff" : "#000",
+                  border: "1px solid #ddd",
                   borderRadius: "25px",
                   padding: "10px 28px",
                   fontWeight: "500",
@@ -47,9 +53,11 @@ const EnquirySection = () => {
               {/* Email Button */}
               <Button
                 href={`mailto:${email}?subject=Enquiry&body=Hi, I’d like to know more about your products.`}
+                onClick={() => setActiveBtn("email")}
                 style={{
-                  backgroundColor: "#fff",
-                  color: "#000",
+                  backgroundColor:
+                    activeBtn === "email" ? "#003366" : "#fff",
+                  color: activeBtn === "email" ? "#fff" : "#000",
                   border: "1px solid #ddd",
                   borderRadius: "25px",
                   padding: "10px 28px",
@@ -67,9 +75,11 @@ const EnquirySection = () => {
                 )}?text=Hi, I am interested in your products and would like to know more.`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => setActiveBtn("whatsapp")}
                 style={{
-                  backgroundColor: "#fff",
-                  color: "#000",
+                  backgroundColor:
+                    activeBtn === "whatsapp" ? "#003366" : "#fff",
+                  color: activeBtn === "whatsapp" ? "#fff" : "#000",
                   border: "1px solid #ddd",
                   borderRadius: "25px",
                   padding: "10px 28px",

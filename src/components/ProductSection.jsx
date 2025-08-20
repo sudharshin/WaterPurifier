@@ -185,6 +185,11 @@ const ProductSection = () => {
         description="Affordable purifiers that don’t compromise on quality."
         products={products}
       />
+        <ProductListing
+        title="Budget Friendly Productsss"
+        description="Affordable purifiers that don’t compromise on quality."
+        products={products}
+      />
     </>
   );
 };

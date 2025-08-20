@@ -60,7 +60,10 @@ const ProductDetailsPage = () => {
         <Row>
           {/* ✅ Sidebar Filters */}
           <Col md={3} className="mb-4">
-            <div className="p-3 border rounded shadow-sm sticky-top" style={{ top: "80px" }}>
+            <div
+              className="p-3 border rounded shadow-sm sticky-top"
+              style={{ top: "80px" }}
+            >
               <h5 className="fw-bold mb-3">Filters</h5>
 
               {Object.keys(filtersData).map((filterKey, idx) => (
@@ -71,26 +74,46 @@ const ProductDetailsPage = () => {
                     style={{ cursor: "pointer", background: "#f8f9fa" }}
                     onClick={() => toggleFilter(filterKey)}
                   >
-                    <span className="fw-semibold text-capitalize">{filterKey}</span>
+                    <span className="fw-semibold text-capitalize">
+                      {filterKey}
+                    </span>
                     <span style={{ fontSize: "20px" }}>
                       {openFilters[filterKey] ? "−" : "+"}
                     </span>
                   </div>
 
-                  {/* Checkbox list */}
+                  {/* Checkbox list with highlight effect */}
                   {openFilters[filterKey] && (
                     <div className="px-3 py-2 border-start border-end border-bottom">
-                      {filtersData[filterKey].map((item, i) => (
-                        <Form.Check
-                          key={i}
-                          type="checkbox"
-                          id={`${filterKey}-${i}`}
-                          label={item}
-                          checked={activeFilters[filterKey]?.includes(item) || false}
-                          onChange={() => handleFilterChange(filterKey, item)}
-                          className="mb-1"
-                        />
-                      ))}
+                      {filtersData[filterKey].map((item, i) => {
+                        const isChecked =
+                          activeFilters[filterKey]?.includes(item);
+
+                        return (
+                          <div
+                            key={i}
+                            className="d-flex align-items-center p-2 mb-1 rounded"
+                            style={{
+                              backgroundColor: isChecked
+                                ? "#e6f0ff"
+                                : "transparent",
+                              transition: "background-color 0.3s ease",
+                              fontWeight: isChecked ? "600" : "400",
+                              color: isChecked ? "#0d47a1" : "inherit",
+                            }}
+                          >
+                            <Form.Check
+                              type="checkbox"
+                              id={`${filterKey}-${i}`}
+                              label={item}
+                              checked={isChecked}
+                              onChange={() =>
+                                handleFilterChange(filterKey, item)
+                              }
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

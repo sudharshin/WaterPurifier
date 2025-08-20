@@ -4,12 +4,13 @@ import { Card } from "react-bootstrap";
 const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
   return (
     <Card
-      className="shadow-sm"
+      className="shadow-sm product-details-card"
       style={{
         minWidth: "260px",
         borderRadius: "20px",
         border: "1px solid #E5E7EB",
         overflow: "hidden",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease", // ✅ smooth animation
       }}
     >
       {/* Brand */}
@@ -76,6 +77,16 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
           </span>
         </div>
       </Card.Body>
+
+      {/* ✅ Hover Effect CSS */}
+      <style>
+        {`
+          .product-details-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+          }
+        `}
+      </style>
     </Card>
   );
 };

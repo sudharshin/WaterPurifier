@@ -32,15 +32,7 @@ const ProductListing = ({ title, description, products }) => {
           </div>
 
           <Button
-            className="d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
-            style={{
-              backgroundColor: "#e6f2ff",
-              border: "none",
-              color: "#000",
-              fontWeight: "500",
-              borderRadius: "8px",
-              whiteSpace: "nowrap",
-            }}
+            className="view-all-btn d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
             onClick={() => scroll("all")}
           >
             View All <span style={{ fontSize: "1rem" }}>→</span>
@@ -65,7 +57,7 @@ const ProductListing = ({ title, description, products }) => {
         </div>
       </Container>
 
-      {/* Hide Scrollbar CSS */}
+      {/* Extra Styles */}
       <style>
         {`
           .hide-scrollbar {
@@ -74,6 +66,22 @@ const ProductListing = ({ title, description, products }) => {
           }
           .hide-scrollbar::-webkit-scrollbar {
             display: none;
+          }
+
+          /* View All Button transition */
+          .view-all-btn {
+            background-color: #e6f2ff;
+            border: none;
+            color: #000;
+            font-weight: 500;
+            border-radius: 8px;
+            white-space: nowrap;
+            transition: all 0.3s ease-in-out;
+          }
+          .view-all-btn:hover,
+          .view-all-btn:active {
+            background-color: #003366 !important; /* dark blue */
+            color: #fff !important;
           }
         `}
       </style>
