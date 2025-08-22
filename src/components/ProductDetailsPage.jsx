@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import ProductDetailsCard from "./ProductDetailsCard";
 
-// Extract dynamic filters
+// Extract filters once from products
 const extractFilters = (products = []) => {
   const filters = {};
   products.forEach((p) => {
@@ -16,7 +16,7 @@ const extractFilters = (products = []) => {
   return filters;
 };
 
-// Clean price values
+// Price normalization
 const toPriceNumber = (val) => {
   if (typeof val === "number") return val;
   if (!val) return 0;
@@ -29,66 +29,58 @@ const ProductDetailsPage = () => {
   const location = useLocation();
   const { products = [] } = location.state || {};
 
-  const filtersData = useMemo(() => extractFilters(products), [products]);
-
   const [openFilters, setOpenFilters] = useState({});
   const [activeFilters, setActiveFilters] = useState({});
   const [sortBy, setSortBy] = useState("relevance");
-  const [filteredProducts, setFilteredProducts] = useState(products);
   const [loading, setLoading] = useState(false);
 
-  const toggleFilter = (key) => {
-    setOpenFilters((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  // Memoize filter data
+  const filtersData = useMemo(() => extractFilters(products), [products]);
 
-  const handleFilterChange = (filterKey, value) => {
+  // Optimized toggle
+  const toggleFilter = useCallback((key) => {
+    setOpenFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
+
+  // Optimized filter selection
+  const handleFilterChange = useCallback((filterKey, value) => {
     setActiveFilters((prev) => {
       const prevValues = prev[filterKey] || [];
       if (prevValues.includes(value)) {
         const nextValues = prevValues.filter((v) => v !== value);
-        const next = { ...prev };
-        if (nextValues.length) next[filterKey] = nextValues;
-        else delete next[filterKey];
-        return next;
-      } else {
-        return { ...prev, [filterKey]: [...prevValues, value] };
+        if (nextValues.length) return { ...prev, [filterKey]: nextValues };
+        const { [filterKey]: _, ...rest } = prev;
+        return rest;
       }
+      return { ...prev, [filterKey]: [...prevValues, value] };
     });
-  };
+  }, []);
 
-  const resetFilters = () => {
+  // Reset filters
+  const resetFilters = useCallback(() => {
     setActiveFilters({});
     setSortBy("relevance");
     setOpenFilters({});
-  };
+  }, []);
 
-  useEffect(() => {
-    setLoading(true);
+  // Derived filtered + sorted products
+  const filteredProducts = useMemo(() => {
+    let next = products.filter((product) =>
+      Object.keys(activeFilters).every((filterKey) =>
+        activeFilters[filterKey]?.includes(product[filterKey])
+      )
+    );
 
-    const timer = setTimeout(() => {
-      let next = products.filter((product) =>
-        Object.keys(activeFilters).every((filterKey) => {
-          const vals = activeFilters[filterKey];
-          if (!vals || vals.length === 0) return true;
-          return vals.includes(product[filterKey]);
-        })
+    if (sortBy === "lowToHigh") {
+      next = [...next].sort(
+        (a, b) => toPriceNumber(a.price) - toPriceNumber(b.price)
       );
-
-      if (sortBy === "lowToHigh") {
-        next = [...next].sort(
-          (a, b) => toPriceNumber(a.price) - toPriceNumber(b.price)
-        );
-      } else if (sortBy === "highToLow") {
-        next = [...next].sort(
-          (a, b) => toPriceNumber(b.price) - toPriceNumber(a.price)
-        );
-      }
-
-      setFilteredProducts(next);
-      setLoading(false);
-    }, 150);
-
-    return () => clearTimeout(timer);
+    } else if (sortBy === "highToLow") {
+      next = [...next].sort(
+        (a, b) => toPriceNumber(b.price) - toPriceNumber(a.price)
+      );
+    }
+    return next;
   }, [products, activeFilters, sortBy]);
 
   return (
@@ -96,8 +88,8 @@ const ProductDetailsPage = () => {
       className="pt-5 mt-4"
       style={{
         background: "#fff",
-        minHeight: "calc(100vh - 120px)", // Adjust based on header + footer height
-        paddingBottom: "60px", // Extra bottom padding to avoid footer overlap
+        minHeight: "calc(100vh - 120px)",
+        paddingBottom: "60px",
       }}
     >
       <Container fluid>
@@ -117,7 +109,9 @@ const ProductDetailsPage = () => {
                     style={{ cursor: "pointer", background: "#f8f9fa" }}
                     onClick={() => toggleFilter(filterKey)}
                   >
-                    <span className="fw-semibold text-capitalize">{filterKey}</span>
+                    <span className="fw-semibold text-capitalize">
+                      {filterKey}
+                    </span>
                     <span style={{ fontSize: "20px" }}>
                       {openFilters[filterKey] ? "−" : "+"}
                     </span>
@@ -126,13 +120,17 @@ const ProductDetailsPage = () => {
                   {openFilters[filterKey] && (
                     <div className="px-3 py-2 border-start border-end border-bottom">
                       {filtersData[filterKey].map((item, i) => {
-                        const isChecked = activeFilters[filterKey]?.includes(item);
+                        const isChecked = activeFilters[filterKey]?.includes(
+                          item
+                        );
                         return (
                           <div
                             key={i}
                             className="d-flex align-items-center p-2 mb-1 rounded"
                             style={{
-                              backgroundColor: isChecked ? "#e6f0ff" : "transparent",
+                              backgroundColor: isChecked
+                                ? "#e6f0ff"
+                                : "transparent",
                               transition: "background-color 0.3s ease",
                               fontWeight: isChecked ? "600" : "400",
                               color: isChecked ? "#0d47a1" : "inherit",
@@ -143,7 +141,9 @@ const ProductDetailsPage = () => {
                               id={`${filterKey}-${i}`}
                               label={item}
                               checked={!!isChecked}
-                              onChange={() => handleFilterChange(filterKey, item)}
+                              onChange={() =>
+                                handleFilterChange(filterKey, item)
+                              }
                             />
                           </div>
                         );
@@ -153,7 +153,8 @@ const ProductDetailsPage = () => {
                 </div>
               ))}
 
-              {(Object.keys(activeFilters).length > 0 || sortBy !== "relevance") && (
+              {(Object.keys(activeFilters).length > 0 ||
+                sortBy !== "relevance") && (
                 <div className="text-center mt-3">
                   <button
                     className="btn btn-outline-danger btn-sm w-100"
@@ -199,14 +200,13 @@ const ProductDetailsPage = () => {
                     md={4}
                     className="d-flex align-items-stretch"
                   >
-                    <div className="w-100 h-100 d-flex flex-column">
-                      <ProductDetailsCard
-                        image={p.image}
-                        title={p.title}
-                        desc={p.desc}
-                        price={p.price}
-                      />
-                    </div>
+                    <ProductDetailsCard
+                      brand={p.brand}
+                      image={p.image}
+                      title={p.title}
+                      desc={p.desc}
+                      price={p.price}
+                    />
                   </Col>
                 ))
               ) : (

@@ -13,9 +13,10 @@ const Footer = () => {
       style={{
         background: "linear-gradient(135deg, #2D7BA5, #357CA5)",
         color: "#fff",
-        padding: "50px 0 20px 0",
+        padding: "40px 0 15px 0",
         borderTopLeftRadius: "40px",
         borderTopRightRadius: "40px",
+        marginTop: "auto", // 👈 keeps footer at bottom if content is short
       }}
     >
       <Container>
@@ -28,21 +29,12 @@ const Footer = () => {
               Connecting you to trusted suppliers with quality products, easy
               details, and quick enquiries – all in one place.
             </p>
-
             {/* Social Icons */}
             <div className="d-flex justify-content-center justify-content-md-start gap-3 mt-3 flex-wrap">
-              <a href="#" style={iconStyle}>
-                <FaFacebookF />
-              </a>
-              <a href="#" style={iconStyle}>
-                <FaTwitter />
-              </a>
-              <a href="#" style={iconStyle}>
-                <FaInstagram />
-              </a>
-              <a href="#" style={iconStyle}>
-                <FaLinkedinIn />
-              </a>
+              <a href="#" style={iconStyle}><FaFacebookF /></a>
+              <a href="#" style={iconStyle}><FaTwitter /></a>
+              <a href="#" style={iconStyle}><FaInstagram /></a>
+              <a href="#" style={iconStyle}><FaLinkedinIn /></a>
             </div>
           </Col>
 
@@ -50,13 +42,9 @@ const Footer = () => {
           <Col xs={6} md={3} className="mb-4 mb-md-0">
             <h6 className="fw-bold mb-3">Quick Links</h6>
             <ul className="list-unstyled" style={{ fontSize: "14px" }}>
-              <li><a href="#" style={linkStyle}>Home</a></li>
-              <li><a href="#" style={linkStyle}>About Us</a></li>
-              <li><a href="#" style={linkStyle}>Products</a></li>
-              <li><a href="#" style={linkStyle}>Enquiry Form</a></li>
-              <li><a href="#" style={linkStyle}>Testimonials</a></li>
-              <li><a href="#" style={linkStyle}>FAQs</a></li>
-              <li><a href="#" style={linkStyle}>Contact Us</a></li>
+              {["Home","About Us","Products","Enquiry Form","Testimonials","FAQs","Contact Us"].map((item,i)=>(
+                <li key={i}><a href="#" style={linkStyle}>{item}</a></li>
+              ))}
             </ul>
           </Col>
 
@@ -64,10 +52,9 @@ const Footer = () => {
           <Col xs={6} md={3} className="mb-4 mb-md-0">
             <h6 className="fw-bold mb-3">Products</h6>
             <ul className="list-unstyled" style={{ fontSize: "14px" }}>
-              <li><a href="#" style={linkStyle}>Water Purifiers</a></li>
-              <li><a href="#" style={linkStyle}>Filters</a></li>
-              <li><a href="#" style={linkStyle}>Accessories</a></li>
-              <li><a href="#" style={linkStyle}>Spare Parts</a></li>
+              {["Water Purifiers","Filters","Accessories","Spare Parts"].map((item,i)=>(
+                <li key={i}><a href="#" style={linkStyle}>{item}</a></li>
+              ))}
             </ul>
           </Col>
 
@@ -81,7 +68,6 @@ const Footer = () => {
             <a href="#" style={{ color: "#fff", fontSize: "14px" }}>
               See on Google Map
             </a>
-
             <h6 className="fw-bold mt-3">Office Hours</h6>
             <p style={{ fontSize: "14px" }}>Mon – Fri ( 8AM – 6PM )</p>
           </Col>
@@ -94,14 +80,14 @@ const Footer = () => {
         <Row className="d-flex justify-content-between align-items-center text-center text-md-start">
           <Col xs={12} md={6} className="mb-2 mb-md-0">
             <p style={{ margin: 0, fontSize: "14px" }}>
-              Copyright 2025 all rights reserved
+              © 2025 Opor. All rights reserved
             </p>
           </Col>
           <Col xs={12} md={6} className="text-center text-md-end">
             <a href="#" style={linkStyle}>Privacy</a> &nbsp;&nbsp;
             <a href="#" style={linkStyle}>Security</a> &nbsp;&nbsp;
             <a href="#" style={linkStyle}>Terms</a> &nbsp;&nbsp;
-            <span style={{ fontSize: "14px" }}>Made with examplename</span>
+            <span style={{ fontSize: "14px" }}>Made with ❤️ by examplename</span>
           </Col>
         </Row>
       </Container>

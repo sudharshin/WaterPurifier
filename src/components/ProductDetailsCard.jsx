@@ -4,13 +4,12 @@ import { Card } from "react-bootstrap";
 const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
   return (
     <Card
-      className="shadow-sm product-details-card"
+      className="shadow-sm product-details-card w-100 h-100"
       style={{
-        minWidth: "260px",
         borderRadius: "20px",
         border: "1px solid #E5E7EB",
         overflow: "hidden",
-        transition: "transform 0.3s ease, box-shadow 0.3s ease", // ✅ smooth animation
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
       }}
     >
       {/* Brand */}
@@ -38,7 +37,6 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
 
       {/* Product Info */}
       <Card.Body style={{ padding: "12px 16px" }}>
-        {/* Title */}
         <Card.Title
           style={{
             fontSize: "1rem",
@@ -50,7 +48,6 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
           {title}
         </Card.Title>
 
-        {/* Description */}
         <Card.Text
           style={{
             fontSize: "0.85rem",
@@ -61,7 +58,6 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
           {desc}
         </Card.Text>
 
-        {/* Price */}
         <div>
           <span
             style={{
@@ -78,7 +74,7 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
         </div>
       </Card.Body>
 
-      {/* ✅ Hover Effect CSS */}
+      {/* Hover Effect */}
       <style>
         {`
           .product-details-card:hover {
