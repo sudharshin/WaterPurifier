@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Button} from "react-bootstrap";
 
 import {
   Container,
@@ -179,7 +180,12 @@ const NavbarComponent = () => {
             <Nav.Link href="#" className="mx-2">About Us</Nav.Link>
             <Nav.Link href="#" className="mx-2">Contact</Nav.Link>
           </Nav>
-
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                {/* ✅ Button to redirect to AddProducts form */}
+                <Link to="/adminLogin">
+                  <Button variant="primary">Admin</Button>
+                </Link>
+              </div>
           {/* Right Search Box */}
           <Form className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
             <div
@@ -190,12 +196,7 @@ const NavbarComponent = () => {
                 padding: "4px 12px",
               }}
             >
-               <div className="d-flex justify-content-between align-items-center mb-4">
-                {/* ✅ Button to redirect to AddProducts form */}
-                <Link to="/adminLogin">
-                  <Button variant="primary">Add Product</Button>
-                </Link>
-              </div>
+               
               <span className="input-group-text bg-transparent border-0 p-0 pe-2">
                 <FaSearch className="text-muted" />
               </span>
