@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
+
 import {
   Container,
   Nav,
@@ -188,6 +190,12 @@ const NavbarComponent = () => {
                 padding: "4px 12px",
               }}
             >
+               <div className="d-flex justify-content-between align-items-center mb-4">
+                {/* ✅ Button to redirect to AddProducts form */}
+                <Link to="/adminLogin">
+                  <Button variant="primary">Add Product</Button>
+                </Link>
+              </div>
               <span className="input-group-text bg-transparent border-0 p-0 pe-2">
                 <FaSearch className="text-muted" />
               </span>
