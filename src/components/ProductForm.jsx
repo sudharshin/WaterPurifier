@@ -16,8 +16,8 @@ const ProductForm = () => {
 
   const [images, setImages] = useState([null]); // start with 1 upload box
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-
+   const navigate = useNavigate();
+   
   // Handle text input
   const handleChange = (e) => {
     const { name, value } = e.target;
