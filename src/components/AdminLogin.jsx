@@ -1,8 +1,25 @@
-import React from "react";
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import AdminLogo from "../assets/AdminLogo.jpg";
 
 function AdminLogin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (email === "admin@gmail.com" && password === "admin") {
+      setError("");
+      navigate("/viewallproducts"); // ✅ redirect to AddProducts page
+    } else {
+      setError("Invalid email or password. Please try again.");
+    }
+  };
+
   return (
     <Container fluid className="vh-100 d-flex align-items-center">
       <Row className="w-100">
@@ -22,17 +39,12 @@ function AdminLogin() {
         {/* Right side with form */}
         <Col
           md={6}
-          className="d-flex justify-content-center align-items-center bg-light"
+          className="d-flex justify-content-center align-items-center"
         >
           <Card style={{ width: "350px", border: "none" }}>
             <Card.Body>
-              {/* ✅ This wrapper centers the logo */}
               <div className="d-flex justify-content-center mb-3">
-                <img
-                  src={AdminLogo}
-                  alt="small logo"
-                  style={{ width: "40px" }}
-                />
+                <img src={AdminLogo} alt="small logo" style={{ width: "40px" }} />
               </div>
 
               <div className="text-center mb-4">
@@ -43,15 +55,27 @@ function AdminLogin() {
               </div>
 
               {/* Login Form */}
-              <Form>
+              {error && <Alert variant="danger">{error}</Alert>}
+
+              <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" placeholder="Enter your email" />
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </Form.Group>
 
                 <Form.Group className="mb-4" controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" placeholder="••••••••" />
+                  <Form.Control
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="w-100">

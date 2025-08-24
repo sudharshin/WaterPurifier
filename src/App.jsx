@@ -8,7 +8,7 @@ import { products } from "./components/ProductSection";
 import AdminLogin from "./components/AdminLogin";
 import ProductForm from "./components/ProductForm";
 //import ProductProvider  from "./components/redux/ProductContext";
-
+import ViewAllProducts from "./components/ViewAllProducts";
 const App = () => {
   return (
    // <ProductProvider>
@@ -20,6 +20,7 @@ const App = () => {
         <Route path="/products" element={<ProductDetailsPage />} />
         <Route path="/adminLogin" element={<AdminLogin />} />
          <Route path="/form" element={<ProductForm />} />
+           <Route path="/viewallproducts" element={<ViewAllProducts />} />
       </Routes>
 
       <Footer />

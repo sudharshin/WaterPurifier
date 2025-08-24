@@ -23,12 +23,19 @@ const ProductForm = () => {
     validateField(name, value);
   };
 
-  // Handle image selection
+  // Handle image selection and convert to base64 for storage
   const handleImageChange = (e, index) => {
-    const newImages = [...images];
-    newImages[index] = e.target.files[0];
-    setImages(newImages);
-    validateField("images", newImages);
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImages = [...images];
+        newImages[index] = reader.result; // store base64 string instead of File
+        setImages(newImages);
+        validateField("images", newImages);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Add another image input
@@ -125,8 +132,14 @@ const ProductForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      alert("✅ Product added successfully! Redirecting...");
-      // Replace with navigation (React Router etc.)
+      // Save to localStorage
+      const existing = JSON.parse(localStorage.getItem("products")) || [];
+      const newProduct = { ...formData, images }; // images are base64 strings now
+
+      existing.push(newProduct);
+      localStorage.setItem("products", JSON.stringify(existing));
+
+      alert("✅ Product added successfully!");
       window.location.href = "/viewallproducts";
     } else {
       alert("❌ Please correct the errors before submitting.");
