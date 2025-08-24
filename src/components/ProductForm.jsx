@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const ProductForm = () => {
   const [formData, setFormData] = useState({
@@ -140,7 +141,9 @@ const ProductForm = () => {
       localStorage.setItem("products", JSON.stringify(existing));
 
       alert("✅ Product added successfully!");
-      window.location.href = "/viewallproducts";
+    <Link to="/viewallproducts">
+      <Button variant="primary">Admin</Button>
+    </Link>
     } else {
       alert("❌ Please correct the errors before submitting.");
     }
