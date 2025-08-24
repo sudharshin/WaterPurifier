@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductForm = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ const ProductForm = () => {
 
   const [images, setImages] = useState([null]); // start with 1 upload box
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   // Handle text input
   const handleChange = (e) => {
@@ -141,9 +142,7 @@ const ProductForm = () => {
       localStorage.setItem("products", JSON.stringify(existing));
 
       alert("✅ Product added successfully!");
-    <Link to="/viewallproducts">
-      <Button variant="primary">Admin</Button>
-    </Link>
+      navigate("/viewallproducts");
     } else {
       alert("❌ Please correct the errors before submitting.");
     }
