@@ -121,14 +121,46 @@ const ProductForm = () => {
   };
 
   // Validate all before submit
-  const validateForm = () => {
+ /* const validateForm = () => {
     Object.keys(formData).forEach((key) => validateField(key, formData[key]));
     validateField("images", images);
     return (
       Object.values(errors).every((err) => err === "") &&
       images.some((img) => img !== null)
     );
-  };
+  };*/
+
+  const validateForm = () => {
+  let isValid = true;
+
+  // Validate each form field
+  Object.keys(formData).forEach((key) => {
+    validateField(key, formData[key]);
+
+    if (!formData[key] || formData[key].trim() === "") {
+      isValid = false;
+    }
+  });
+
+  // Validate images separately
+  validateField("images", images);
+  if (!images.some((img) => img !== null)) {
+    isValid = false;
+  }
+
+  // Check errors object as well
+  if (!Object.values(errors).every((err) => err === "")) {
+    isValid = false;
+  }
+
+  // If not valid, show popup
+ /* if (!isValid) {
+    alert("Please fill all required fields before submitting!");
+  }*/
+
+  return isValid;
+};
+
 
   // Submit
   const handleSubmit = (e) => {
