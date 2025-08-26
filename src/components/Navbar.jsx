@@ -180,12 +180,7 @@ const NavbarComponent = () => {
             <Nav.Link href="#" className="mx-2">About Us</Nav.Link>
             <Nav.Link href="#" className="mx-2">Contact</Nav.Link>
           </Nav>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                {/* ✅ Button to redirect to AddProducts form */}
-                <Link to="/adminLogin">
-                  <Button variant="primary">Admin</Button>
-                </Link>
-              </div>
+           
           {/* Right Search Box */}
           <Form className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
             <div
