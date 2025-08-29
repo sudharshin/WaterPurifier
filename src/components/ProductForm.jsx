@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProductForm = () => {
+  const { id } = useParams(); // if editing, this will be populated
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     id: "",
@@ -14,25 +17,60 @@ const ProductForm = () => {
     threshold: "",
   });
 
-  const [images, setImages] = useState([null]); // start with 1 upload box
+  const [images, setImages] = useState([null]);
+  const [customFields, setCustomFields] = useState([]);
+  const [newCustomField, setNewCustomField] = useState({ name: "", type: "text", value: "" });
   const [errors, setErrors] = useState({});
-   const navigate = useNavigate();
-   
-  // Handle text input
+
+  // Predefined form fields
+  const predefinedFields = [
+    "name",
+    "id",
+    "category",
+    "price",
+    "quantity",
+    "unit",
+    "expiry",
+    "threshold",
+  ];
+
+  // Load existing product details if editing
+  useEffect(() => {
+    if (id) {
+      const existing = JSON.parse(localStorage.getItem("products")) || [];
+      const product = existing.find((p) => p.id === id);
+      if (product) {
+        setFormData({
+          name: product.name || "",
+          id: product.id || "",
+          category: product.category || "",
+          price: product.price || "",
+          quantity: product.quantity || "",
+          unit: product.unit || "",
+          expiry: product.expiry || "",
+          threshold: product.threshold || "",
+        });
+        setImages(product.images && product.images.length > 0 ? product.images : [null]);
+        setCustomFields(product.customFields || []);
+      }
+    }
+  }, [id]);
+
+  // Handle changes for predefined fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     validateField(name, value);
   };
 
-  // Handle image selection and convert to base64 for storage
+  // Handle image upload
   const handleImageChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const newImages = [...images];
-        newImages[index] = reader.result; // store base64 string instead of File
+        newImages[index] = reader.result;
         setImages(newImages);
         validateField("images", newImages);
       };
@@ -40,19 +78,49 @@ const ProductForm = () => {
     }
   };
 
-  // Add another image input
-  const addMoreImage = () => {
-    setImages([...images, null]);
-  };
+  const addMoreImage = () => setImages([...images, null]);
 
-  // Remove an image input
   const removeImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
-    setImages(newImages.length > 0 ? newImages : [null]); // keep at least one input
+    setImages(newImages.length > 0 ? newImages : [null]);
     validateField("images", newImages);
   };
 
-  // Validation rules
+  // Handle custom field input
+  const handleCustomFieldChange = (e) => {
+    const { name, value } = e.target;
+    setNewCustomField({ ...newCustomField, [name]: value });
+  };
+
+  // Add custom field
+  const addCustomField = () => {
+    const fieldName = newCustomField.name.trim().toLowerCase();
+
+    if (!newCustomField.name) {
+      alert("Custom field name is required!");
+      return;
+    }
+
+    if (predefinedFields.includes(fieldName)) {
+      alert("⚠️ This field already exists in the form!");
+      return;
+    }
+
+    if (customFields.some((field) => field.name.toLowerCase() === fieldName)) {
+      alert("⚠️ This custom field is already added!");
+      return;
+    }
+
+    setCustomFields([...customFields, newCustomField]);
+    setNewCustomField({ name: "", type: "text", value: "" }); // reset
+  };
+
+  const removeCustomField = (index) => {
+    const updatedFields = customFields.filter((_, i) => i !== index);
+    setCustomFields(updatedFields);
+  };
+
+  // Validation
   const validateField = (name, value) => {
     let message = "";
 
@@ -120,67 +188,48 @@ const ProductForm = () => {
     setErrors((prev) => ({ ...prev, [name]: message }));
   };
 
-  // Validate all before submit
- /* const validateForm = () => {
-    Object.keys(formData).forEach((key) => validateField(key, formData[key]));
-    validateField("images", images);
-    return (
-      Object.values(errors).every((err) => err === "") &&
-      images.some((img) => img !== null)
-    );
-  };*/
-
   const validateForm = () => {
-  let isValid = true;
+    let isValid = true;
+    Object.keys(formData).forEach((key) => {
+      validateField(key, formData[key]);
+      if (!formData[key] || formData[key].trim() === "") isValid = false;
+    });
 
-  // Validate each form field
-  Object.keys(formData).forEach((key) => {
-    validateField(key, formData[key]);
+    validateField("images", images);
+    if (!images.some((img) => img !== null)) isValid = false;
 
-    if (!formData[key] || formData[key].trim() === "") {
-      isValid = false;
-    }
-  });
+    if (!Object.values(errors).every((err) => err === "")) isValid = false;
 
-  // Validate images separately
-  validateField("images", images);
-  if (!images.some((img) => img !== null)) {
-    isValid = false;
-  }
+    return isValid;
+  };
 
-  // Check errors object as well
-  if (!Object.values(errors).every((err) => err === "")) {
-    isValid = false;
-  }
-
-  // If not valid, show popup
- /* if (!isValid) {
-    alert("Please fill all required fields before submitting!");
-  }*/
-
-  return isValid;
-};
-
-
-  // Submit
+  // Submit form (Add or Update)
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Save to localStorage
       const existing = JSON.parse(localStorage.getItem("products")) || [];
-      const newProduct = { ...formData, images }; // images are base64 strings now
 
-      existing.push(newProduct);
-      localStorage.setItem("products", JSON.stringify(existing));
+      if (id) {
+        // Update existing product
+        const updated = existing.map((p) =>
+          p.id === id ? { ...formData, images, customFields } : p
+        );
+        localStorage.setItem("products", JSON.stringify(updated));
+        alert("✅ Product updated successfully!");
+      } else {
+        // Add new product
+        const newProduct = { ...formData, images, customFields };
+        existing.push(newProduct);
+        localStorage.setItem("products", JSON.stringify(existing));
+        alert("✅ Product added successfully!");
+      }
 
-      alert("✅ Product added successfully!");
       navigate("/viewallproducts");
     } else {
       alert("❌ Please correct the errors before submitting.");
     }
   };
 
-  // Discard
   const handleDiscard = () => {
     setFormData({
       name: "",
@@ -194,6 +243,7 @@ const ProductForm = () => {
     });
     setImages([null]);
     setErrors({});
+    setCustomFields([]);
   };
 
   return (
@@ -201,9 +251,9 @@ const ProductForm = () => {
       <Row className="w-100">
         <Col md={{ span: 6, offset: 3 }}>
           <div className="p-4 shadow rounded bg-white">
-            <h4 className="mb-3">New Product</h4>
+            <h4 className="mb-3">{id ? "Update Product" : "New Product"}</h4>
             <Form onSubmit={handleSubmit}>
-              {/* Product Images */}
+              {/* Images */}
               <Form.Group className="mb-3">
                 <Form.Label>Upload Product Images</Form.Label>
                 {images.map((img, index) => (
@@ -213,6 +263,15 @@ const ProductForm = () => {
                       accept="image/*"
                       onChange={(e) => handleImageChange(e, index)}
                     />
+                    {img && (
+                      <img
+                        src={img}
+                        alt="preview"
+                        width="50"
+                        height="50"
+                        className="ms-2 border"
+                      />
+                    )}
                     {images.length > 1 && (
                       <Button
                         variant="danger"
@@ -233,12 +292,10 @@ const ProductForm = () => {
                 >
                   + Add More
                 </Button>
-                {errors.images && (
-                  <div className="text-danger">{errors.images}</div>
-                )}
+                {errors.images && <div className="text-danger">{errors.images}</div>}
               </Form.Group>
 
-              {/* Product Name */}
+              {/* Predefined Fields */}
               <Form.Group className="mb-3">
                 <Form.Label>Product Name</Form.Label>
                 <Form.Control
@@ -251,7 +308,6 @@ const ProductForm = () => {
                 {errors.name && <div className="text-danger">{errors.name}</div>}
               </Form.Group>
 
-              {/* Product ID */}
               <Form.Group className="mb-3">
                 <Form.Label>Product ID</Form.Label>
                 <Form.Control
@@ -260,11 +316,11 @@ const ProductForm = () => {
                   value={formData.id}
                   onChange={handleChange}
                   placeholder="Enter product ID"
+                  disabled={!!id} // prevent changing ID on edit
                 />
                 {errors.id && <div className="text-danger">{errors.id}</div>}
               </Form.Group>
 
-              {/* Category */}
               <Form.Group className="mb-3">
                 <Form.Label>Category</Form.Label>
                 <Form.Select
@@ -277,12 +333,9 @@ const ProductForm = () => {
                   <option value="Grocery">Grocery</option>
                   <option value="Clothing">Clothing</option>
                 </Form.Select>
-                {errors.category && (
-                  <div className="text-danger">{errors.category}</div>
-                )}
+                {errors.category && <div className="text-danger">{errors.category}</div>}
               </Form.Group>
 
-              {/* Buying Price */}
               <Form.Group className="mb-3">
                 <Form.Label>Buying Price</Form.Label>
                 <Form.Control
@@ -292,12 +345,9 @@ const ProductForm = () => {
                   onChange={handleChange}
                   placeholder="Enter buying price"
                 />
-                {errors.price && (
-                  <div className="text-danger">{errors.price}</div>
-                )}
+                {errors.price && <div className="text-danger">{errors.price}</div>}
               </Form.Group>
 
-              {/* Quantity */}
               <Form.Group className="mb-3">
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control
@@ -307,12 +357,9 @@ const ProductForm = () => {
                   onChange={handleChange}
                   placeholder="Enter quantity"
                 />
-                {errors.quantity && (
-                  <div className="text-danger">{errors.quantity}</div>
-                )}
+                {errors.quantity && <div className="text-danger">{errors.quantity}</div>}
               </Form.Group>
 
-              {/* Unit */}
               <Form.Group className="mb-3">
                 <Form.Label>Unit</Form.Label>
                 <Form.Control
@@ -325,7 +372,6 @@ const ProductForm = () => {
                 {errors.unit && <div className="text-danger">{errors.unit}</div>}
               </Form.Group>
 
-              {/* Expiry Date */}
               <Form.Group className="mb-3">
                 <Form.Label>Expiry Date</Form.Label>
                 <Form.Control
@@ -334,12 +380,9 @@ const ProductForm = () => {
                   value={formData.expiry}
                   onChange={handleChange}
                 />
-                {errors.expiry && (
-                  <div className="text-danger">{errors.expiry}</div>
-                )}
+                {errors.expiry && <div className="text-danger">{errors.expiry}</div>}
               </Form.Group>
 
-              {/* Threshold Value */}
               <Form.Group className="mb-3">
                 <Form.Label>Threshold Value</Form.Label>
                 <Form.Control
@@ -349,22 +392,79 @@ const ProductForm = () => {
                   onChange={handleChange}
                   placeholder="Enter threshold value"
                 />
-                {errors.threshold && (
-                  <div className="text-danger">{errors.threshold}</div>
-                )}
+                {errors.threshold && <div className="text-danger">{errors.threshold}</div>}
               </Form.Group>
+
+              {/* Custom Fields */}
+              <div className="mb-3 border p-3 rounded">
+                <h6>Add Custom Field</h6>
+                <Row>
+                  <Col>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      value={newCustomField.name}
+                      onChange={handleCustomFieldChange}
+                      placeholder="Field Name"
+                    />
+                  </Col>
+                  <Col>
+                    <Form.Select
+                      name="type"
+                      value={newCustomField.type}
+                      onChange={handleCustomFieldChange}
+                    >
+                      <option value="text">Text</option>
+                      <option value="number">Number</option>
+                      <option value="date">Date</option>
+                    </Form.Select>
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      type={newCustomField.type}
+                      name="value"
+                      value={newCustomField.value}
+                      onChange={handleCustomFieldChange}
+                      placeholder="Field Value"
+                    />
+                  </Col>
+                  <Col xs="auto">
+                    <Button variant="success" onClick={addCustomField}>
+                      Add
+                    </Button>
+                  </Col>
+                </Row>
+
+                {customFields.length > 0 && (
+                  <div className="mt-3">
+                    {customFields.map((field, index) => (
+                      <div
+                        key={index}
+                        className="d-flex justify-content-between align-items-center border rounded p-2 mb-2"
+                      >
+                        <span>
+                          <b>{field.name}</b> ({field.type}) : {field.value}
+                        </span>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => removeCustomField(index)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Buttons */}
               <div className="d-flex justify-content-end">
-                <Button
-                  variant="secondary"
-                  className="me-2"
-                  onClick={handleDiscard}
-                >
+                <Button variant="secondary" className="me-2" onClick={handleDiscard}>
                   Discard
                 </Button>
                 <Button variant="primary" type="submit">
-                  Add Product
+                  {id ? "Update Product" : "Add Product"}
                 </Button>
               </div>
             </Form>

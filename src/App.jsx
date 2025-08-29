@@ -21,7 +21,13 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductDetailsPage />} />
           <Route path="/adminLogin" element={<AdminLogin />} />
+
+          {/* ✅ Add Product */}
           <Route path="/form" element={<ProductForm />} />
+
+          {/* ✅ Edit Product (same form, but with ID param) */}
+          <Route path="/form/:id" element={<ProductForm />} />
+
           <Route path="/viewallproducts" element={<ViewAllProducts />} />
         </Routes>
       </div>
