@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ProductListing from "./ProductListing";
-
+import demoProducts from "./DemoProducts";
 const ProductSection = () => {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("products")) || [];
     setProducts(stored);
+  }, []);*/
+
+   useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("products"));
+    if (!stored || stored.length === 0) {
+      console.log("demo products");
+      localStorage.setItem("products", JSON.stringify(demoProducts));
+      setProducts(demoProducts);
+    } else {
+      setProducts(stored);
+    }
   }, []);
 
   const topSelling = products.filter((p) => p.isTopSelling);
