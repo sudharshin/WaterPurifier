@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 
-const ProductCard = ({ image, title, desc, price }) => {
+const ProductCard = ({ image, title, brand, price, onClick }) => {
   return (
     <div
       className="col-12 col-sm-6 col-md-4 col-lg-2 px-2 flex-shrink-0 d-flex flex-column"
@@ -14,8 +14,10 @@ const ProductCard = ({ image, title, desc, price }) => {
           height: "300px",
           border: "1px solid #ccc",
           backgroundColor: "#fff",
-          overflow: "hidden", // ✅ prevents image from overflowing when scaled
+          overflow: "hidden",
+          cursor: "pointer", // 👈 makes it look clickable
         }}
+        onClick={onClick} // 👈 navigate when clicked
       >
         <div
           style={{
@@ -34,7 +36,7 @@ const ProductCard = ({ image, title, desc, price }) => {
               width: "180px",
               height: "180px",
               objectFit: "contain",
-              transition: "transform 0.3s ease-in-out", // ✅ smooth transition
+              transition: "transform 0.3s ease-in-out",
             }}
             className="product-image"
           />
@@ -44,7 +46,7 @@ const ProductCard = ({ image, title, desc, price }) => {
       {/* Product Info */}
       <div className="mt-3 text-start d-flex flex-column flex-grow-1">
         <h6 className="fw-bold">{title}</h6>
-        <p className="text-muted small mb-2 flex-grow-1">{desc}</p>
+        <p className="text-muted small mb-2 flex-grow-1">{brand}</p>
 
         {/* Price */}
         <div className="d-flex align-items-center justify-content-start mt-auto">
@@ -56,12 +58,12 @@ const ProductCard = ({ image, title, desc, price }) => {
               fontSize: "14px",
             }}
           >
-            {price}
+            ₹{price}
           </div>
         </div>
       </div>
 
-      {/* ✅ Inline hover style using CSS */}
+      {/* ✅ Inline hover style */}
       <style>
         {`
           .product-image:hover {

@@ -3,464 +3,458 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProductForm = () => {
-  const { id } = useParams(); // if editing, this will be populated
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
     id: "",
-    category: "",
-    price: "",
+    brandName: "",
+    buyingPrice: "",
+    sellingPrice: "",
+    vendorPrice: "",
     quantity: "",
-    unit: "",
-    expiry: "",
-    threshold: "",
+    date: "",
+    isTopSelling: false,
+    isFeatured: false,
+    isBudgetFriendly: false,
+    customFields: [], // always array
   });
 
-  const [images, setImages] = useState([null]);
-  const [customFields, setCustomFields] = useState([]);
-  const [newCustomField, setNewCustomField] = useState({ name: "", type: "text", value: "" });
+  const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
 
-  // Predefined form fields
-  const predefinedFields = [
-    "name",
-    "id",
-    "category",
-    "price",
-    "quantity",
-    "unit",
-    "expiry",
-    "threshold",
-  ];
-
-  // Load existing product details if editing
+  // Load existing product when editing
   useEffect(() => {
     if (id) {
       const existing = JSON.parse(localStorage.getItem("products")) || [];
       const product = existing.find((p) => p.id === id);
       if (product) {
         setFormData({
-          name: product.name || "",
-          id: product.id || "",
-          category: product.category || "",
-          price: product.price || "",
-          quantity: product.quantity || "",
-          unit: product.unit || "",
-          expiry: product.expiry || "",
-          threshold: product.threshold || "",
+          ...product,
+          customFields: product.customFields || [], // ✅ ensure array
         });
-        setImages(product.images && product.images.length > 0 ? product.images : [null]);
-        setCustomFields(product.customFields || []);
+        setImages(product.images || []);
       }
     }
   }, [id]);
 
-  // Handle changes for predefined fields
+  // Handle normal input
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    validateField(name, value);
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
   // Handle image upload
-  const handleImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
+  const handleImageChange = (files) => {
+    const newImages = [];
+    for (let i = 0; i < files.length; i++) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const newImages = [...images];
-        newImages[index] = reader.result;
-        setImages(newImages);
-        validateField("images", newImages);
+        newImages.push(reader.result);
+        if (newImages.length === files.length) {
+          setImages((prev) => [...prev, ...newImages]);
+        }
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(files[i]);
     }
   };
-
-  const addMoreImage = () => setImages([...images, null]);
 
   const removeImage = (index) => {
-    const newImages = images.filter((_, i) => i !== index);
-    setImages(newImages.length > 0 ? newImages : [null]);
-    validateField("images", newImages);
+    setImages(images.filter((_, i) => i !== index));
   };
 
-  // Handle custom field input
-  const handleCustomFieldChange = (e) => {
-    const { name, value } = e.target;
-    setNewCustomField({ ...newCustomField, [name]: value });
+  // Add custom field row
+  const addCustomFieldRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      customFields: [
+        ...prev.customFields,
+        { fieldName: "", fieldType: "", value: "" },
+      ],
+    }));
   };
 
-  // Add custom field
-  const addCustomField = () => {
-    const fieldName = newCustomField.name.trim().toLowerCase();
+  // Update custom field row with validation
+  const updateCustomFieldRow = (index, field, value) => {
+    const updated = [...formData.customFields];
+    updated[index][field] = value;
 
-    if (!newCustomField.name) {
-      alert("Custom field name is required!");
-      return;
-    }
+    if (field === "fieldName") {
+      const normalized = value.trim().toLowerCase();
 
-    if (predefinedFields.includes(fieldName)) {
-      alert("⚠️ This field already exists in the form!");
-      return;
-    }
+      const isDuplicate = updated.some(
+        (f, i) => i !== index && f.fieldName.trim().toLowerCase() === normalized
+      );
 
-    if (customFields.some((field) => field.name.toLowerCase() === fieldName)) {
-      alert("⚠️ This custom field is already added!");
-      return;
-    }
+      const mainFields = [
+        "name",
+        "id",
+        "brandName",
+        "buyingPrice",
+        "sellingPrice",
+        "vendorPrice",
+        "quantity",
+        "date",
+      ];
+      const isInMainForm = mainFields.includes(normalized);
 
-    setCustomFields([...customFields, newCustomField]);
-    setNewCustomField({ name: "", type: "text", value: "" }); // reset
-  };
-
-  const removeCustomField = (index) => {
-    const updatedFields = customFields.filter((_, i) => i !== index);
-    setCustomFields(updatedFields);
-  };
-
-  // Validation
-  const validateField = (name, value) => {
-    let message = "";
-
-    switch (name) {
-      case "name":
-        if (!value) message = "Product name is required";
-        else if (!/^[A-Za-z0-9\s]+$/.test(value))
-          message = "Product name can contain only letters and numbers";
-        break;
-
-      case "id":
-        if (!value) message = "Product ID is required";
-        else if (!/^[A-Za-z0-9]+$/.test(value))
-          message = "Product ID must be alphanumeric";
-        break;
-
-      case "category":
-        if (!value) message = "Category must be selected";
-        break;
-
-      case "price":
-        if (!value) message = "Buying price is required";
-        else if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(value) || Number(value) <= 0)
-          message = "Enter a valid positive number";
-        break;
-
-      case "quantity":
-        if (!value) message = "Quantity is required";
-        else if (!/^[0-9]+$/.test(value) || Number(value) <= 0)
-          message = "Quantity must be a positive number";
-        break;
-
-      case "unit":
-        if (!value) message = "Unit is required";
-        else if (!/^[0-9]+$/.test(value))
-          message = "Unit must be a number";
-        break;
-
-      case "expiry":
-        if (!value) message = "Expiry date is required";
-        else {
-          const today = new Date();
-          const selectedDate = new Date(value);
-          today.setHours(0, 0, 0, 0);
-          if (selectedDate <= today)
-            message = "Expiry date must be in the future";
-        }
-        break;
-
-      case "threshold":
-        if (!value) message = "Threshold value is required";
-        else if (!/^[0-9]+$/.test(value) || Number(value) <= 0)
-          message = "Threshold must be a positive number";
-        break;
-
-      case "images":
-        if (value.length === 0 || !value.some((img) => img !== null))
-          message = "At least one product image is required";
-        break;
-
-      default:
-        break;
-    }
-
-    setErrors((prev) => ({ ...prev, [name]: message }));
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-    Object.keys(formData).forEach((key) => {
-      validateField(key, formData[key]);
-      if (!formData[key] || formData[key].trim() === "") isValid = false;
-    });
-
-    validateField("images", images);
-    if (!images.some((img) => img !== null)) isValid = false;
-
-    if (!Object.values(errors).every((err) => err === "")) isValid = false;
-
-    return isValid;
-  };
-
-  // Submit form (Add or Update)
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      const existing = JSON.parse(localStorage.getItem("products")) || [];
-
-      if (id) {
-        // Update existing product
-        const updated = existing.map((p) =>
-          p.id === id ? { ...formData, images, customFields } : p
-        );
-        localStorage.setItem("products", JSON.stringify(updated));
-        alert("✅ Product updated successfully!");
+      if (!value.trim()) {
+        setErrors((prev) => ({
+          ...prev,
+          [`customFields_fieldName_${index}`]: "Field name is required",
+        }));
+      } else if (isDuplicate) {
+        setErrors((prev) => ({
+          ...prev,
+          [`customFields_fieldName_${index}`]: "Field name already exists",
+        }));
+      } else if (isInMainForm) {
+        setErrors((prev) => ({
+          ...prev,
+          [`customFields_fieldName_${index}`]:
+            "This field already exists in the form",
+        }));
       } else {
-        // Add new product
-        const newProduct = { ...formData, images, customFields };
-        existing.push(newProduct);
-        localStorage.setItem("products", JSON.stringify(existing));
-        alert("✅ Product added successfully!");
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[`customFields_fieldName_${index}`];
+          return newErrors;
+        });
+      }
+    }
+
+    setFormData({ ...formData, customFields: updated });
+  };
+
+  const removeCustomFieldRow = (index) => {
+    const updated = [...formData.customFields];
+    updated.splice(index, 1);
+    setFormData({ ...formData, customFields: updated });
+
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[`customFields_fieldName_${index}`];
+      delete newErrors[`customFields_fieldType_${index}`];
+      delete newErrors[`customFields_value_${index}`];
+      return newErrors;
+    });
+  };
+
+  // Validate entire form
+  const validateForm = () => {
+    const newErrors = {};
+    const today = new Date();
+    const selectedDate = new Date(formData.date);
+
+    if (!images.length) newErrors.images = "At least one image is required";
+    if (!formData.name) newErrors.name = "Item name is required";
+    if (!formData.id) newErrors.id = "Product code is required";
+    if (!formData.brandName) newErrors.brandName = "Brand name is required";
+    if (!formData.buyingPrice) newErrors.buyingPrice = "Buying price is required";
+    if (!formData.sellingPrice) newErrors.sellingPrice = "Selling price is required";
+    if (!formData.vendorPrice) newErrors.vendorPrice = "Vendor price is required";
+    if (!formData.quantity) newErrors.quantity = "Quantity is required";
+
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+    } else if (selectedDate <= today) {
+      newErrors.date = "Date must be in the future"; // ✅ stricter check
+    }
+
+    if (
+      !formData.isTopSelling &&
+      !formData.isFeatured &&
+      !formData.isBudgetFriendly
+    ) {
+      newErrors.categories = "At least one category must be selected";
+    }
+
+    // Validate custom fields
+    const seenFieldNames = new Set();
+    formData.customFields.forEach((row, i) => {
+      if (!row.fieldName.trim()) {
+        newErrors[`customFields_fieldName_${i}`] = "Field name is required";
+      } else if (seenFieldNames.has(row.fieldName.trim().toLowerCase())) {
+        newErrors[`customFields_fieldName_${i}`] = "Field name already exists";
+      } else {
+        seenFieldNames.add(row.fieldName.trim().toLowerCase());
       }
 
-      navigate("/viewallproducts");
-    } else {
-      alert("❌ Please correct the errors before submitting.");
-    }
+      if (!row.fieldType)
+        newErrors[`customFields_fieldType_${i}`] = "Field type is required";
+      if (!row.value)
+        newErrors[`customFields_value_${i}`] = "Value is required";
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleDiscard = () => {
-    setFormData({
-      name: "",
-      id: "",
-      category: "",
-      price: "",
-      quantity: "",
-      unit: "",
-      expiry: "",
-      threshold: "",
-    });
-    setImages([null]);
-    setErrors({});
-    setCustomFields([]);
+  // Submit form
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const existing = JSON.parse(localStorage.getItem("products")) || [];
+    if (id) {
+      const updated = existing.map((p) =>
+        p.id === id ? { ...formData, images } : p
+      );
+      localStorage.setItem("products", JSON.stringify(updated));
+      alert("✅ Product updated successfully!");
+    } else {
+      const newProduct = { ...formData, images };
+      existing.push(newProduct);
+      localStorage.setItem("products", JSON.stringify(existing));
+      alert("✅ Product added successfully!");
+    }
+
+    navigate("/viewallproducts");
   };
+
+  // Get tomorrow for min date restriction
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
       <Row className="w-100">
-        <Col md={{ span: 6, offset: 3 }}>
+        <Col md={{ span: 8, offset: 2 }}>
           <div className="p-4 shadow rounded bg-white">
-            <h4 className="mb-3">{id ? "Update Product" : "New Product"}</h4>
+            <h3 className="text-center mb-4">Inventory</h3>
+
             <Form onSubmit={handleSubmit}>
               {/* Images */}
-              <Form.Group className="mb-3">
-                <Form.Label>Upload Product Images</Form.Label>
-                {images.map((img, index) => (
-                  <div key={index} className="d-flex align-items-center mb-2">
-                    <Form.Control
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(e, index)}
-                    />
-                    {img && (
-                      <img
-                        src={img}
-                        alt="preview"
-                        width="50"
-                        height="50"
-                        className="ms-2 border"
-                      />
-                    )}
-                    {images.length > 1 && (
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        className="ms-2"
-                        onClick={() => removeImage(index)}
-                      >
-                        Remove
-                      </Button>
-                    )}
+              <Row className="mb-3">
+                <Col md={4}>
+                  <Form.Label>Product Images</Form.Label>
+                </Col>
+                <Col md={8}>
+                  <div
+                    className="d-flex align-items-center justify-content-center border border-2 rounded"
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderStyle: "dashed",
+                      cursor: "pointer",
+                      textAlign: "center",
+                    }}
+                    onClick={() => document.getElementById("imageUpload").click()}
+                  >
+                    <span className="text-muted">
+                      Drag image here <br /> or <br /> <u>Browse image</u>
+                    </span>
                   </div>
-                ))}
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="mt-2"
-                  onClick={addMoreImage}
-                >
-                  + Add More
-                </Button>
-                {errors.images && <div className="text-danger">{errors.images}</div>}
-              </Form.Group>
+                  <input
+                    id="imageUpload"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleImageChange(e.target.files)}
+                  />
 
-              {/* Predefined Fields */}
-              <Form.Group className="mb-3">
-                <Form.Label>Product Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter product name"
-                />
-                {errors.name && <div className="text-danger">{errors.name}</div>}
-              </Form.Group>
+                  {errors.images && (
+                    <p className="text-danger">{errors.images}</p>
+                  )}
 
-              <Form.Group className="mb-3">
-                <Form.Label>Product ID</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="id"
-                  value={formData.id}
-                  onChange={handleChange}
-                  placeholder="Enter product ID"
-                  disabled={!!id} // prevent changing ID on edit
-                />
-                {errors.id && <div className="text-danger">{errors.id}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Category</Form.Label>
-                <Form.Select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                >
-                  <option value="">Select product category</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Grocery">Grocery</option>
-                  <option value="Clothing">Clothing</option>
-                </Form.Select>
-                {errors.category && <div className="text-danger">{errors.category}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Buying Price</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  placeholder="Enter buying price"
-                />
-                {errors.price && <div className="text-danger">{errors.price}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Quantity</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  placeholder="Enter quantity"
-                />
-                {errors.quantity && <div className="text-danger">{errors.quantity}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Unit</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="unit"
-                  value={formData.unit}
-                  onChange={handleChange}
-                  placeholder="Enter product unit (numbers only)"
-                />
-                {errors.unit && <div className="text-danger">{errors.unit}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Expiry Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="expiry"
-                  value={formData.expiry}
-                  onChange={handleChange}
-                />
-                {errors.expiry && <div className="text-danger">{errors.expiry}</div>}
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Threshold Value</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="threshold"
-                  value={formData.threshold}
-                  onChange={handleChange}
-                  placeholder="Enter threshold value"
-                />
-                {errors.threshold && <div className="text-danger">{errors.threshold}</div>}
-              </Form.Group>
-
-              {/* Custom Fields */}
-              <div className="mb-3 border p-3 rounded">
-                <h6>Add Custom Field</h6>
-                <Row>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      name="name"
-                      value={newCustomField.name}
-                      onChange={handleCustomFieldChange}
-                      placeholder="Field Name"
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Select
-                      name="type"
-                      value={newCustomField.type}
-                      onChange={handleCustomFieldChange}
-                    >
-                      <option value="text">Text</option>
-                      <option value="number">Number</option>
-                      <option value="date">Date</option>
-                    </Form.Select>
-                  </Col>
-                  <Col>
-                    <Form.Control
-                      type={newCustomField.type}
-                      name="value"
-                      value={newCustomField.value}
-                      onChange={handleCustomFieldChange}
-                      placeholder="Field Value"
-                    />
-                  </Col>
-                  <Col xs="auto">
-                    <Button variant="success" onClick={addCustomField}>
-                      Add
-                    </Button>
-                  </Col>
-                </Row>
-
-                {customFields.length > 0 && (
-                  <div className="mt-3">
-                    {customFields.map((field, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between align-items-center border rounded p-2 mb-2"
-                      >
-                        <span>
-                          <b>{field.name}</b> ({field.type}) : {field.value}
-                        </span>
+                  <div className="d-flex mt-2 flex-wrap">
+                    {images.map((img, i) => (
+                      <div key={i} className="position-relative me-2 mb-2">
+                        <img
+                          src={img}
+                          alt={`Product ${i}`}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            objectFit: "cover",
+                            borderRadius: "8px",
+                            border: "1px solid #ccc",
+                          }}
+                        />
                         <Button
                           variant="danger"
                           size="sm"
-                          onClick={() => removeCustomField(index)}
+                          className="position-absolute top-0 end-0"
+                          onClick={() => removeImage(i)}
                         >
-                          Remove
+                          ×
                         </Button>
                       </div>
                     ))}
                   </div>
-                )}
-              </div>
+                </Col>
+              </Row>
+
+              {/* Basic Fields */}
+              {[
+                { label: "Item Name", name: "name", type: "text" },
+                { label: "Product Code", name: "id", type: "text" },
+                { label: "Brand Name", name: "brandName", type: "text" },
+                { label: "Buying Price", name: "buyingPrice", type: "number" },
+                { label: "Selling Price", name: "sellingPrice", type: "number" },
+                { label: "Vendor Price", name: "vendorPrice", type: "number" },
+                { label: "Quantity", name: "quantity", type: "number" },
+                {
+                  label: "Expiry Date",
+                  name: "date",
+                  type: "date",
+                  min: minDate,
+                },
+              ].map((field, idx) => (
+                <Row className="mb-3" key={idx}>
+                  <Col md={4}>
+                    <Form.Label>{field.label}</Form.Label>
+                  </Col>
+                  <Col md={8}>
+                    <Form.Control
+                      type={field.type}
+                      name={field.name}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                      min={field.min || undefined}
+                      style={{ maxWidth: "300px" }}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-danger">{errors[field.name]}</p>
+                    )}
+                  </Col>
+                </Row>
+              ))}
+
+              {/* Categories */}
+              <Row className="mb-3">
+                <Col md={4}>
+                  <Form.Label>Categories</Form.Label>
+                </Col>
+                <Col md={8}>
+                  {["isTopSelling", "isFeatured", "isBudgetFriendly"].map(
+                    (cat, i) => (
+                      <Form.Check
+                        key={i}
+                        type="checkbox"
+                        label={cat.replace("is", "").replace(/([A-Z])/g, " $1")}
+                        name={cat}
+                        checked={formData[cat]}
+                        onChange={handleChange}
+                      />
+                    )
+                  )}
+                  {errors.categories && (
+                    <p className="text-danger">{errors.categories}</p>
+                  )}
+                </Col>
+              </Row>
+
+              {/* Custom Fields */}
+              <Row className="mb-3">
+                <Col md={4}>
+                  <Form.Label>Custom Fields</Form.Label>
+                </Col>
+                <Col md={8}>
+                  {formData.customFields.map((row, index) => (
+                    <Row key={index} className="mb-2">
+                      <Col>
+                        <Form.Control
+                          type="text"
+                          placeholder="Field Name"
+                          value={row.fieldName}
+                          onChange={(e) =>
+                            updateCustomFieldRow(index, "fieldName", e.target.value)
+                          }
+                          style={{ maxWidth: "200px" }}
+                        />
+                        {errors[`customFields_fieldName_${index}`] && (
+                          <p className="text-danger">
+                            {errors[`customFields_fieldName_${index}`]}
+                          </p>
+                        )}
+                      </Col>
+                      <Col>
+                        <Form.Select
+                          value={row.fieldType}
+                          onChange={(e) =>
+                            updateCustomFieldRow(index, "fieldType", e.target.value)
+                          }
+                          style={{ maxWidth: "150px" }}
+                        >
+                          <option value="">Select Type</option>
+                          <option value="Text">Text</option>
+                          <option value="Number">Number</option>
+                          <option value="Date">Date</option>
+                        </Form.Select>
+                        {errors[`customFields_fieldType_${index}`] && (
+                          <p className="text-danger">
+                            {errors[`customFields_fieldType_${index}`]}
+                          </p>
+                        )}
+                      </Col>
+                      <Col>
+                        {row.fieldType === "Text" && (
+                          <Form.Control
+                            type="text"
+                            placeholder="Value"
+                            value={row.value}
+                            onChange={(e) =>
+                              updateCustomFieldRow(index, "value", e.target.value)
+                            }
+                            style={{ maxWidth: "200px" }}
+                          />
+                        )}
+                        {row.fieldType === "Number" && (
+                          <Form.Control
+                            type="number"
+                            placeholder="Value"
+                            value={row.value}
+                            onChange={(e) =>
+                              updateCustomFieldRow(index, "value", e.target.value)
+                            }
+                            style={{ maxWidth: "200px" }}
+                          />
+                        )}
+                        {row.fieldType === "Date" && (
+                          <Form.Control
+                            type="date"
+                            min={minDate}
+                            value={row.value}
+                            onChange={(e) =>
+                              updateCustomFieldRow(index, "value", e.target.value)
+                            }
+                            style={{ maxWidth: "200px" }}
+                          />
+                        )}
+                        {errors[`customFields_value_${index}`] && (
+                          <p className="text-danger">
+                            {errors[`customFields_value_${index}`]}
+                          </p>
+                        )}
+                      </Col>
+                      <Col xs="auto">
+                        <Button
+                          variant="danger"
+                          onClick={() => removeCustomFieldRow(index)}
+                        >
+                          🗑
+                        </Button>
+                      </Col>
+                    </Row>
+                  ))}
+                  <Button variant="outline-primary" onClick={addCustomFieldRow}>
+                    + Add Field
+                  </Button>
+                </Col>
+              </Row>
 
               {/* Buttons */}
               <div className="d-flex justify-content-end">
-                <Button variant="secondary" className="me-2" onClick={handleDiscard}>
+                <Button
+                  variant="secondary"
+                  className="me-2"
+                  type="button"
+                  onClick={() => navigate("/viewallproducts")}
+                >
                   Discard
                 </Button>
                 <Button variant="primary" type="submit">

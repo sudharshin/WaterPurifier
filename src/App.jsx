@@ -1,38 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProductDetailsPage from "./components/ProductDetailsPage"; 
-import { products } from "./components/ProductSection";
 import AdminLogin from "./components/AdminLogin";
 import ProductForm from "./components/ProductForm";
+import EnquirySection from "./components/EnquirySection";
 import ViewAllProducts from "./components/ViewAllProducts";
-
+import ProductDetails from "./components/ProductDetails";
 const App = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("products")) || [];
+    setProducts(stored);
+  }, []);
+
   return (
     <Router>
-      {/* ✅ Navbar always on top */}
+      {/* ✅ Navbar gets products */}
       <Navbar products={products} />
 
-      {/* ✅ Main Content Wrapper with spacing */}
+      {/* ✅ Main Content Wrapper */}
       <div style={{ paddingTop: "100px", paddingBottom: "80px", minHeight: "100vh" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductDetailsPage />} />
           <Route path="/adminLogin" element={<AdminLogin />} />
-
-          {/* ✅ Add Product */}
+           <Route path="/enquiry" element={<EnquirySection />} /> 
           <Route path="/form" element={<ProductForm />} />
-
-          {/* ✅ Edit Product (same form, but with ID param) */}
           <Route path="/form/:id" element={<ProductForm />} />
-
+          <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/viewallproducts" element={<ViewAllProducts />} />
         </Routes>
       </div>
 
-      {/* ✅ Footer always at bottom */}
+      {/* ✅ Footer */}
       <Footer />
     </Router>
   );

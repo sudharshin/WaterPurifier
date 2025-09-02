@@ -3,27 +3,21 @@ import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import ProductDetailsCard from "./ProductDetailsCard";
 
-// Extract filters once from products
-const extractFilters = (products = []) => {
-  const filters = {};
-  products.forEach((p) => {
-    Object.keys(p).forEach((key) => {
-      if (["title", "image", "desc", "price", "id"].includes(key)) return;
-      if (!filters[key]) filters[key] = [];
-      if (!filters[key].includes(p[key])) filters[key].push(p[key]);
-    });
-  });
-  return filters;
-};
-
-// Price normalization
-const toPriceNumber = (val) => {
+// Normalize number
+const toNumber = (val) => {
   if (typeof val === "number") return val;
   if (!val) return 0;
   const cleaned = String(val).replace(/[^0-9.,-]/g, "").replace(/,/g, "");
   const num = parseFloat(cleaned);
   return Number.isFinite(num) ? num : 0;
 };
+
+// Define static price ranges for filters (sellingPrice now)
+const priceRanges = [
+  { label: "Greater than 5,000", value: 5000 },
+  { label: "Greater than 9,000", value: 9000 },
+  { label: "Greater than 10,000", value: 10000 },
+];
 
 const ProductDetailsPage = () => {
   const location = useLocation();
@@ -34,15 +28,23 @@ const ProductDetailsPage = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [loading, setLoading] = useState(false);
 
-  // Memoize filter data
-  const filtersData = useMemo(() => extractFilters(products), [products]);
+  // ✅ Extract unique brand names
+  const brandOptions = useMemo(() => {
+    const brands = [];
+    products.forEach((p) => {
+      if (p.brandName && !brands.includes(p.brandName)) {
+        brands.push(p.brandName);
+      }
+    });
+    return brands;
+  }, [products]);
 
-  // Optimized toggle
+  // Toggle filter collapse
   const toggleFilter = useCallback((key) => {
     setOpenFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
 
-  // Optimized filter selection
+  // Handle filter selection
   const handleFilterChange = useCallback((filterKey, value) => {
     setActiveFilters((prev) => {
       const prevValues = prev[filterKey] || [];
@@ -63,21 +65,33 @@ const ProductDetailsPage = () => {
     setOpenFilters({});
   }, []);
 
-  // Derived filtered + sorted products
+  // ✅ Apply filters and sorting
   const filteredProducts = useMemo(() => {
-    let next = products.filter((product) =>
-      Object.keys(activeFilters).every((filterKey) =>
-        activeFilters[filterKey]?.includes(product[filterKey])
-      )
-    );
+    let next = [...products];
 
+    // Filter by brandName
+    if (activeFilters.brandName?.length) {
+      next = next.filter((p) =>
+        activeFilters.brandName.includes(p.brandName)
+      );
+    }
+
+    // ✅ Filter by price ranges (sellingPrice now)
+    if (activeFilters.price?.length) {
+      next = next.filter((p) => {
+        const sellingPrice = toNumber(p.sellingPrice);
+        return activeFilters.price.some((min) => sellingPrice > min);
+      });
+    }
+
+    // Sorting
     if (sortBy === "lowToHigh") {
       next = [...next].sort(
-        (a, b) => toPriceNumber(a.price) - toPriceNumber(b.price)
+        (a, b) => toNumber(a.sellingPrice) - toNumber(b.sellingPrice)
       );
     } else if (sortBy === "highToLow") {
       next = [...next].sort(
-        (a, b) => toPriceNumber(b.price) - toPriceNumber(a.price)
+        (a, b) => toNumber(b.sellingPrice) - toNumber(a.sellingPrice)
       );
     }
     return next;
@@ -102,57 +116,91 @@ const ProductDetailsPage = () => {
             >
               <h5 className="fw-bold mb-3">Filters</h5>
 
-              {Object.keys(filtersData).map((filterKey, idx) => (
-                <div key={idx} className="mb-2">
-                  <div
-                    className="d-flex justify-content-between align-items-center p-2 border rounded"
-                    style={{ cursor: "pointer", background: "#f8f9fa" }}
-                    onClick={() => toggleFilter(filterKey)}
-                  >
-                    <span className="fw-semibold text-capitalize">
-                      {filterKey}
-                    </span>
-                    <span style={{ fontSize: "20px" }}>
-                      {openFilters[filterKey] ? "−" : "+"}
-                    </span>
-                  </div>
-
-                  {openFilters[filterKey] && (
-                    <div className="px-3 py-2 border-start border-end border-bottom">
-                      {filtersData[filterKey].map((item, i) => {
-                        const isChecked = activeFilters[filterKey]?.includes(
-                          item
-                        );
-                        return (
-                          <div
-                            key={i}
-                            className="d-flex align-items-center p-2 mb-1 rounded"
-                            style={{
-                              backgroundColor: isChecked
-                                ? "#e6f0ff"
-                                : "transparent",
-                              transition: "background-color 0.3s ease",
-                              fontWeight: isChecked ? "600" : "400",
-                              color: isChecked ? "#0d47a1" : "inherit",
-                            }}
-                          >
-                            <Form.Check
-                              type="checkbox"
-                              id={`${filterKey}-${i}`}
-                              label={item}
-                              checked={!!isChecked}
-                              onChange={() =>
-                                handleFilterChange(filterKey, item)
-                              }
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+              {/* Brand Filter */}
+              <div className="mb-2">
+                <div
+                  className="d-flex justify-content-between align-items-center p-2 border rounded"
+                  style={{ cursor: "pointer", background: "#f8f9fa" }}
+                  onClick={() => toggleFilter("brandName")}
+                >
+                  <span className="fw-semibold">Brand</span>
+                  <span style={{ fontSize: "20px" }}>
+                    {openFilters.brandName ? "−" : "+"}
+                  </span>
                 </div>
-              ))}
 
+                {openFilters.brandName && (
+                  <div className="px-3 py-2 border-start border-end border-bottom">
+                    {brandOptions.map((brand, i) => {
+                      const isChecked = activeFilters.brandName?.includes(brand);
+                      return (
+                        <div
+                          key={i}
+                          className="d-flex align-items-center p-2 mb-1 rounded"
+                          style={{
+                            backgroundColor: isChecked ? "#e6f0ff" : "transparent",
+                            transition: "background-color 0.3s ease",
+                            fontWeight: isChecked ? "600" : "400",
+                            color: isChecked ? "#0d47a1" : "inherit",
+                          }}
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            id={`brand-${i}`}
+                            label={brand}
+                            checked={!!isChecked}
+                            onChange={() => handleFilterChange("brandName", brand)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* ✅ Selling Price Filter */}
+              <div className="mb-2">
+                <div
+                  className="d-flex justify-content-between align-items-center p-2 border rounded"
+                  style={{ cursor: "pointer", background: "#f8f9fa" }}
+                  onClick={() => toggleFilter("price")}
+                >
+                  <span className="fw-semibold">Selling Price</span>
+                  <span style={{ fontSize: "20px" }}>
+                    {openFilters.price ? "−" : "+"}
+                  </span>
+                </div>
+
+                {openFilters.price && (
+                  <div className="px-3 py-2 border-start border-end border-bottom">
+                    {priceRanges.map((range, i) => {
+                      const isChecked = activeFilters.price?.includes(range.value);
+                      return (
+                        <div
+                          key={i}
+                          className="d-flex align-items-center p-2 mb-1 rounded"
+                          style={{
+                            backgroundColor: isChecked ? "#e6f0ff" : "transparent",
+                            transition: "background-color 0.3s ease",
+                            fontWeight: isChecked ? "600" : "400",
+                            color: isChecked ? "#0d47a1" : "inherit",
+                          }}
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            id={`price-${i}`}
+                            label={range.label}
+                            checked={!!isChecked}
+                            onChange={() => handleFilterChange("price", range.value)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Reset */}
               {(Object.keys(activeFilters).length > 0 ||
                 sortBy !== "relevance") && (
                 <div className="text-center mt-3">
@@ -201,11 +249,11 @@ const ProductDetailsPage = () => {
                     className="d-flex align-items-stretch"
                   >
                     <ProductDetailsCard
-                      brand={p.brand}
-                      image={p.image}
-                      title={p.title}
-                      desc={p.desc}
-                      price={p.price}
+                      brand={p.brandName}
+                      image={p.images?.[0]}
+                      title={p.name}
+                      // desc={p.customFields?.map((cf) => cf.value).join(", ")}
+                      price={`₹${p.sellingPrice}`}
                     />
                   </Col>
                 ))

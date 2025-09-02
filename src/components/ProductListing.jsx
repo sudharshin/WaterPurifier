@@ -1,16 +1,20 @@
 import React, { useRef } from "react";
 import { Container, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";  // ⬅️ for navigation
+import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
 
 const ProductListing = ({ title, description, products }) => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
 
+  // ✅ Accept full product
+  const handleProductClick = (product) => {
+    navigate(`/products/${product.id}`, { state: { product } });
+  };
+
   const scroll = (direction) => {
     if (scrollRef.current) {
       if (direction === "all") {
-        // Instead of scrolling → route to details page
         navigate("/products", { state: { products, title, description } });
       } else {
         scrollRef.current.scrollBy({
@@ -48,10 +52,17 @@ const ProductListing = ({ title, description, products }) => {
           {products?.map((p, index) => (
             <ProductCard
               key={index}
-              image={p.image}
-              title={p.title}
-              desc={p.desc}
-              price={p.price}
+              id={p.id}
+              image={
+                p.image ||
+                p.imageUrl ||
+                (p.images && p.images.length > 0 ? p.images[0] : "/placeholder.png")
+              }
+              title={p.name || "Untitled Product"}
+              brand={p.brandName || "N/A"}
+              price={p.sellingPrice || 0}
+              // ✅ Pass full product object
+              onClick={() => handleProductClick(p)}
             />
           ))}
         </div>
@@ -68,7 +79,6 @@ const ProductListing = ({ title, description, products }) => {
             display: none;
           }
 
-          /* View All Button transition */
           .view-all-btn {
             background-color: #e6f2ff;
             border: none;
@@ -80,7 +90,7 @@ const ProductListing = ({ title, description, products }) => {
           }
           .view-all-btn:hover,
           .view-all-btn:active {
-            background-color: #003366 !important; /* dark blue */
+            background-color: #003366 !important;
             color: #fff !important;
           }
         `}
