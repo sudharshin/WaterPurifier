@@ -16,6 +16,7 @@ const ProductSection = () => {
       localStorage.setItem("products", JSON.stringify(demoProducts));
       setProducts(demoProducts);
     } else {
+        console.log("Loaded products from storage:", stored);
       setProducts(stored);
     }
   }, []);

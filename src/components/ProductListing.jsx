@@ -35,12 +35,14 @@ const ProductListing = ({ title, description, products }) => {
             {description && <p className="text-muted mb-0">{description}</p>}
           </div>
 
-          <Button
-            className="view-all-btn d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
-            onClick={() => scroll("all")}
-          >
-            View All <span style={{ fontSize: "1rem" }}>→</span>
-          </Button>
+           {products.length > 6 && (
+            <Button
+              className="view-all-btn d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
+              onClick={() => scroll("all")}
+            >
+          View All <span style={{ fontSize: "1rem" }}>→</span>
+        </Button>
+      )}
         </div>
 
         {/* Scrollable Row of Product Cards */}
