@@ -1,8 +1,8 @@
 import product1 from "../assets/WaterPurifierImg.jpg";
-import product2 from "../assets/WaterPurifierImg2.jpg";
+import product2 from "../assets/WaterPurifierimg2.jpg";
 import product3 from "../assets/WaterPurifierImg3.jpg";
 import product4 from "../assets/WaterPurifierImg4.jpg";
-import product5 from "../assets/WaterPurifierImg2.jpg";
+import product5 from "../assets/WaterPurifierimg2.jpg";
 
 const demoProducts = [
   // ✅ Top Selling Products (7)
