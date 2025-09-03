@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
+import ScrollToTop from "./components/ScrollToTop";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProductDetailsPage from "./components/ProductDetailsPage"; 
@@ -21,6 +22,7 @@ const App = () => {
     <Router>
       {/* ✅ Navbar gets products */}
       <Navbar products={products} />
+      <ScrollToTop />
 
       {/* ✅ Main Content Wrapper */}
       <div style={{ paddingTop: "100px", paddingBottom: "80px", minHeight: "100vh" }}>
@@ -33,6 +35,7 @@ const App = () => {
           <Route path="/form/:id" element={<ProductForm />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/viewallproducts" element={<ViewAllProducts />} />
+
         </Routes>
       </div>
 
