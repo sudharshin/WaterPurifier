@@ -18,13 +18,13 @@ const ProductForm = () => {
     isTopSelling: false,
     isFeatured: false,
     isBudgetFriendly: false,
-    customFields: [], // always array
+    customFields: [],
   });
 
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
 
-  // Load existing product when editing
+  // ✅ Load existing product when editing
   useEffect(() => {
     if (id) {
       const existing = JSON.parse(localStorage.getItem("products")) || [];
@@ -32,7 +32,11 @@ const ProductForm = () => {
       if (product) {
         setFormData({
           ...product,
-          customFields: product.customFields || [], // ✅ ensure array
+          customFields: (product.customFields || []).map((f) => ({
+            fieldName: f.fieldName || "",
+            fieldType: f.fieldType || "",
+            value: f.value || "",
+          })),
         });
         setImages(product.images || []);
       }
@@ -64,47 +68,37 @@ const ProductForm = () => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // Add custom field row
-  /*const addCustomFieldRow = () => {
+  // ✅ Add custom field row (with validation)
+  const addCustomFieldRow = () => {
+    const hasEmptyRow = formData.customFields.some(
+      (row) =>
+        !row.fieldName ||
+        row.fieldName.trim() === "" ||
+        !row.fieldType ||
+        !row.value
+    );
+
+    if (hasEmptyRow) {
+      alert("⚠ Please fill in the existing custom field before adding a new one.");
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
-      customFields: [
-        ...prev.customFields,
-        { fieldName: "", fieldType: "", value: "" },
-      ],
+      customFields: [...prev.customFields, { fieldName: "", fieldType: "", value: "" }],
     }));
-  };*/
-  // Add custom field row (with check for empty row)
-// ✅ Add custom field row (with popup validation)
-const addCustomFieldRow = () => {
-  const hasEmptyRow = formData.customFields.some(
-    (row) => !row.fieldName.trim() || !row.fieldType || !row.value
-  );
+  };
 
-  setFormData((prev) => ({
-    ...prev,
-    customFields: [
-      ...prev.customFields,
-      { fieldName: "", fieldType: "", value: "" },
-    ],
-  }));
-};
-
-
-
-
-  // Update custom field row with validation
+  // ✅ Update custom field row
   const updateCustomFieldRow = (index, field, value) => {
     const updated = [...formData.customFields];
     updated[index][field] = value;
 
     if (field === "fieldName") {
       const normalized = value.trim().toLowerCase();
-
       const isDuplicate = updated.some(
         (f, i) => i !== index && f.fieldName.trim().toLowerCase() === normalized
       );
-
       const mainFields = [
         "name",
         "id",
@@ -130,8 +124,7 @@ const addCustomFieldRow = () => {
       } else if (isInMainForm) {
         setErrors((prev) => ({
           ...prev,
-          [`customFields_fieldName_${index}`]:
-            "This field already exists in the form",
+          [`customFields_fieldName_${index}`]: "This field already exists in the form",
         }));
       } else {
         setErrors((prev) => {
@@ -159,7 +152,7 @@ const addCustomFieldRow = () => {
     });
   };
 
-  // Validate entire form
+  // ✅ Validation
   const validateForm = () => {
     const newErrors = {};
     const today = new Date();
@@ -177,39 +170,30 @@ const addCustomFieldRow = () => {
     if (!formData.date) {
       newErrors.date = "Date is required";
     } else if (selectedDate <= today) {
-      newErrors.date = "Date must be in the future"; // ✅ stricter check
+      newErrors.date = "Date must be in the future";
     }
 
-    if (
-      !formData.isTopSelling &&
-      !formData.isFeatured &&
-      !formData.isBudgetFriendly
-    ) {
+    if (!formData.isTopSelling && !formData.isFeatured && !formData.isBudgetFriendly) {
       newErrors.categories = "At least one category must be selected";
     }
 
-    // Validate custom fields
-    const seenFieldNames = new Set();
-    formData.customFields.forEach((row, i) => {
-      if (!row.fieldName.trim()) {
-        newErrors[`customFields_fieldName_${i}`] = "Field name is required";
-      } else if (seenFieldNames.has(row.fieldName.trim().toLowerCase())) {
-        newErrors[`customFields_fieldName_${i}`] = "Field name already exists";
-      } else {
-        seenFieldNames.add(row.fieldName.trim().toLowerCase());
+    formData.customFields.forEach((row, index) => {
+      if (!row.fieldName || row.fieldName.trim() === "") {
+        newErrors[`customFields_fieldName_${index}`] = "Field Name is required";
       }
-
-      if (!row.fieldType)
-        newErrors[`customFields_fieldType_${i}`] = "Field type is required";
-      if (!row.value)
-        newErrors[`customFields_value_${i}`] = "Value is required";
+      if (!row.fieldType) {
+        newErrors[`customFields_fieldType_${index}`] = "Field Type is required";
+      }
+      if (!row.value) {
+        newErrors[`customFields_value_${index}`] = "Value is required";
+      }
     });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit form
+  // ✅ Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -217,12 +201,12 @@ const addCustomFieldRow = () => {
     const existing = JSON.parse(localStorage.getItem("products")) || [];
     if (id) {
       const updated = existing.map((p) =>
-        p.id === id ? { ...formData, images } : p
+        p.id === id ? { ...formData, images, customFields: formData.customFields } : p
       );
       localStorage.setItem("products", JSON.stringify(updated));
       alert("✅ Product updated successfully!");
     } else {
-      const newProduct = { ...formData, images };
+      const newProduct = { ...formData, images, customFields: formData.customFields };
       existing.push(newProduct);
       localStorage.setItem("products", JSON.stringify(existing));
       alert("✅ Product added successfully!");
@@ -244,7 +228,7 @@ const addCustomFieldRow = () => {
             <h3 className="text-center mb-4">Inventory</h3>
 
             <Form onSubmit={handleSubmit}>
-              {/* Images */}
+              {/* ✅ Images */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Product Images</Form.Label>
@@ -274,9 +258,7 @@ const addCustomFieldRow = () => {
                     onChange={(e) => handleImageChange(e.target.files)}
                   />
 
-                  {errors.images && (
-                    <p className="text-danger">{errors.images}</p>
-                  )}
+                  {errors.images && <p className="text-danger">{errors.images}</p>}
 
                   <div className="d-flex mt-2 flex-wrap">
                     {images.map((img, i) => (
@@ -306,7 +288,7 @@ const addCustomFieldRow = () => {
                 </Col>
               </Row>
 
-              {/* Basic Fields */}
+              {/* ✅ Basic Fields */}
               {[
                 { label: "Item Name", name: "name", type: "text" },
                 { label: "Product Code", name: "id", type: "text" },
@@ -315,12 +297,7 @@ const addCustomFieldRow = () => {
                 { label: "Selling Price", name: "sellingPrice", type: "number" },
                 { label: "Vendor Price", name: "vendorPrice", type: "number" },
                 { label: "Quantity", name: "quantity", type: "number" },
-                {
-                  label: "Expiry Date",
-                  name: "date",
-                  type: "date",
-                  min: minDate,
-                },
+                { label: "Expiry Date", name: "date", type: "date", min: minDate },
               ].map((field, idx) => (
                 <Row className="mb-3" key={idx}>
                   <Col md={4}>
@@ -342,31 +319,27 @@ const addCustomFieldRow = () => {
                 </Row>
               ))}
 
-              {/* Categories */}
+              {/* ✅ Categories */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Categories</Form.Label>
                 </Col>
                 <Col md={8}>
-                  {["isTopSelling", "isFeatured", "isBudgetFriendly"].map(
-                    (cat, i) => (
-                      <Form.Check
-                        key={i}
-                        type="checkbox"
-                        label={cat.replace("is", "").replace(/([A-Z])/g, " $1")}
-                        name={cat}
-                        checked={formData[cat]}
-                        onChange={handleChange}
-                      />
-                    )
-                  )}
-                  {errors.categories && (
-                    <p className="text-danger">{errors.categories}</p>
-                  )}
+                  {["isTopSelling", "isFeatured", "isBudgetFriendly"].map((cat, i) => (
+                    <Form.Check
+                      key={i}
+                      type="checkbox"
+                      label={cat.replace("is", "").replace(/([A-Z])/g, " $1")}
+                      name={cat}
+                      checked={formData[cat]}
+                      onChange={handleChange}
+                    />
+                  ))}
+                  {errors.categories && <p className="text-danger">{errors.categories}</p>}
                 </Col>
               </Row>
 
-              {/* Custom Fields */}
+              {/* ✅ Custom Fields */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Custom Fields</Form.Label>
@@ -385,9 +358,7 @@ const addCustomFieldRow = () => {
                           style={{ maxWidth: "200px" }}
                         />
                         {errors[`customFields_fieldName_${index}`] && (
-                          <p className="text-danger">
-                            {errors[`customFields_fieldName_${index}`]}
-                          </p>
+                          <p className="text-danger">{errors[`customFields_fieldName_${index}`]}</p>
                         )}
                       </Col>
                       <Col>
@@ -404,9 +375,7 @@ const addCustomFieldRow = () => {
                           <option value="Date">Date</option>
                         </Form.Select>
                         {errors[`customFields_fieldType_${index}`] && (
-                          <p className="text-danger">
-                            {errors[`customFields_fieldType_${index}`]}
-                          </p>
+                          <p className="text-danger">{errors[`customFields_fieldType_${index}`]}</p>
                         )}
                       </Col>
                       <Col>
@@ -415,9 +384,7 @@ const addCustomFieldRow = () => {
                             type="text"
                             placeholder="Value"
                             value={row.value}
-                            onChange={(e) =>
-                              updateCustomFieldRow(index, "value", e.target.value)
-                            }
+                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
                             style={{ maxWidth: "200px" }}
                           />
                         )}
@@ -426,9 +393,7 @@ const addCustomFieldRow = () => {
                             type="number"
                             placeholder="Value"
                             value={row.value}
-                            onChange={(e) =>
-                              updateCustomFieldRow(index, "value", e.target.value)
-                            }
+                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
                             style={{ maxWidth: "200px" }}
                           />
                         )}
@@ -437,43 +402,39 @@ const addCustomFieldRow = () => {
                             type="date"
                             min={minDate}
                             value={row.value}
-                            onChange={(e) =>
-                              updateCustomFieldRow(index, "value", e.target.value)
-                            }
+                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
                             style={{ maxWidth: "200px" }}
                           />
                         )}
                         {errors[`customFields_value_${index}`] && (
-                          <p className="text-danger">
-                            {errors[`customFields_value_${index}`]}
-                          </p>
+                          <p className="text-danger">{errors[`customFields_value_${index}`]}</p>
                         )}
                       </Col>
                       <Col xs="auto">
-                        <Button
-                          variant="danger"
-                          onClick={() => removeCustomFieldRow(index)}
-                        >
+                        <Button variant="danger" onClick={() => removeCustomFieldRow(index)}>
                           🗑
                         </Button>
                       </Col>
                     </Row>
                   ))}
-                
-                <Button
-                  variant="outline-primary"
-                  onClick={addCustomFieldRow}
-                  disabled={formData.customFields.some(
-                    (row) => !row.fieldName.trim() || !row.fieldType || !row.value
-                  )}
-                >
-                + Add Field
-              </Button>
 
+                  <Button
+                    variant="outline-primary"
+                    onClick={addCustomFieldRow}
+                    disabled={formData.customFields.some(
+                      (row) =>
+                        !row.fieldName ||
+                        row.fieldName.trim() === "" ||
+                        !row.fieldType ||
+                        !row.value
+                    )}
+                  >
+                    + Add Field
+                  </Button>
                 </Col>
               </Row>
 
-              {/* Buttons */}
+              {/* ✅ Buttons */}
               <div className="d-flex justify-content-end">
                 <Button
                   variant="secondary"

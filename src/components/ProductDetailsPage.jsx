@@ -103,7 +103,8 @@ const ProductDetailsPage = () => {
       style={{
         background: "#fff",
         minHeight: "calc(100vh - 120px)",
-        paddingBottom: "60px",
+        paddingTop: "20px",
+        paddingBottom:"20px"
       }}
     >
       <Container fluid>
