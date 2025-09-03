@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 import {
   Container,
@@ -25,15 +25,58 @@ const productsData = [
   {
     category: "Domestic RO System",
     icon: <FaTint />,
-    items: ["12 LPH", "25–40 LPH", "60 LPH", "75 LPH", "Add-on Product", "Alkaline Ionizer"],
+    items: [
+      "12 LPH",
+      "25–40 LPH",
+      "60 LPH",
+      "75 LPH",
+      "Add-on Product",
+      "Alkaline Ionizer",
+    ],
   },
-  { category: "Domestic Water Purifier", icon: <FaGlassWhiskey />, items: ["UV Purifier", "UF Purifier", "Gravity Based"] },
-  { category: "Domestic Spares", icon: <FaTools />, items: ["Antiscalant", "Box", "Cabinet", "Clamp", "Connector", "Cover", "Filter"] },
-  { category: "Industrial RO System", icon: <FaIndustry />, items: ["100 LPH", "250 LPH", "500 LPH", "1000 LPH"] },
-  { category: "Industrial Spares", icon: <FaFilter />, items: ["Pump", "Motors", "Control Panels", "Switches"] },
-  { category: "Water Dispenser", icon: <FaBox />, items: ["Hot & Cold", "Normal", "With RO"] },
-  { category: "Other Products", icon: <FaBox />, items: ["TDS Controller", "Mineral Cartridge", "Ozonizer"] },
-  { category: "Offer Products", icon: <FaBox />, items: ["Summer Sale", "Discount Kits", "Combo Offers"] },
+  {
+    category: "Domestic Water Purifier",
+    icon: <FaGlassWhiskey />,
+    items: ["UV Purifier", "UF Purifier", "Gravity Based"],
+  },
+  {
+    category: "Domestic Spares",
+    icon: <FaTools />,
+    items: [
+      "Antiscalant",
+      "Box",
+      "Cabinet",
+      "Clamp",
+      "Connector",
+      "Cover",
+      "Filter",
+    ],
+  },
+  {
+    category: "Industrial RO System",
+    icon: <FaIndustry />,
+    items: ["100 LPH", "250 LPH", "500 LPH", "1000 LPH"],
+  },
+  {
+    category: "Industrial Spares",
+    icon: <FaFilter />,
+    items: ["Pump", "Motors", "Control Panels", "Switches"],
+  },
+  {
+    category: "Water Dispenser",
+    icon: <FaBox />,
+    items: ["Hot & Cold", "Normal", "With RO"],
+  },
+  {
+    category: "Other Products",
+    icon: <FaBox />,
+    items: ["TDS Controller", "Mineral Cartridge", "Ozonizer"],
+  },
+  {
+    category: "Offer Products",
+    icon: <FaBox />,
+    items: ["Summer Sale", "Discount Kits", "Combo Offers"],
+  },
 ];
 
 // 🔹 Desktop Dropdown Component
@@ -64,7 +107,9 @@ const DesktopMenu = ({ activeCategory, setActiveCategory }) => (
           transition: "0.2s",
         }}
       >
-        <span style={{ marginRight: "10px", fontSize: "18px" }}>{category.icon}</span>
+        <span style={{ marginRight: "10px", fontSize: "18px" }}>
+          {category.icon}
+        </span>
         {category.category}
 
         {activeCategory === index && (
@@ -129,7 +174,14 @@ const MobileMenu = ({ mobileOpen, setMobileOpen }) => (
         {mobileOpen === index && (
           <ul style={{ listStyle: "none", paddingLeft: "20px", margin: 0 }}>
             {category.items.map((item, idx) => (
-              <li key={idx} style={{ padding: "6px 0", fontSize: "15px", cursor: "pointer" }}>
+              <li
+                key={idx}
+                style={{
+                  padding: "6px 0",
+                  fontSize: "15px",
+                  cursor: "pointer",
+                }}
+              >
                 {item}
               </li>
             ))}
@@ -144,14 +196,31 @@ const NavbarComponent = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(null);
 
-  const handleSetActiveCategory = useCallback((index) => setActiveCategory(index), []);
+  const handleSetActiveCategory = useCallback(
+    (index) => setActiveCategory(index),
+    []
+  );
   const handleSetMobileOpen = useCallback((index) => setMobileOpen(index), []);
 
   return (
-    <BootstrapNavbar bg="white" expand="lg" fixed="top" className="shadow-sm py-2">
+    <BootstrapNavbar
+      bg="white"
+      expand="lg"
+      fixed="top"
+      className="shadow-sm py-2"
+    >
       <Container fluid>
         {/* Left Logo */}
-        <BootstrapNavbar.Brand href="#" className="fw-bold d-flex align-items-center">
+        <BootstrapNavbar.Brand
+          as={Link}
+          to="/"
+          className="fw-bold d-flex align-items-center text-primary"
+          style={{
+            fontWeight: "600",
+            fontSize: "20px",
+            textDecoration: "none",
+          }}
+        >
           <div
             style={{
               width: "16px",
@@ -161,9 +230,7 @@ const NavbarComponent = () => {
               marginRight: "8px",
             }}
           ></div>
-          <span className="text-primary" style={{ fontWeight: "600", fontSize: "20px" }}>
-            Opor
-          </span>
+          Opor
         </BootstrapNavbar.Brand>
 
         {/* Mobile Toggle */}
@@ -171,16 +238,31 @@ const NavbarComponent = () => {
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
           {/* Center Menu */}
           <Nav className="mx-auto align-items-center">
-            <NavDropdown title="Products" id="products-nav-dropdown" className="mx-2">
-              <DesktopMenu activeCategory={activeCategory} setActiveCategory={handleSetActiveCategory} />
-              <MobileMenu mobileOpen={mobileOpen} setMobileOpen={handleSetMobileOpen} />
+            <NavDropdown
+              title="Products"
+              id="products-nav-dropdown"
+              className="mx-2"
+            >
+              <DesktopMenu
+                activeCategory={activeCategory}
+                setActiveCategory={handleSetActiveCategory}
+              />
+              <MobileMenu
+                mobileOpen={mobileOpen}
+                setMobileOpen={handleSetMobileOpen}
+              />
             </NavDropdown>
-
-            <Nav.Link href="#" className="mx-2">Purchase & Service</Nav.Link>
-            <Nav.Link href="#" className="mx-2">About Us</Nav.Link>
-            <Nav.Link href="#" className="mx-2">Contact</Nav.Link>
+            <Nav.Link href="#home" className="mx-2">
+              Home
+            </Nav.Link>
+            <Nav.Link href="#footer" className="mx-2">
+              About Us
+            </Nav.Link>
+            <Nav.Link href="#enquiry" className="mx-2">
+              Contact
+            </Nav.Link>
           </Nav>
-           
+
           {/* Right Search Box */}
           <Form className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
             <div
@@ -191,7 +273,6 @@ const NavbarComponent = () => {
                 padding: "4px 12px",
               }}
             >
-               
               <span className="input-group-text bg-transparent border-0 p-0 pe-2">
                 <FaSearch className="text-muted" />
               </span>

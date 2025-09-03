@@ -141,6 +141,6 @@ button, .btn {
   background-color: #eee;
   border: 100px ;
 }
-
-
-
+html {
+  scroll-behavior: smooth;
+}

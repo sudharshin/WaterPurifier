@@ -25,12 +25,11 @@ const App = () => {
       <ScrollToTop />
 
       {/* ✅ Main Content Wrapper */}
-      <div style={{ paddingTop: "100px", paddingBottom: "80px", minHeight: "100vh" }}>
+      <div style={{ paddingTop: "50px", paddingBottom: "80px", minHeight: "100vh" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductDetailsPage />} />
           <Route path="/adminLogin" element={<AdminLogin />} />
-           <Route path="/enquiry" element={<EnquirySection />} /> 
           <Route path="/form" element={<ProductForm />} />
           <Route path="/form/:id" element={<ProductForm />} />
           <Route path="/products/:id" element={<ProductDetails />} />
@@ -40,7 +39,9 @@ const App = () => {
       </div>
 
       {/* ✅ Footer */}
-      <Footer />
+        <section id="footer">
+        <Footer />
+      </section>
     </Router>
   );
 };

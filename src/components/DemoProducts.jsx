@@ -451,6 +451,27 @@ const demoProducts = [
       { name: "Power", value: "Direct Electric" },
     ],
   },
+  {
+    id: "22",
+    name: "AquaPure RO Purifier",
+    brandName: "AquaPure",
+    buyingPrice: 12000,
+    sellingPrice: 15000,
+    vendorPrice: 10000,
+    quantity: 10,
+    date: "2025-09-01",
+    images: [product1],
+    isTopSelling: true,
+    isFeatured: false,
+    isBudgetFriendly: false,
+    customFields: [
+      { name: "specialization", value: "Multispeciality RO system" },
+      { name: "Capacity", value: "10 L" },
+      { name: "Warranty", value: "6 Years" },
+      { name: "Membrane Type", value: "Copper" },
+      { name: "Power", value: "Rechargeable Battery" },
+    ],
+  }
 ];
 
 export default demoProducts;

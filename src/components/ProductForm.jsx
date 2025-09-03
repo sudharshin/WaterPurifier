@@ -65,7 +65,7 @@ const ProductForm = () => {
   };
 
   // Add custom field row
-  const addCustomFieldRow = () => {
+  /*const addCustomFieldRow = () => {
     setFormData((prev) => ({
       ...prev,
       customFields: [
@@ -73,7 +73,25 @@ const ProductForm = () => {
         { fieldName: "", fieldType: "", value: "" },
       ],
     }));
-  };
+  };*/
+  // Add custom field row (with check for empty row)
+// ✅ Add custom field row (with popup validation)
+const addCustomFieldRow = () => {
+  const hasEmptyRow = formData.customFields.some(
+    (row) => !row.fieldName.trim() || !row.fieldType || !row.value
+  );
+
+  setFormData((prev) => ({
+    ...prev,
+    customFields: [
+      ...prev.customFields,
+      { fieldName: "", fieldType: "", value: "" },
+    ],
+  }));
+};
+
+
+
 
   // Update custom field row with validation
   const updateCustomFieldRow = (index, field, value) => {
@@ -380,7 +398,7 @@ const ProductForm = () => {
                           }
                           style={{ maxWidth: "150px" }}
                         >
-                          <option value="">Select Type</option>
+                          <option value="">Type</option>
                           <option value="Text">Text</option>
                           <option value="Number">Number</option>
                           <option value="Date">Date</option>
@@ -441,9 +459,17 @@ const ProductForm = () => {
                       </Col>
                     </Row>
                   ))}
-                  <Button variant="outline-primary" onClick={addCustomFieldRow}>
-                    + Add Field
-                  </Button>
+                
+                <Button
+                  variant="outline-primary"
+                  onClick={addCustomFieldRow}
+                  disabled={formData.customFields.some(
+                    (row) => !row.fieldName.trim() || !row.fieldType || !row.value
+                  )}
+                >
+                + Add Field
+              </Button>
+
                 </Col>
               </Row>
 
