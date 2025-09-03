@@ -24,7 +24,6 @@ const ProductForm = () => {
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
 
-  // ✅ Load existing product when editing
   useEffect(() => {
     if (id) {
       const existing = JSON.parse(localStorage.getItem("products")) || [];
@@ -34,7 +33,6 @@ const ProductForm = () => {
           ...product,
           customFields: (product.customFields || []).map((f) => ({
             fieldName: f.fieldName || f.name || "",
-            fieldType: f.fieldType || f.type || "",
             value: f.value || "",
           })),
         });
@@ -43,13 +41,11 @@ const ProductForm = () => {
     }
   }, [id]);
 
-  // Handle normal input
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
   };
 
-  // Handle image upload
   const handleImageChange = (files) => {
     const newImages = [];
     for (let i = 0; i < files.length; i++) {
@@ -68,14 +64,9 @@ const ProductForm = () => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // ✅ Add custom field row (with validation)
   const addCustomFieldRow = () => {
     const hasEmptyRow = formData.customFields.some(
-      (row) =>
-        !row.fieldName ||
-        row.fieldName.trim() === "" ||
-        !row.fieldType ||
-        !row.value
+      (row) => !row.fieldName?.trim() || !row.value?.trim()
     );
 
     if (hasEmptyRow) {
@@ -85,11 +76,10 @@ const ProductForm = () => {
 
     setFormData((prev) => ({
       ...prev,
-      customFields: [...prev.customFields, { fieldName: "", fieldType: "", value: "" }],
+      customFields: [...prev.customFields, { fieldName: "", value: "" }],
     }));
   };
 
-  // ✅ Update custom field row
   const updateCustomFieldRow = (index, field, value) => {
     const updated = [...formData.customFields];
     updated[index][field] = value;
@@ -146,13 +136,11 @@ const ProductForm = () => {
     setErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors[`customFields_fieldName_${index}`];
-      delete newErrors[`customFields_fieldType_${index}`];
       delete newErrors[`customFields_value_${index}`];
       return newErrors;
     });
   };
 
-  // ✅ Validation
   const validateForm = () => {
     const newErrors = {};
     const today = new Date();
@@ -178,13 +166,10 @@ const ProductForm = () => {
     }
 
     formData.customFields.forEach((row, index) => {
-      if (!row.fieldName || row.fieldName.trim() === "") {
+      if (!row.fieldName?.trim()) {
         newErrors[`customFields_fieldName_${index}`] = "Field Name is required";
       }
-      if (!row.fieldType) {
-        newErrors[`customFields_fieldType_${index}`] = "Field Type is required";
-      }
-      if (!row.value) {
+      if (!row.value?.trim()) {
         newErrors[`customFields_value_${index}`] = "Value is required";
       }
     });
@@ -193,7 +178,6 @@ const ProductForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -201,12 +185,12 @@ const ProductForm = () => {
     const existing = JSON.parse(localStorage.getItem("products")) || [];
     if (id) {
       const updated = existing.map((p) =>
-        p.id === id ? { ...formData, images, customFields: formData.customFields } : p
+        p.id === id ? { ...formData, images } : p
       );
       localStorage.setItem("products", JSON.stringify(updated));
       alert("✅ Product updated successfully!");
     } else {
-      const newProduct = { ...formData, images, customFields: formData.customFields };
+      const newProduct = { ...formData, images };
       existing.push(newProduct);
       localStorage.setItem("products", JSON.stringify(existing));
       alert("✅ Product added successfully!");
@@ -215,7 +199,6 @@ const ProductForm = () => {
     navigate("/viewallproducts");
   };
 
-  // Get tomorrow for min date restriction
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split("T")[0];
@@ -226,9 +209,8 @@ const ProductForm = () => {
         <Col md={{ span: 8, offset: 2 }}>
           <div className="p-4 shadow rounded bg-white">
             <h3 className="text-center mb-4">Inventory</h3>
-
             <Form onSubmit={handleSubmit}>
-              {/* ✅ Images */}
+              {/* Images */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Product Images</Form.Label>
@@ -257,9 +239,7 @@ const ProductForm = () => {
                     style={{ display: "none" }}
                     onChange={(e) => handleImageChange(e.target.files)}
                   />
-
                   {errors.images && <p className="text-danger">{errors.images}</p>}
-
                   <div className="d-flex mt-2 flex-wrap">
                     {images.map((img, i) => (
                       <div key={i} className="position-relative me-2 mb-2">
@@ -288,7 +268,7 @@ const ProductForm = () => {
                 </Col>
               </Row>
 
-              {/* ✅ Basic Fields */}
+              {/* Basic Fields */}
               {[
                 { label: "Item Name", name: "name", type: "text" },
                 { label: "Product Code", name: "id", type: "text" },
@@ -319,7 +299,7 @@ const ProductForm = () => {
                 </Row>
               ))}
 
-              {/* ✅ Categories */}
+              {/* Categories */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Categories</Form.Label>
@@ -339,7 +319,7 @@ const ProductForm = () => {
                 </Col>
               </Row>
 
-              {/* ✅ Custom Fields */}
+              {/* Custom Fields */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Custom Fields</Form.Label>
@@ -362,50 +342,15 @@ const ProductForm = () => {
                         )}
                       </Col>
                       <Col>
-                        <Form.Select
-                          value={row.fieldType}
+                        <Form.Control
+                          type="text"
+                          placeholder="Value"
+                          value={row.value}
                           onChange={(e) =>
-                            updateCustomFieldRow(index, "fieldType", e.target.value)
+                            updateCustomFieldRow(index, "value", e.target.value)
                           }
-                          style={{ maxWidth: "150px" }}
-                        >
-                          <option value="">Type</option>
-                          <option value="Text">Text</option>
-                          <option value="Number">Number</option>
-                          <option value="Date">Date</option>
-                        </Form.Select>
-                        {errors[`customFields_fieldType_${index}`] && (
-                          <p className="text-danger">{errors[`customFields_fieldType_${index}`]}</p>
-                        )}
-                      </Col>
-                      <Col>
-                        {row.fieldType === "Text" && (
-                          <Form.Control
-                            type="text"
-                            placeholder="Value"
-                            value={row.value}
-                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
-                            style={{ maxWidth: "200px" }}
-                          />
-                        )}
-                        {row.fieldType === "Number" && (
-                          <Form.Control
-                            type="number"
-                            placeholder="Value"
-                            value={row.value}
-                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
-                            style={{ maxWidth: "200px" }}
-                          />
-                        )}
-                        {row.fieldType === "Date" && (
-                          <Form.Control
-                            type="date"
-                            min={minDate}
-                            value={row.value}
-                            onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
-                            style={{ maxWidth: "200px" }}
-                          />
-                        )}
+                          style={{ maxWidth: "200px" }}
+                        />
                         {errors[`customFields_value_${index}`] && (
                           <p className="text-danger">{errors[`customFields_value_${index}`]}</p>
                         )}
@@ -422,11 +367,7 @@ const ProductForm = () => {
                     variant="outline-primary"
                     onClick={addCustomFieldRow}
                     disabled={formData.customFields.some(
-                      (row) =>
-                        !row.fieldName ||
-                        row.fieldName.trim() === "" ||
-                        !row.fieldType ||
-                        !row.value
+                      (row) => !row.fieldName?.trim() || !row.value?.trim()
                     )}
                   >
                     + Add Field
@@ -434,7 +375,7 @@ const ProductForm = () => {
                 </Col>
               </Row>
 
-              {/* ✅ Buttons */}
+              {/* Buttons */}
               <div className="d-flex justify-content-end">
                 <Button
                   variant="secondary"
