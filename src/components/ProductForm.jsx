@@ -33,8 +33,8 @@ const ProductForm = () => {
         setFormData({
           ...product,
           customFields: (product.customFields || []).map((f) => ({
-            fieldName: f.fieldName || "",
-            fieldType: f.fieldType || "",
+            fieldName: f.fieldName || f.name || "",
+            fieldType: f.fieldType || f.type || "",
             value: f.value || "",
           })),
         });
