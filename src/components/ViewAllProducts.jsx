@@ -81,7 +81,7 @@ const ViewAllProducts = () => {
                 <th key={idx}>{fieldLabels[field]}</th>
               ))}
               <th>Tags</th>
-              <th>Custom Fields</th> {/* ✅ Single column for all custom fields */}
+              <th>Custom Fields</th> 
             </tr>
           </thead>
           <tbody>

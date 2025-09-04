@@ -144,3 +144,11 @@ button, .btn {
 html {
   scroll-behavior: smooth;
 }
+.small-btn {
+  font-size: 0.7rem;   /* smaller font for × */
+  width: 20px;         /* make button compact */
+  height: 20px;
+  line-height: 1;
+  padding: 0 !important;
+  border-radius: 50%;  /* make it circular */
+}

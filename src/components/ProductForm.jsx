@@ -18,6 +18,7 @@ const ProductForm = () => {
     isTopSelling: false,
     isFeatured: false,
     isBudgetFriendly: false,
+    description:"",
     customFields: [],
   });
 
@@ -98,6 +99,7 @@ const ProductForm = () => {
         "vendorPrice",
         "quantity",
         "date",
+        "description"
       ];
       const isInMainForm = mainFields.includes(normalized);
 
@@ -154,6 +156,7 @@ const ProductForm = () => {
     if (!formData.sellingPrice) newErrors.sellingPrice = "Selling price is required";
     if (!formData.vendorPrice) newErrors.vendorPrice = "Vendor price is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
+    if (!formData.description) newErrors.description = "Description is required"; // ✅ validation
 
     if (!formData.date) {
       newErrors.date = "Date is required";
@@ -257,7 +260,7 @@ const ProductForm = () => {
                         <Button
                           variant="danger"
                           size="sm"
-                          className="position-absolute top-0 end-0"
+                          className="position-absolute top-0 end-0 p-1 small-btn"
                           onClick={() => removeImage(i)}
                         >
                           ×
@@ -318,7 +321,25 @@ const ProductForm = () => {
                   {errors.categories && <p className="text-danger">{errors.categories}</p>}
                 </Col>
               </Row>
-
+                {/* Description */}
+                  <Row className="mb-3">
+                <Col md={4}>
+                  <Form.Label>Description</Form.Label>
+                </Col>
+                <Col md={8}>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    style={{ maxWidth: "400px" }}
+                  />
+                  {errors.description && (
+                    <p className="text-danger">{errors.description}</p>
+                  )}
+                </Col>
+              </Row>
               {/* Custom Fields */}
               <Row className="mb-3">
                 <Col md={4}>
