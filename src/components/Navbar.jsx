@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useCallback, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 import {
@@ -19,6 +19,9 @@ import {
   FaGlassWhiskey,
   FaSearch,
 } from "react-icons/fa";
+
+// 🔑 Import UserContext
+import { UserContext } from "../context/UserContext";
 
 // 🔹 Static Data (kept outside to avoid re-creation)
 const productsData = [
@@ -196,6 +199,14 @@ const NavbarComponent = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(null);
 
+  const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   const handleSetActiveCategory = useCallback(
     (index) => setActiveCategory(index),
     []
@@ -252,38 +263,62 @@ const NavbarComponent = () => {
                 setMobileOpen={handleSetMobileOpen}
               />
             </NavDropdown>
-            <Nav.Link href="#home" className="mx-2">
+            <Nav.Link as={Link} to="/" className="mx-2">
               Home
             </Nav.Link>
-            <Nav.Link href="#footer" className="mx-2">
+            <Nav.Link as={Link} to="/#footer" className="mx-2">
               About Us
             </Nav.Link>
-            <Nav.Link href="#enquiry" className="mx-2">
+            <Nav.Link as={Link} to="/#enquiry" className="mx-2">
               Contact
             </Nav.Link>
           </Nav>
 
-          {/* Right Search Box */}
-          <Form className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
-            <div
-              className="input-group"
-              style={{
-                backgroundColor: "#f1f1f1",
-                borderRadius: "20px",
-                padding: "4px 12px",
-              }}
-            >
-              <span className="input-group-text bg-transparent border-0 p-0 pe-2">
-                <FaSearch className="text-muted" />
-              </span>
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="border-0 bg-transparent shadow-none"
-                style={{ width: "120px" }}
-              />
-            </div>
-          </Form>
+          {/* Right Search Box + Login/Logout */}
+          <div className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
+            <Form className="d-flex align-items-center">
+              <div
+                className="input-group"
+                style={{
+                  backgroundColor: "#f1f1f1",
+                  borderRadius: "20px",
+                  padding: "4px 12px",
+                }}
+              >
+                <span className="input-group-text bg-transparent border-0 p-0 pe-2">
+                  <FaSearch className="text-muted" />
+                </span>
+                <FormControl
+                  type="search"
+                  placeholder="Search"
+                  className="border-0 bg-transparent shadow-none"
+                  style={{ width: "120px" }}
+                />
+              </div>
+            </Form>
+
+            {/* ✅ Login/Logout Button */}
+            {user ? (
+              <Button
+                variant="outline-danger"
+                className="ms-3 px-4 py-1"
+                style={{ borderRadius: "20px", fontWeight: "500" }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Link to="/adminLogin">
+                <Button
+                  variant="primary"
+                  className="ms-3 px-4 py-1"
+                  style={{ borderRadius: "20px", fontWeight: "500" }}
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+          </div>
         </BootstrapNavbar.Collapse>
       </Container>
     </BootstrapNavbar>

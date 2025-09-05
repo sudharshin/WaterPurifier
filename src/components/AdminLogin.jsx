@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext"; // ✅ Import context
 import AdminLogo from "../assets/AdminLogo.jpg";
 
 function AdminLogin() {
@@ -8,13 +9,29 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useUser(); // ✅ get login function from context
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (email === "admin@gmail.com" && password === "admin") {
+    // ✅ Hardcoded credentials (replace with API if needed)
+    /*if (email === "admin@gmail.com" && password === "admin" || email === "vendor@gmail.com" && password === "vendor") {
       setError("");
-      navigate("/viewallproducts"); // ✅ redirect to AddProducts page
+      login({ email }); // ✅ Save user in context + localStorage
+      navigate("/viewallproducts", { replace: true }); // ✅ Redirect to protected page
+    } else {
+      setError("Invalid email or password. Please try again.");
+    }
+  };*/
+
+   if (email === "admin@gmail.com" && password === "admin") {
+      setError("");
+      login({ email, role: "admin" }); // ✅ set role
+      navigate("/viewallproducts", { replace: true });
+    } else if (email === "vendor@gmail.com" && password === "vendor") {
+      setError("");
+      login({ email, role: "vendor" }); // ✅ set role
+      navigate("/", { replace: true });
     } else {
       setError("Invalid email or password. Please try again.");
     }
@@ -54,9 +71,10 @@ function AdminLogin() {
                 </p>
               </div>
 
-              {/* Login Form */}
+              {/* Error Alert */}
               {error && <Alert variant="danger">{error}</Alert>}
 
+              {/* Login Form */}
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email</Form.Label>
@@ -65,6 +83,7 @@ function AdminLogin() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </Form.Group>
 
@@ -75,6 +94,7 @@ function AdminLogin() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </Form.Group>
 

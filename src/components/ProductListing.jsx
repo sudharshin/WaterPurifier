@@ -1,12 +1,13 @@
-import React, { useRef } from "react";
+import React, { useContext,useRef } from "react";
 import { Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
+import { UserContext } from "../context/UserContext";
 
 const ProductListing = ({ title, description, products }) => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
-
+  const { user } = useContext(UserContext);
   // ✅ Accept full product
   const handleProductClick = (product) => {
     navigate(`/products/${product.id}`, { state: { product } });
@@ -62,7 +63,7 @@ const ProductListing = ({ title, description, products }) => {
               }
               title={p.name || "Untitled Product"}
               brand={p.brandName || "N/A"}
-              price={p.sellingPrice || 0}
+              price={user?.role === "vendor" ? p.vendorPrice : p.sellingPrice || 0}
               // ✅ Pass full product object
               onClick={() => handleProductClick(p)}
             />

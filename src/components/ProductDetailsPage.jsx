@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useMemo, useCallback,useContext } from "react";
+import { useLocation,useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import ProductDetailsCard from "./ProductDetailsCard";
+import { UserContext } from "../context/UserContext";
 
 // Normalize number
 const toNumber = (val) => {
@@ -23,6 +24,8 @@ const ProductDetailsPage = () => {
   const location = useLocation();
   const { products = [] } = location.state || {};
 
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext); 
   const [openFilters, setOpenFilters] = useState({});
   const [activeFilters, setActiveFilters] = useState({});
   const [sortBy, setSortBy] = useState("relevance");
@@ -43,6 +46,10 @@ const ProductDetailsPage = () => {
   const toggleFilter = useCallback((key) => {
     setOpenFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
+
+    const handleProductClick = (product) => {
+    navigate(`/products/${product.id}`, { state: { product } });
+  };
 
   // Handle filter selection
   const handleFilterChange = useCallback((filterKey, value) => {
@@ -254,7 +261,8 @@ const ProductDetailsPage = () => {
                       image={p.images?.[0]}
                       title={p.name}
                       // desc={p.customFields?.map((cf) => cf.value).join(", ")}
-                      price={`₹${p.sellingPrice}`}
+                      price={user?.role === "vendor" ? p.vendorPrice : p.sellingPrice || 0}
+                       onClick={() => handleProductClick(p)}
                     />
                   </Col>
                 ))

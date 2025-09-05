@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 
-const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
+const ProductDetailsCard = ({ brand, image, title, desc, price,onClick }) => {
   return (
     <Card
       className="shadow-sm product-details-card w-100 h-100"
@@ -11,6 +11,7 @@ const ProductDetailsCard = ({ brand, image, title, desc, price }) => {
         overflow: "hidden",
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
       }}
+      onClick={onClick} 
     >
       {/* Brand */}
       <div

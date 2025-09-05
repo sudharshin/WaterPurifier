@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext} from "react";
 import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { ArrowRight } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const ProductDetails = () => {
+  
+  const { user } = useContext(UserContext);
   const location = useLocation();
   const { product } = location.state || {};
   const navigate = useNavigate();
 
+  console.log("userr role", user);
   // ✅ Handle images (if multiple available)
   const images = product?.images?.length
     ? product.images
@@ -43,7 +47,9 @@ const ProductDetails = () => {
                   objectFit: "contain",
                   cursor: "pointer",
                   border:
-                    selectedImage === img ? "2px solid #003366" : "1px solid #ccc",
+                    selectedImage === img
+                      ? "2px solid #003366"
+                      : "1px solid #ccc",
                 }}
                 onClick={() => setSelectedImage(img)}
               />
@@ -86,7 +92,9 @@ const ProductDetails = () => {
           <p className="text-muted">{product.brandName}</p>
 
           <h5 className="fw-bold text-danger mb-2">
-           ₹{product.sellingPrice}{" "}
+            {user?.role === "vendor"
+              ? `₹${product.vendorPrice}`
+              : `₹${product.sellingPrice}`}{" "}
             <span className="text-muted fw-normal" style={{ fontSize: "14px" }}>
               Inclusive of GST
             </span>
