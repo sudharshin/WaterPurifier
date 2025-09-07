@@ -20,7 +20,7 @@ const Footer = () => {
           {/* Company Info */}
           <Col xs={12} sm={6} md={3}>
             <h4 style={{ fontWeight: 600, fontSize: 24 }}>Opor</h4>
-            <p style={{ fontSize: 16, fontWeight: 300, lineHeight: 1.9,fontStyle: normal, color: "#fff", marginTop: 16 }}>
+            <p style={{ fontSize: 16, fontWeight: 300, lineHeight: 1.9, color: "#fff", marginTop: 16 }}>
               Connecting you to trusted suppliers with quality products, easy details, and quick enquiries – all in one place.
             </p>
             <div className="d-flex justify-content-center justify-content-md-start gap-3 mt-4">
