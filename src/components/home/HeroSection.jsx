@@ -30,40 +30,60 @@ const slides = [
 
 const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Auto-slide every 1s
+  // Auto-slide every 3 seconds
   useEffect(() => {
+    if (isPaused) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 1000);
+    }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isPaused]);
 
   return (
-    <div className="hero-container">
+    <div
+      className="hero-container"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+    >
       <div
         className="hero-slider"
         style={{
           transform: `translateX(-${activeIndex * 100}%)`,
         }}
+        aria-live="polite"
       >
         {slides.map((slide, i) => (
           <div className="hero-slide" key={i}>
             <div className="slide-content">
               <h1>
-                {slide.title}{" "}
-                <span className="highlight">{slide.highlight}</span>
+                {slide.title} <span className="highlight">{slide.highlight}</span>
               </h1>
               <p>{slide.text}</p>
               <button className="btn">Explore Our Products →</button>
             </div>
             <div className="slide-image">
-              <img src={slide.img} alt="Water Purifier" />
+              <img src={slide.img} alt={`${slide.title} - ${slide.highlight}`} />
             </div>
           </div>
         ))}
       </div>
 
+      {/* Navigation Dots */}
+      <div className="navigation-dots">
+        {slides.map((_, index) => (
+          <span
+            key={index}
+            className={`dot ${index === activeIndex ? "active" : ""}`}
+            onClick={() => setActiveIndex(index)}
+          />
+        ))}
+      </div>
+
+      {/* Styles */}
       <style>{`
         .hero-container {
           width: 100%;
@@ -73,6 +93,7 @@ const HeroSection = () => {
           background: linear-gradient(135deg, #0d6efd, #4dabff);
           display: flex;
           align-items: center;
+          flex-direction: column;
         }
 
         .hero-slider {
@@ -138,6 +159,31 @@ const HeroSection = () => {
           animation: slideInRight 1.2s ease;
         }
 
+        /* Navigation Dots */
+        .navigation-dots {
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 0.6rem;
+          z-index: 2;
+        }
+
+        .dot {
+          width: 12px;
+          height: 12px;
+          background: #fff;
+          opacity: 0.4;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: opacity 0.3s ease;
+        }
+
+        .dot.active {
+          opacity: 1;
+        }
+
         /* Animations */
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(30px); }
@@ -166,13 +212,27 @@ const HeroSection = () => {
             flex-direction: column;
             text-align: center;
           }
+
           .slide-content {
             max-width: 100%;
             margin-bottom: 1.5rem;
           }
+
+          .slide-content h1 {
+            font-size: 2rem;
+          }
+
+          .slide-content p {
+            font-size: 1rem;
+          }
+
+          .btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+          }
+
           .slide-image img {
-    
-          max-height: 40vh;
+            max-height: 40vh;
           }
         }
       `}</style>
