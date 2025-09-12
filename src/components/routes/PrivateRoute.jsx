@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useUser();
@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }) => {
     return <Navigate to="/" replace />;
   }
   else if (!user || user.role!=="admin") {
-    return <Navigate to="/adminLogin" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;

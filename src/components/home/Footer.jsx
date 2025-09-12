@@ -13,6 +13,7 @@ const Footer = () => {
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
         marginTop: "auto",
+
       }}
     >
       <Container fluid="lg">

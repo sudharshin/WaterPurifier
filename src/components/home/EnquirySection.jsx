@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import enquiryImg from "../assets/EnquirySectionImg.png"; // ✅ Replace with your image path
+import enquiryImg from "../../assets/EnquirySectionImg.png"; // ✅ Replace with your image path
 
 const EnquirySection = () => {
   const phoneNumber = "+1234567890"; // ✅ Replace with your number

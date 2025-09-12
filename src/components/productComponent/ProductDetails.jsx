@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { ArrowRight } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 const ProductDetails = () => {
   

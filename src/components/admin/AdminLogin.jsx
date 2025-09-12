@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext"; // ✅ Import context
-import AdminLogo from "../assets/AdminLogo.jpg";
+import { useUser } from "../../context/UserContext"; // ✅ Import context
+import AdminLogo from "../../assets/AdminLogo.jpg";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");

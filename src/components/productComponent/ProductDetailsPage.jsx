@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback,useContext } from "react";
 import { useLocation,useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
 import ProductDetailsCard from "./ProductDetailsCard";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 // Normalize number
 const toNumber = (val) => {

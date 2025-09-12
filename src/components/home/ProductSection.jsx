@@ -1,7 +1,7 @@
 import React, { useEffect, useState ,useContext} from "react";
 import ProductListing from "./ProductListing";
-import demoProducts from "./DemoProducts";
-import { UserContext } from "../context/UserContext";
+import demoProducts from "../redux/DemoProducts";
+import { UserContext } from "../../context/UserContext";
 
 const ProductSection = () => {
   const [products, setProducts] = useState([]);

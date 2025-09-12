@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Container, Button } from "react-bootstrap";
-import purifier from "../assets/WaterPurifierimg.jpg";
-import purifier2 from "../assets/WaterPurifierimg2.jpg";
+import purifier from "../../assets/WaterPurifierimg.jpg";
+import purifier2 from "../../assets/WaterPurifierimg2.jpg";
 
 const TopSellingProducts = () => {
   const scrollRef = useRef(null);

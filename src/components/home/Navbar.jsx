@@ -21,7 +21,7 @@ import {
 } from "react-icons/fa";
 
 // 🔑 Import UserContext
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 // 🔹 Static Data (kept outside to avoid re-creation)
 const productsData = [
@@ -308,7 +308,7 @@ const NavbarComponent = () => {
                 Logout
               </Button>
             ) : (
-              <Link to="/adminLogin">
+              <Link to="/login">
                 <Button
                   variant="primary"
                   className="ms-3 px-4 py-1"

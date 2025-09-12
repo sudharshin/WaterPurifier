@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import ScrollToTop from "./components/ScrollToTop";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ProductDetailsPage from "./components/ProductDetailsPage"; 
-import AdminLogin from "./components/AdminLogin";
-import ProductForm from "./components/ProductForm";
-import EnquirySection from "./components/EnquirySection";
-import ViewAllProducts from "./components/ViewAllProducts";
-import ProductDetails from "./components/ProductDetails";
+import Home from "./components/home/Home";
+import ScrollToTop from "./components/scroll/ScrollToTop";
+import Navbar from "./components/home/Navbar";
+import Footer from "./components/home/Footer";
+import ProductDetailsPage from "./components/productComponent/ProductDetailsPage"; 
+import AdminLogin from "./components/admin/AdminLogin";
+import ProductForm from "./components/admin/ProductForm";
+import ViewAllProducts from "./components/admin/ViewAllProducts";
+import ProductDetails from "./components/productComponent/ProductDetails";
 // 🔑 Import Context & PrivateRoute
 import { UserProvider } from "./context/UserContext";
-import PrivateRoute from "./components/PrivateRoute";
-import ScrollToHashElement from "./components/ScrollToHashElement";
-import ScrollManager from "./components/ScrollManager";
+import PrivateRoute from "./components/routes/PrivateRoute";
+import ScrollToHashElement from "./components/scroll/ScrollToHashElement";
+import ScrollManager from "./components/scroll/ScrollManager";
 
 
 const App = () => {
@@ -36,7 +35,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductDetailsPage />} />
-            <Route path="/adminLogin" element={<AdminLogin />} />
+            <Route path="/login" element={<AdminLogin />} />
             
             {/* 🔒 Protected Routes */}
             <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />

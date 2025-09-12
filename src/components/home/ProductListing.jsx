@@ -2,7 +2,7 @@ import React, { useContext,useRef } from "react";
 import { Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 const ProductListing = ({ title, description, products }) => {
   const scrollRef = useRef(null);

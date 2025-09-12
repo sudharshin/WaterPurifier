@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
-import purifier from "../assets/WaterPurifierimg.jpg";
-import purifier2 from "../assets/WaterPurifierimg2.jpg";
+import purifier from "../../assets/WaterPurifierimg.jpg";
+import purifier2 from "../../assets/WaterPurifierimg2.jpg";
 
 const OurProducts = () => {
   // Categories
