@@ -72,7 +72,7 @@ const ProductDetails = () => {
             />
             <Button
               className="enquiry-btn d-flex align-items-center px-4 py-2 mt-2"
-              onClick={() => navigate("/enquiry")}
+              onClick={() => navigate("/#enquiry")}
               style={{
                 backgroundColor: "#0d6efd", // ✅ Blue background
                 border: "none",
