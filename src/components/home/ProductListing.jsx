@@ -32,9 +32,47 @@ const ProductListing = ({ title, description, products }) => {
         {/* Title + Description + Button */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
           <div style={{ maxWidth: "700px" }}>
-            <h3 className="fw-bold mb-2">{title}</h3>
-            {description && <p className="text-muted mb-0">{description}</p>}
-          </div>
+            <h3 className="fw-bold mb-2"
+            style={{
+                 textAlign: 'start',
+    transitionProperty: 'opacity, transform',
+    fontFamily: '"gf_Poppins variant6", Tofu, sans-serif', // ✅ fixed
+    fontWeight: 250,
+    fontStyle: 'normal',
+    fontStretch: 'normal',
+    fontOpticalSizing: 'auto',
+    lineHeight: 'initial',
+    opacity: 1,
+    transitionDuration: '350ms',
+              fontSize: '35px',
+              lineHeight: '60px',
+              color: '#000000',
+            }}
+            >{title}</h3>
+            {description && (
+  <p
+    className="mb-0"
+   style={{
+  textAlign: 'start',
+  transitionProperty: 'opacity, transform',
+  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif', // ✅ fixed
+  fontWeight: 100,
+  fontStyle: 'normal',
+  fontStretch: 'normal',
+  fontOpticalSizing: 'auto',
+  opacity: 1,
+  transitionDuration: '350ms',
+  fontSize: "15px",
+  lineHeight: "25px",
+  color: "#2A2A2A",
+}}
+
+  >
+    {description}
+  </p>
+)}
+
+           </div>
 
            {products.length > 6 && (
             <Button

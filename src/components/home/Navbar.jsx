@@ -5,12 +5,7 @@ import {
   Container,
   Nav,
   Navbar as BootstrapNavbar,
-  Form,
-  FormControl,
 } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
-
-// 🔑 Import UserContext
 import { UserContext } from "../../context/UserContext";
 
 const NavbarComponent = () => {
@@ -23,7 +18,6 @@ const NavbarComponent = () => {
     navigate("/");
   };
 
-  // ✅ Handle hash active check manually
   const isHashActive = (hash) => location.hash === hash;
 
   return (
@@ -31,10 +25,11 @@ const NavbarComponent = () => {
       bg="white"
       expand="lg"
       fixed="top"
-      className="shadow-sm py-2"
+      className="shadow-sm"
+      style={{ minHeight: "56px" }}
     >
-      <Container fluid>
-        {/* ✅ Left Logo */}
+      <Container fluid className="d-flex align-items-center">
+        {/* Logo (left) */}
         <BootstrapNavbar.Brand
           as={NavLink}
           to="/"
@@ -42,7 +37,10 @@ const NavbarComponent = () => {
           style={{
             fontWeight: "600",
             fontSize: "20px",
+            fontFamily: '"Poppins", sans-serif',
             textDecoration: "none",
+            paddingTop: 6,
+            paddingBottom: 6,
           }}
         >
           <div
@@ -53,96 +51,120 @@ const NavbarComponent = () => {
               borderRadius: "50%",
               marginRight: "8px",
             }}
-          ></div>
+          />
           Opor
         </BootstrapNavbar.Brand>
 
-        {/* ✅ Toggler */}
+        {/* Toggler */}
         <BootstrapNavbar.Toggle aria-controls="navbarScroll" />
 
-        {/* ✅ Collapsible Nav */}
-        <BootstrapNavbar.Collapse id="navbarScroll">
-          {/* Center Nav Links - equally spaced */}
-          <Nav className="mx-auto align-items-center justify-content-evenly w-50">
+        {/* Collapse area */}
+        <BootstrapNavbar.Collapse
+          id="navbarScroll"
+          className="d-flex align-items-center w-100"
+        >
+          {/* Left links */}
+          <Nav className="d-flex align-items-center">
             <Nav.Link
               as={NavLink}
               to="/"
               className={({ isActive }) =>
-                `mx-2 ${
+                `me-3 ${
                   isActive
                     ? "fw-bold text-primary border-bottom border-primary"
                     : ""
                 }`
               }
+              style={{
+                paddingTop: 8,
+                paddingBottom: 8,
+                fontFamily: '"Poppins", sans-serif',
+                fontWeight: "600", // Bold
+              }}
             >
               Home
             </Nav.Link>
 
             <Nav.Link
-              as={NavLink}
-              to="/#footer"
-              className={`mx-2 ${
+              onClick={() => {
+                navigate("/#footer");
+                setTimeout(() => {
+                  const element = document.getElementById("footer");
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }
+                }, 100);
+              }}
+              className={`me-3 ${
                 isHashActive("#footer")
                   ? "fw-bold text-primary border-bottom border-primary"
                   : ""
               }`}
+              style={{
+                paddingTop: 8,
+                paddingBottom: 8,
+                fontFamily: '"Poppins", sans-serif',
+                fontWeight: "600", // Bold
+              }}
             >
               About Us
             </Nav.Link>
 
             <Nav.Link
-              as={NavLink}
-              to="/#enquiry"
-              className={`mx-2 ${
+              onClick={() => {
+                navigate("/#enquiry");
+                setTimeout(() => {
+                  const element = document.getElementById("enquiry");
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }
+                }, 100);
+              }}
+              className={`me-3 ${
                 isHashActive("#enquiry")
                   ? "fw-bold text-primary border-bottom border-primary"
                   : ""
               }`}
+              style={{
+                paddingTop: 8,
+                paddingBottom: 8,
+                fontFamily: '"Poppins", sans-serif',
+                fontWeight: "600", // Bold
+              }}
             >
               Contact
             </Nav.Link>
           </Nav>
 
-          {/* ✅ Right: Search + Auth */}
-          <div className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
-            {/* Search */}
-            <Form className="d-flex align-items-center">
-              <div
-                className="input-group"
-                style={{
-                  backgroundColor: "#f1f1f1",
-                  borderRadius: "20px",
-                  padding: "4px 12px",
-                }}
-              >
-                <span className="input-group-text bg-transparent border-0 p-0 pe-2">
-                  <FaSearch className="text-muted" />
-                </span>
-                <FormControl
-                  type="search"
-                  placeholder="Search"
-                  className="border-0 bg-transparent shadow-none"
-                  style={{ width: "120px" }}
-                />
-              </div>
-            </Form>
-
-            {/* Login / Logout */}
+          {/* Right side (Login / Logout) */}
+          <div className="d-flex align-items-center ms-auto">
             {user ? (
               <Button
                 variant="outline-danger"
-                className="ms-3 px-4 py-1"
-                style={{ borderRadius: "20px", fontWeight: "500" }}
                 onClick={handleLogout}
+                className="px-4 d-flex align-items-center justify-content-center"
+                style={{
+                  borderRadius: "20px",
+                  fontWeight: "500",
+                  fontFamily: '"Poppins", sans-serif',
+                  height: "38px",
+                  lineHeight: "1",
+                }}
               >
                 Logout
               </Button>
             ) : (
-              <NavLink to="/login">
+              <NavLink to="/login" style={{ textDecoration: "none" }}>
                 <Button
                   variant="primary"
-                  className="ms-3 px-4 py-1"
-                  style={{ borderRadius: "20px", fontWeight: "500" }}
+                  className="px-4 d-flex align-items-center justify-content-center"
+                  style={{
+                    borderRadius: "20px",
+                    fontWeight: "500",
+                    fontFamily: '"Poppins", sans-serif',
+                    height: "38px",
+                    lineHeight: "1",
+                  }}
                 >
                   Login
                 </Button>

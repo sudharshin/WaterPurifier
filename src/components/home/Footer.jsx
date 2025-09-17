@@ -2,38 +2,19 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { FaWhatsapp, FaInstagram, FaFacebookF } from "react-icons/fa";
 
-const paragraphStyle = {
-  fontFamily: "Poppins, sans-serif",
-  fontWeight: 300,
-  fontSize: "19px",
-  lineHeight: "35px",
-  letterSpacing: "0%",
-  color: "#fff",
-};
-
 const Footer = () => {
   return (
-    <footer
-      style={{
-        background: "linear-gradient(135deg, #2D7BA5, #357CA5)",
-        color: "#fff",
-        paddingTop: 50,
-        paddingBottom: 30,
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        fontFamily: "Poppins, sans-serif"
-      }}
-    >
+    <footer className="footer">
       <Container fluid="lg">
         <Row className="gy-4 text-center text-md-start">
           {/* Company Info */}
           <Col xs={12} sm={6} md={3}>
-            <h4 style={{ fontWeight: 600, fontSize: 24 }}>Opor</h4>
-            <p style={{ ...paragraphStyle, marginTop: 16 }}>
+            <h4>Opor</h4>
+            <p>
               Connecting you to trusted suppliers with quality products, easy
               details, and quick enquiries – all in one place.
             </p>
-            <div className="d-flex justify-content-center justify-content-md-start gap-3 mt-4">
+             <div className="d-flex justify-content-center justify-content-md-start gap-3 mt-4">
               {[FaWhatsapp, FaInstagram, FaFacebookF].map((Icon, idx) => (
                 <a
                   key={idx}
@@ -59,13 +40,8 @@ const Footer = () => {
 
           {/* Quick Links */}
           <Col xs={12} sm={6} md={3}>
-            <h6 style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>
-              Quick Links
-            </h6>
-            <ul
-              className="list-unstyled"
-              style={{ fontSize: 16, lineHeight: 2.2, paddingLeft: 0 }}
-            >
+            <h6>Quick Links</h6>
+            <ul className="list-unstyled">
               {[
                 "Home",
                 "About Us",
@@ -76,16 +52,7 @@ const Footer = () => {
                 "Contact Us",
               ].map((item, i) => (
                 <li key={i}>
-                  <a
-                    href="#"
-                    style={{
-                      color: "#fff",
-                      textDecoration: "none",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {item}
-                  </a>
+                  <a href="#">{item}</a>
                 </li>
               ))}
             </ul>
@@ -93,122 +60,132 @@ const Footer = () => {
 
           {/* Products */}
           <Col xs={12} sm={6} md={3}>
-            <h6 style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>
-              Products
-            </h6>
-            <ul
-              className="list-unstyled"
-              style={{ fontSize: 16, lineHeight: 2.2, paddingLeft: 0 }}
-            >
-              {["Home", "About Us", "Products", "Enquiry Form"].map(
-                (item, i) => (
-                  <li key={i}>
-                    <a
-                      href="#"
-                      style={{
-                        color: "#fff",
-                        textDecoration: "none",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+            <h6>Products</h6>
+            <ul className="list-unstyled">
+              {["Home", "About Us", "Products", "Enquiry Form"].map((item, i) => (
+                <li key={i}>
+                  <a href="#">{item}</a>
+                </li>
+              ))}
             </ul>
           </Col>
 
           {/* Address */}
           <Col xs={12} sm={6} md={3}>
-            <h6 style={{ fontWeight: 600, fontSize: 18, marginBottom: 20 }}>
-              Address
-            </h6>
-            <p style={{ ...paragraphStyle, marginBottom: 4 }}>
-              45 / 5, Bharathiyar 5th street
-            </p>
-            <p style={{ ...paragraphStyle, marginBottom: 4 }}>
-              Sankarankovil, Tenkasi
-            </p>
-            <a
-              href="#"
-              style={{
-                color: "#fff",
-                fontSize: 16,
-                fontWeight: 600,
-                textDecoration: "underline",
-                display: "inline-block",
-                marginBottom: 24,
-              }}
-            >
+            <h6>Address</h6>
+            <p>45 / 5, Bharathiyar 5th street</p>
+            <p>Sankarankovil, Tenkasi</p>
+            <a href="#" className="map-link">
               See on Google Map
             </a>
 
-            <h6 style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>
-              Office Hours
-            </h6>
-            <p style={{ ...paragraphStyle, fontWeight: 500 }}>
+            <h6 className="mt-3">Office Hours</h6>
+            <p className="office-hours">
               Mon – Fri ( <strong>8AM – 6PM</strong> )
             </p>
           </Col>
         </Row>
 
-        <hr
-          style={{
-            borderColor: "rgba(255,255,255,0.15)",
-            margin: "40px 0 30px",
-          }}
-        />
+        <hr />
 
         {/* Bottom Footer */}
         <Row className="align-items-center text-center text-md-start">
           <Col xs={12} md={6}>
-            <p style={{ ...paragraphStyle, fontWeight: 600, fontSize: 15, marginBottom: 0 }}>
+            <p className="footer-bottom mb-0">
               Copyright 2025 all rights reserved
             </p>
           </Col>
           <Col xs={12} md={6} className="mt-2 mt-md-0">
             <div className="d-flex flex-wrap justify-content-center justify-content-md-end gap-4">
-              <a
-                href="#"
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 15,
-                  fontWeight: 600,
-                }}
-              >
-                Privacy
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 15,
-                  fontWeight: 600,
-                }}
-              >
-                Security
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: 15,
-                  fontWeight: 600,
-                }}
-              >
-                Terms
-              </a>
-              <span style={{ fontSize: 15, fontWeight: 600 }}>
-                Made with examplename
-              </span>
+              <a href="#">Privacy</a>
+              <a href="#">Security</a>
+              <a href="#">Terms</a>
+              <span className="footer-bottom">Made with examplename</span>
             </div>
           </Col>
         </Row>
       </Container>
+
+      {/* ✅ Inline CSS inside JSX */}
+      <style>{`
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+        .footer {
+          background: linear-gradient(135deg, #2D7BA5, #357CA5);
+          color: #fff;
+          padding-top: 50px;
+          padding-bottom: 30px;
+          border-top-left-radius: 40px;
+          border-top-right-radius: 40px;
+          font-family: "Poppins", sans-serif;
+        }
+
+        .footer p {
+          font-weight: 300;
+          font-size: 15px;
+          line-height: 25px;
+          margin-bottom: 10px;
+          color: #fff;
+        }
+
+        .footer h4 {
+          font-weight: 600;
+          font-size: 24px;
+          color: #fff;
+        }
+
+        .footer h6 {
+          font-weight: 600;
+          font-size: 18px;
+          margin-bottom: 20px;
+          color: #fff;
+        }
+
+        .footer a {
+          color: #fff;
+          text-decoration: none;
+          font-weight: 400;
+          font-size: 15px;
+        }
+
+        .footer a:hover {
+          text-decoration: underline;
+        }
+
+        .social-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 46px;
+          height: 46px;
+          border-radius: 10px;
+          background-color: #fff;
+          color: #2D7BA5;
+          font-size: 20px;
+        }
+
+        .map-link {
+          font-size: 16px;
+          font-weight: 500;
+          text-decoration: underline;
+          display: inline-block;
+          margin-bottom: 24px;
+        }
+
+        .office-hours {
+          font-weight: 500;
+        }
+
+        .footer hr {
+          border-color: rgba(255, 255, 255, 0.15);
+          margin: 40px 0 30px;
+        }
+
+        .footer-bottom {
+          font-size: 15px;
+          font-weight: 500;
+        }
+      `}</style>
     </footer>
   );
 };

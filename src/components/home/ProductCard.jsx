@@ -13,11 +13,14 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         style={{
           height: "300px",
           border: "1px solid #ccc",
-          backgroundColor: "#fff",
+          backgroundColor: "#F6F6F6", // ✅ ash background
+          boxShadow: "none",
+          borderRadius: "20px",
+          transition: "transform 0.3s ease",
           overflow: "hidden",
-          cursor: "pointer", // 👈 makes it look clickable
+          cursor: "pointer",
         }}
-        onClick={onClick} // 👈 navigate when clicked
+        onClick={onClick}
       >
         <div
           style={{
@@ -37,6 +40,8 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
               height: "180px",
               objectFit: "contain",
               transition: "transform 0.3s ease-in-out",
+              background: "transparent",
+              mixBlendMode: "multiply", // ✅ removes white bg effect
             }}
             className="product-image"
           />
@@ -45,17 +50,47 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
 
       {/* Product Info */}
       <div className="mt-3 text-start d-flex flex-column flex-grow-1">
-        <h6 className="fw-bold">{title}</h6>
-        <p className="text-muted small mb-2 flex-grow-1">{brand}</p>
+        {/* Title */}
+        <h6
+          style={{
+            fontFamily: "gf_Poppins variant6, Tofu, sans-serif",
+            fontStyle: "normal",
+            fontWeight: 600,
+            fontSize: "16px",
+            lineHeight: "24px",
+            color: "#2A2A2A",
+            marginBottom: "6px",
+          }}
+        >
+          {title}
+        </h6>
+
+        {/* Description / Brand */}
+        <p
+          style={{
+            fontFamily: "gf_Poppins variant4, Tofu, sans-serif",
+            fontStyle: "normal",
+            fontWeight: 300,
+            fontSize: "15px",
+            lineHeight: "25px",
+            color: "#2A2A2A",
+            marginBottom: "10px",
+          }}
+        >
+          {brand}
+        </p>
 
         {/* Price */}
         <div className="d-flex align-items-center justify-content-start mt-auto">
           <div
-            className="px-3 py-1 fw-semibold"
             style={{
               background: "#f1f1f1",
               borderRadius: "6px",
               fontSize: "14px",
+              fontFamily: "gf_Poppins variant6, Tofu, sans-serif",
+              fontWeight: 600,
+              color: "#2A2A2A",
+              padding: "4px 10px",
             }}
           >
             ₹{price}
@@ -63,7 +98,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         </div>
       </div>
 
-      {/* ✅ Inline hover style */}
+      {/* Hover Effect */}
       <style>
         {`
           .product-image:hover {
