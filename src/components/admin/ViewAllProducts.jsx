@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Container, Table, Button, Modal } from "react-bootstrap";
-import { useNavigate, Link } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa"; // ✅ Selection icon
+import React, { useState } from "react";
+import { Container, Table, Button, Modal, Spinner } from "react-bootstrap";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
+import { deleteProduct } from "../../services/api";
+import { useProducts } from "../redux/useProduct";
 
 const ViewAllProducts = () => {
-  const [products, setProducts] = useState([]);
+  const { products, loading, error, refresh } = useProducts();
   const [showImages, setShowImages] = useState({ show: false, images: [] });
   const [showCustomFields, setShowCustomFields] = useState({
     show: false,
@@ -13,13 +15,39 @@ const ViewAllProducts = () => {
   });
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("products")) || [];
-    setProducts(stored);
-  }, []);
+  const handleDelete = async () => {
+    if (!selectedProduct) {
+      alert("Please select a product first!");
+      return;
+    }
 
-  // ✅ Map field keys to proper display labels
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const token = user.accessToken;
+        await deleteProduct(selectedProduct.id, token);
+
+        await refresh();
+        setSelectedProduct(null);
+      } catch (err) {
+        console.error("Delete failed:", err);
+        alert("Failed to delete product.");
+      }
+    }
+  };
+
+  const handleEdit = () => {
+    if (!selectedProduct) {
+      alert("Please select a product first!");
+      return;
+    }
+    navigate(`/form/${selectedProduct.id}`, {
+      state: { onReturn: true },
+    });
+  };
+
   const fieldLabels = {
     name: "Name",
     id: "ID",
@@ -31,33 +59,20 @@ const ViewAllProducts = () => {
     date: "Date",
   };
 
-  const handleDelete = () => {
-    if (!selectedProduct) {
-      alert("Please select a product first!");
-      return;
+  // Refresh products if navigated back with state flag
+  React.useEffect(() => {
+    if (location.state?.refreshProducts) {
+      refresh();
+      navigate(location.pathname, { replace: true, state: {} });
     }
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      const updated = products.filter((p) => p.id !== selectedProduct.id);
-      setProducts(updated);
-      localStorage.setItem("products", JSON.stringify(updated));
-      setSelectedProduct(null);
-    }
-  };
-
-  const handleEdit = () => {
-    if (!selectedProduct) {
-      alert("Please select a product first!");
-      return;
-    }
-    navigate(`/form/${selectedProduct.id}`);
-  };
+  }, [location, navigate, refresh]);
 
   return (
     <Container className="py-4">
       <h3 className="mb-4">All Products</h3>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div className="d-flex gap-2">
-          <Link to="/form">
+          <Link to="/form" state={{ onReturn: true }}>
             <Button variant="primary">Add Product</Button>
           </Link>
           <Button variant="warning" onClick={handleEdit}>
@@ -66,10 +81,33 @@ const ViewAllProducts = () => {
           <Button variant="danger" onClick={handleDelete}>
             Delete
           </Button>
+          <Button variant="secondary" onClick={refresh} disabled={loading}>
+            {loading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />{" "}
+                Refreshing...
+              </>
+            ) : (
+              "Refresh"
+            )}
+          </Button>
         </div>
       </div>
 
-      {products.length === 0 ? (
+      {loading ? (
+        <div className="text-center my-5">
+          <Spinner animation="border" role="status" />
+          <div>Loading products...</div>
+        </div>
+      ) : error ? (
+        <div className="text-danger">Error loading products.</div>
+      ) : products.length === 0 ? (
         <p>No products found.</p>
       ) : (
         <Table striped bordered hover responsive>
@@ -81,37 +119,29 @@ const ViewAllProducts = () => {
                 <th key={idx}>{fieldLabels[field]}</th>
               ))}
               <th>Tags</th>
-              <th>Custom Fields</th> 
+              <th>Custom Fields</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product, idx) => (
               <tr
                 key={idx}
-                className={
-                  selectedProduct?.id === product.id ? "table-primary" : ""
-                }
-                style={{ height: "70px", verticalAlign: "middle" }} // ✅ Smaller row height
+                className={selectedProduct?.id === product.id ? "table-primary" : ""}
+                style={{ height: "70px", verticalAlign: "middle" }}
               >
-                {/* ✅ Selection icon */}
                 <td
                   className="text-center"
                   style={{ cursor: "pointer" }}
                   onClick={() =>
-                    setSelectedProduct(
-                      selectedProduct?.id === product.id ? null : product
-                    )
+                    setSelectedProduct(selectedProduct?.id === product.id ? null : product)
                   }
                 >
                   <FaCheckCircle
-                    color={
-                      selectedProduct?.id === product.id ? "green" : "lightgray"
-                    }
+                    color={selectedProduct?.id === product.id ? "green" : "lightgray"}
                     size={20}
                   />
                 </td>
 
-                {/* ✅ Image display */}
                 <td>
                   {product.images && product.images.length > 0 ? (
                     <>
@@ -125,9 +155,7 @@ const ViewAllProducts = () => {
                         <Button
                           variant="link"
                           className="p-0 ms-2"
-                          onClick={() =>
-                            setShowImages({ show: true, images: product.images })
-                          }
+                          onClick={() => setShowImages({ show: true, images: product.images })}
                         >
                           View More
                         </Button>
@@ -138,15 +166,12 @@ const ViewAllProducts = () => {
                   )}
                 </td>
 
-                {/* ✅ Show fixed fields dynamically */}
                 {Object.keys(fieldLabels).map((field, i) => (
                   <td key={i}>{product[field] || "-"}</td>
                 ))}
 
-                {/* ✅ Combine checkbox values into one column */}
                 <td>
-                  {[
-                    product.isTopSelling ? "Top Selling" : null,
+                  {[product.isTopSelling ? "Top Selling" : null,
                     product.isFeatured ? "Featured" : null,
                     product.isBudgetFriendly ? "Budget Friendly" : null,
                   ]
@@ -154,13 +179,12 @@ const ViewAllProducts = () => {
                     .join(", ") || "-"}
                 </td>
 
-                {/* ✅ Custom Fields with "View More" option */}
                 <td>
                   {product.customFields && product.customFields.length > 0 ? (
                     <>
                       <span className="d-inline-block text-truncate" style={{ maxWidth: "200px" }}>
                         {product.customFields
-                          .slice(0, 2) // show only first 2 inline
+                          .slice(0, 2)
                           .map((f, idx) => {
                             const key = f.name || f.fieldName || "Unknown";
                             const val = f.value || f.fieldValue || "-";
@@ -194,7 +218,7 @@ const ViewAllProducts = () => {
         </Table>
       )}
 
-      {/* ✅ Modal for showing all images */}
+      {/* Image Modal */}
       <Modal
         show={showImages.show}
         onHide={() => setShowImages({ show: false, images: [] })}
@@ -221,7 +245,7 @@ const ViewAllProducts = () => {
         </Modal.Body>
       </Modal>
 
-      {/* ✅ Modal for showing full custom fields */}
+      {/* Custom Fields Modal */}
       <Modal
         show={showCustomFields.show}
         onHide={() =>
@@ -231,9 +255,7 @@ const ViewAllProducts = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>
-            Custom Fields - {showCustomFields.productName}
-          </Modal.Title>
+          <Modal.Title>Custom Fields - {showCustomFields.productName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {showCustomFields.fields.map((f, idx) => {

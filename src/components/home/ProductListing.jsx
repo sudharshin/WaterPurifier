@@ -1,4 +1,4 @@
-import React, { useContext,useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { Container, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./ProductCard";
@@ -33,55 +33,54 @@ const ProductListing = ({ title, description, products }) => {
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
           <div style={{ maxWidth: "700px" }}>
             <h3 className="fw-bold mb-2"
-            style={{
-                 textAlign: 'start',
-    transitionProperty: 'opacity, transform',
-    fontFamily: '"gf_Poppins variant6", Tofu, sans-serif', // ✅ fixed
-    fontWeight: 250,
-    fontStyle: 'normal',
-    fontStretch: 'normal',
-    fontOpticalSizing: 'auto',
-    lineHeight: 'initial',
-    opacity: 1,
-    transitionDuration: '350ms',
-              fontSize: '35px',
-              lineHeight: '60px',
-              color: '#000000',
-            }}
+              style={{
+                textAlign: 'start',
+                transitionProperty: 'opacity, transform',
+                fontFamily: '"gf_Poppins variant6", Tofu, sans-serif', // ✅ fixed
+                fontWeight: 250,
+                fontStyle: 'normal',
+                fontStretch: 'normal',
+                fontOpticalSizing: 'auto',
+                lineHeight: 'initial',
+                opacity: 1,
+                transitionDuration: '350ms',
+                fontSize: '35px',
+                color: '#000000',
+              }}
             >{title}</h3>
             {description && (
-  <p
-    className="mb-0"
-   style={{
-  textAlign: 'start',
-  transitionProperty: 'opacity, transform',
-  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif', // ✅ fixed
-  fontWeight: 100,
-  fontStyle: 'normal',
-  fontStretch: 'normal',
-  fontOpticalSizing: 'auto',
-  opacity: 1,
-  transitionDuration: '350ms',
-  fontSize: "15px",
-  lineHeight: "25px",
-  color: "#2A2A2A",
-}}
+              <p
+                className="mb-0"
+                style={{
+                  textAlign: 'start',
+                  transitionProperty: 'opacity, transform',
+                  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif', // ✅ fixed
+                  fontWeight: 100,
+                  fontStyle: 'normal',
+                  fontStretch: 'normal',
+                  fontOpticalSizing: 'auto',
+                  opacity: 1,
+                  transitionDuration: '350ms',
+                  fontSize: "15px",
+                  lineHeight: "25px",
+                  color: "#2A2A2A",
+                }}
 
-  >
-    {description}
-  </p>
-)}
+              >
+                {description}
+              </p>
+            )}
 
-           </div>
+          </div>
 
-           {products.length > 6 && (
+          {products.length > 6 && (
             <Button
               className="view-all-btn d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
               onClick={() => scroll("all")}
             >
-          View All <span style={{ fontSize: "1rem" }}>→</span>
-        </Button>
-      )}
+              View All <span style={{ fontSize: "1rem" }}>→</span>
+            </Button>
+          )}
         </div>
 
         {/* Scrollable Row of Product Cards */}
@@ -95,10 +94,15 @@ const ProductListing = ({ title, description, products }) => {
               key={index}
               id={p.id}
               image={
-                p.image ||
-                p.imageUrl ||
-                (p.images && p.images.length > 0 ? p.images[0] : "/placeholder.png")
+                p.image?.startsWith("http") || p.image?.startsWith("blob:")
+                  ? p.image
+                  : p.imageUrl?.startsWith("http") || p.imageUrl?.startsWith("blob:")
+                    ? p.imageUrl
+                    : Array.isArray(p.images) && p.images[0]?.startsWith("blob:")
+                      ? p.images[0]
+                      : "/placeholder.png"
               }
+
               title={p.name || "Untitled Product"}
               brand={p.brandName || "N/A"}
               price={user?.role === "vendor" ? p.vendorPrice : p.sellingPrice || 0}

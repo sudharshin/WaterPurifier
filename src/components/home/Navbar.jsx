@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Button,
@@ -12,35 +12,44 @@ const NavbarComponent = () => {
   const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const [expanded, setExpanded] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate("/");
+    setExpanded(false);
   };
 
+  // Helper: check if hash matches
   const isHashActive = (hash) => location.hash === hash;
+
+  const scrollToId = (id) => {
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   return (
     <BootstrapNavbar
       bg="white"
       expand="lg"
       fixed="top"
+      expanded={expanded}
+      onToggle={(isExpanded) => setExpanded(isExpanded)}
       className="shadow-sm"
       style={{ minHeight: "56px" }}
     >
-      <Container fluid className="d-flex align-items-center">
-        {/* Logo (left) */}
+      <Container fluid>
+        {/* Logo */}
         <BootstrapNavbar.Brand
           as={NavLink}
           to="/"
+          onClick={() => setExpanded(false)}
           className="fw-bold d-flex align-items-center text-primary"
           style={{
-            fontWeight: "600",
             fontSize: "20px",
             fontFamily: '"Poppins", sans-serif',
             textDecoration: "none",
-            paddingTop: 6,
-            paddingBottom: 6,
           }}
         >
           <div
@@ -58,16 +67,14 @@ const NavbarComponent = () => {
         {/* Toggler */}
         <BootstrapNavbar.Toggle aria-controls="navbarScroll" />
 
-        {/* Collapse area */}
-        <BootstrapNavbar.Collapse
-          id="navbarScroll"
-          className="d-flex align-items-center w-100"
-        >
-          {/* Left links */}
-          <Nav className="d-flex align-items-center">
+        {/* Collapse */}
+        <BootstrapNavbar.Collapse id="navbarScroll">
+          <Nav className="me-auto">
+            {/* Home */}
             <Nav.Link
               as={NavLink}
-              to="/"
+              to="/#home"
+              onClick={() => setExpanded(false)}
               className={({ isActive }) =>
                 `me-3 ${
                   isActive
@@ -75,95 +82,74 @@ const NavbarComponent = () => {
                     : ""
                 }`
               }
-              style={{
-                paddingTop: 8,
-                paddingBottom: 8,
-                fontFamily: '"Poppins", sans-serif',
-                fontWeight: "600", // Bold
-              }}
+              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
             >
               Home
             </Nav.Link>
 
+            {/* About Us */}
             <Nav.Link
               onClick={() => {
                 navigate("/#footer");
-                setTimeout(() => {
-                  const element = document.getElementById("footer");
-                  if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                  }
-                }, 100);
+                scrollToId("footer");
+                setExpanded(false);
               }}
               className={`me-3 ${
                 isHashActive("#footer")
                   ? "fw-bold text-primary border-bottom border-primary"
                   : ""
               }`}
-              style={{
-                paddingTop: 8,
-                paddingBottom: 8,
-                fontFamily: '"Poppins", sans-serif',
-                fontWeight: "600", // Bold
-              }}
+              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
             >
               About Us
             </Nav.Link>
 
+            {/* Contact */}
             <Nav.Link
               onClick={() => {
                 navigate("/#enquiry");
-                setTimeout(() => {
-                  const element = document.getElementById("enquiry");
-                  if (element) {
-                    element.scrollIntoView({ behavior: "smooth" });
-                  }
-                }, 100);
+                scrollToId("enquiry");
+                setExpanded(false);
               }}
               className={`me-3 ${
                 isHashActive("#enquiry")
                   ? "fw-bold text-primary border-bottom border-primary"
                   : ""
               }`}
-              style={{
-                paddingTop: 8,
-                paddingBottom: 8,
-                fontFamily: '"Poppins", sans-serif',
-                fontWeight: "600", // Bold
-              }}
+              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
             >
               Contact
             </Nav.Link>
           </Nav>
 
-          {/* Right side (Login / Logout) */}
+          {/* Right side */}
           <div className="d-flex align-items-center ms-auto">
             {user ? (
               <Button
                 variant="outline-danger"
                 onClick={handleLogout}
-                className="px-4 d-flex align-items-center justify-content-center"
+                className="px-4"
                 style={{
                   borderRadius: "20px",
                   fontWeight: "500",
                   fontFamily: '"Poppins", sans-serif',
-                  height: "38px",
-                  lineHeight: "1",
                 }}
               >
                 Logout
               </Button>
             ) : (
-              <NavLink to="/login" style={{ textDecoration: "none" }}>
+              <NavLink
+                to="/login"
+                onClick={() => setExpanded(false)}
+                style={{ textDecoration: "none" }}
+              >
                 <Button
                   variant="primary"
-                  className="px-4 d-flex align-items-center justify-content-center"
+                  className="px-4"
                   style={{
                     borderRadius: "20px",
                     fontWeight: "500",
                     fontFamily: '"Poppins", sans-serif',
-                    height: "38px",
-                    lineHeight: "1",
                   }}
                 >
                   Login

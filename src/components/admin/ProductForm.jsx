@@ -1,6 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  getProductById,
+  createProduct,
+  updateProduct,
+  refreshAccessToken,
+} from "../../services/api";
+
+// ✅ Helper to get a valid token (refresh if needed)
+const getValidToken = async () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  let token = user.accessToken;
+  const refresh = user.refreshToken;
+
+  if (!token && refresh) {
+    try {
+      const res = await refreshAccessToken(refresh);
+      token = res.data.accessToken;
+      const updatedUser = { ...user, accessToken: token };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error("Token refresh failed", err);
+      localStorage.removeItem("user");
+      throw new Error("Session expired. Please log in again.");
+    }
+  }
+
+  if (!token) {
+    throw new Error("No valid token found.");
+  }
+
+  return token;
+};
+
+// ✅ Format ISO date to yyyy-MM-dd for <input type="date">
+const formatDateForInput = (dateStr) => {
+  if (!dateStr) return "";
+  return new Date(dateStr).toISOString().split("T")[0];
+};
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -18,28 +56,36 @@ const ProductForm = () => {
     isTopSelling: false,
     isFeatured: false,
     isBudgetFriendly: false,
-    description:"",
+    description: "",
     customFields: [],
   });
 
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([]); // Store image files and base64 previews
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (id) {
-      const existing = JSON.parse(localStorage.getItem("products")) || [];
-      const product = existing.find((p) => p.id === id);
-      if (product) {
+    const fetchProduct = async () => {
+      try {
+        const token = await getValidToken();
+        const res = await getProductById(id, token);
+        const p = res.data;
+
+        // ✅ Format date to yyyy-MM-dd for input field
+        const formattedDate = p.date ? formatDateForInput(p.date) : "";
+
         setFormData({
-          ...product,
-          customFields: (product.customFields || []).map((f) => ({
-            fieldName: f.fieldName || f.name || "",
-            value: f.value || "",
-          })),
+          ...p,
+          date: formattedDate,
+          customFields: p.customFields || [],
         });
-        setImages(product.images || []);
+
+        setImages((p.images || []).map((base64) => ({ base64, file: null })));
+      } catch (err) {
+        console.error("Failed to load product:", err);
       }
-    }
+    };
+
+    if (id) fetchProduct();
   }, [id]);
 
   const handleChange = (e) => {
@@ -48,17 +94,14 @@ const ProductForm = () => {
   };
 
   const handleImageChange = (files) => {
-    const newImages = [];
-    for (let i = 0; i < files.length; i++) {
+    const fileArray = Array.from(files);
+    fileArray.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        newImages.push(reader.result);
-        if (newImages.length === files.length) {
-          setImages((prev) => [...prev, ...newImages]);
-        }
+        setImages((prev) => [...prev, { file, base64: reader.result }]);
       };
-      reader.readAsDataURL(files[i]);
-    }
+      reader.readAsDataURL(file);
+    });
   };
 
   const removeImage = (index) => {
@@ -66,67 +109,19 @@ const ProductForm = () => {
   };
 
   const addCustomFieldRow = () => {
-    const hasEmptyRow = formData.customFields.some(
-      (row) => !row.fieldName?.trim() || !row.value?.trim()
+    const hasEmpty = formData.customFields.some(
+      (row) => !row.name?.trim() || !row.value?.trim()
     );
-
-    if (hasEmptyRow) {
-      alert("⚠ Please fill in the existing custom field before adding a new one.");
-      return;
-    }
-
+    if (hasEmpty) return alert("Fill existing custom fields first!");
     setFormData((prev) => ({
       ...prev,
-      customFields: [...prev.customFields, { fieldName: "", value: "" }],
+      customFields: [...prev.customFields, { name: "", value: "" }],
     }));
   };
 
   const updateCustomFieldRow = (index, field, value) => {
     const updated = [...formData.customFields];
     updated[index][field] = value;
-
-    if (field === "fieldName") {
-      const normalized = value.trim().toLowerCase();
-      const isDuplicate = updated.some(
-        (f, i) => i !== index && f.fieldName.trim().toLowerCase() === normalized
-      );
-      const mainFields = [
-        "name",
-        "id",
-        "brandName",
-        "buyingPrice",
-        "sellingPrice",
-        "vendorPrice",
-        "quantity",
-        "date",
-        "description"
-      ];
-      const isInMainForm = mainFields.includes(normalized);
-
-      if (!value.trim()) {
-        setErrors((prev) => ({
-          ...prev,
-          [`customFields_fieldName_${index}`]: "Field name is required",
-        }));
-      } else if (isDuplicate) {
-        setErrors((prev) => ({
-          ...prev,
-          [`customFields_fieldName_${index}`]: "Field name already exists",
-        }));
-      } else if (isInMainForm) {
-        setErrors((prev) => ({
-          ...prev,
-          [`customFields_fieldName_${index}`]: "This field already exists in the form",
-        }));
-      } else {
-        setErrors((prev) => {
-          const newErrors = { ...prev };
-          delete newErrors[`customFields_fieldName_${index}`];
-          return newErrors;
-        });
-      }
-    }
-
     setFormData({ ...formData, customFields: updated });
   };
 
@@ -134,13 +129,6 @@ const ProductForm = () => {
     const updated = [...formData.customFields];
     updated.splice(index, 1);
     setFormData({ ...formData, customFields: updated });
-
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      delete newErrors[`customFields_fieldName_${index}`];
-      delete newErrors[`customFields_value_${index}`];
-      return newErrors;
-    });
   };
 
   const validateForm = () => {
@@ -156,50 +144,59 @@ const ProductForm = () => {
     if (!formData.sellingPrice) newErrors.sellingPrice = "Selling price is required";
     if (!formData.vendorPrice) newErrors.vendorPrice = "Vendor price is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
-    if (!formData.description) newErrors.description = "Description is required"; // ✅ validation
-
-    if (!formData.date) {
-      newErrors.date = "Date is required";
-    } else if (selectedDate <= today) {
-      newErrors.date = "Date must be in the future";
-    }
+    if (!formData.description) newErrors.description = "Description is required";
+    if (!formData.date) newErrors.date = "Date is required";
+    else if (selectedDate <= today) newErrors.date = "Date must be in the future";
 
     if (!formData.isTopSelling && !formData.isFeatured && !formData.isBudgetFriendly) {
-      newErrors.categories = "At least one category must be selected";
+      newErrors.categories = "Select at least one category";
     }
 
     formData.customFields.forEach((row, index) => {
-      if (!row.fieldName?.trim()) {
-        newErrors[`customFields_fieldName_${index}`] = "Field Name is required";
-      }
-      if (!row.value?.trim()) {
-        newErrors[`customFields_value_${index}`] = "Value is required";
-      }
+      if (!row.name?.trim()) newErrors[`customFields_name_${index}`] = "Field Name is required";
+      if (!row.value?.trim()) newErrors[`customFields_value_${index}`] = "Value is required";
     });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
-    const existing = JSON.parse(localStorage.getItem("products")) || [];
-    if (id) {
-      const updated = existing.map((p) =>
-        p.id === id ? { ...formData, images } : p
-      );
-      localStorage.setItem("products", JSON.stringify(updated));
-      alert("✅ Product updated successfully!");
-    } else {
-      const newProduct = { ...formData, images };
-      existing.push(newProduct);
-      localStorage.setItem("products", JSON.stringify(existing));
-      alert("✅ Product added successfully!");
-    }
+    try {
+      const token = await getValidToken();
+      const formPayload = new FormData();
 
-    navigate("/viewallproducts");
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "customFields") return;
+        formPayload.append(key, typeof value === "boolean" ? String(value) : value);
+      });
+
+      formPayload.append("customFields", JSON.stringify(formData.customFields));
+
+      images.forEach(({ file }) => {
+        if (file) formPayload.append("images", file);
+      });
+
+      if (id) {
+        await updateProduct(id, formPayload, token, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        await createProduct(formPayload, token, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
+      alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
+      navigate("/viewallproducts");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "❌ Failed to save product");
+    }
   };
 
   const tomorrow = new Date();
@@ -213,7 +210,7 @@ const ProductForm = () => {
           <div className="p-4 shadow rounded bg-white">
             <h3 className="text-center mb-4">Inventory</h3>
             <Form onSubmit={handleSubmit}>
-              {/* Images */}
+              {/* Image Upload */}
               <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Product Images</Form.Label>
@@ -245,13 +242,13 @@ const ProductForm = () => {
                   {errors.images && <p className="text-danger">{errors.images}</p>}
                   <div className="d-flex mt-2 flex-wrap">
                     {images.map((img, i) => (
-                      <div key={i} className="position-relative me-2 mb-2">
+                      <div key={i} className="position-relative me-2 mb-2" style={{ width: 80, height: 80 }}>
                         <img
-                          src={img}
+                          src={img.base64}
                           alt={`Product ${i}`}
                           style={{
-                            width: 80,
-                            height: 80,
+                            width: "100%",
+                            height: "100%",
                             objectFit: "cover",
                             borderRadius: "8px",
                             border: "1px solid #ccc",
@@ -271,7 +268,7 @@ const ProductForm = () => {
                 </Col>
               </Row>
 
-              {/* Basic Fields */}
+              {/* Standard Fields */}
               {[
                 { label: "Item Name", name: "name", type: "text" },
                 { label: "Product Code", name: "id", type: "text" },
@@ -295,9 +292,7 @@ const ProductForm = () => {
                       min={field.min || undefined}
                       style={{ maxWidth: "300px" }}
                     />
-                    {errors[field.name] && (
-                      <p className="text-danger">{errors[field.name]}</p>
-                    )}
+                    {errors[field.name] && <p className="text-danger">{errors[field.name]}</p>}
                   </Col>
                 </Row>
               ))}
@@ -321,8 +316,9 @@ const ProductForm = () => {
                   {errors.categories && <p className="text-danger">{errors.categories}</p>}
                 </Col>
               </Row>
-                {/* Description */}
-                  <Row className="mb-3">
+
+              {/* Description */}
+              <Row className="mb-3">
                 <Col md={4}>
                   <Form.Label>Description</Form.Label>
                 </Col>
@@ -335,11 +331,10 @@ const ProductForm = () => {
                     onChange={handleChange}
                     style={{ maxWidth: "400px" }}
                   />
-                  {errors.description && (
-                    <p className="text-danger">{errors.description}</p>
-                  )}
+                  {errors.description && <p className="text-danger">{errors.description}</p>}
                 </Col>
               </Row>
+
               {/* Custom Fields */}
               <Row className="mb-3">
                 <Col md={4}>
@@ -352,14 +347,12 @@ const ProductForm = () => {
                         <Form.Control
                           type="text"
                           placeholder="Field Name"
-                          value={row.fieldName}
-                          onChange={(e) =>
-                            updateCustomFieldRow(index, "fieldName", e.target.value)
-                          }
+                          value={row.name}
+                          onChange={(e) => updateCustomFieldRow(index, "name", e.target.value)}
                           style={{ maxWidth: "200px" }}
                         />
-                        {errors[`customFields_fieldName_${index}`] && (
-                          <p className="text-danger">{errors[`customFields_fieldName_${index}`]}</p>
+                        {errors[`customFields_name_${index}`] && (
+                          <p className="text-danger">{errors[`customFields_name_${index}`]}</p>
                         )}
                       </Col>
                       <Col>
@@ -367,9 +360,7 @@ const ProductForm = () => {
                           type="text"
                           placeholder="Value"
                           value={row.value}
-                          onChange={(e) =>
-                            updateCustomFieldRow(index, "value", e.target.value)
-                          }
+                          onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
                           style={{ maxWidth: "200px" }}
                         />
                         {errors[`customFields_value_${index}`] && (
@@ -383,27 +374,15 @@ const ProductForm = () => {
                       </Col>
                     </Row>
                   ))}
-
-                  <Button
-                    variant="outline-primary"
-                    onClick={addCustomFieldRow}
-                    disabled={formData.customFields.some(
-                      (row) => !row.fieldName?.trim() || !row.value?.trim()
-                    )}
-                  >
+                  <Button variant="outline-primary" onClick={addCustomFieldRow}>
                     + Add Field
                   </Button>
                 </Col>
               </Row>
 
-              {/* Buttons */}
+              {/* Submit */}
               <div className="d-flex justify-content-end">
-                <Button
-                  variant="secondary"
-                  className="me-2"
-                  type="button"
-                  onClick={() => navigate("/viewallproducts")}
-                >
+                <Button variant="secondary" className="me-2" onClick={() => navigate("/viewallproducts")}>
                   Discard
                 </Button>
                 <Button variant="primary" type="submit">

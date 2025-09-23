@@ -1,39 +1,48 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/UserContext"; // ✅ Import context
+import { useUser } from "../../context/UserContext"; 
+import { loginUser } from "../../services/api"; // ✅ Import login API
 import AdminLogo from "../../assets/AdminLogo.jpg";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const { login } = useUser(); // ✅ get login function from context
+  const { login } = useUser(); // ✅ context login
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // ✅ Hardcoded credentials (replace with API if needed)
-    /*if (email === "admin@gmail.com" && password === "admin" || email === "vendor@gmail.com" && password === "vendor") {
-      setError("");
-      login({ email }); // ✅ Save user in context + localStorage
-      navigate("/viewallproducts", { replace: true }); // ✅ Redirect to protected page
-    } else {
-      setError("Invalid email or password. Please try again.");
-    }
-  };*/
+    try {
+      // ✅ Call backend API
+      const res = await loginUser({ email, password });
 
-   if (email === "admin@gmail.com" && password === "admin") {
-      setError("");
-      login({ email, role: "admin" }); // ✅ set role
-      navigate("/viewallproducts", { replace: true });
-    } else if (email === "vendor@gmail.com" && password === "vendor") {
-      setError("");
-      login({ email, role: "vendor" }); // ✅ set role
-      navigate("/", { replace: true });
-    } else {
-      setError("Invalid email or password. Please try again.");
+      // API should return { accessToken, refreshToken, role }
+      const { accessToken, refreshToken, role } = res.data;
+
+      // ✅ Save in context + localStorage
+      login({ email, role, accessToken, refreshToken });
+
+      // ✅ Redirect based on role
+      if (role === "admin") {
+        navigate("/viewallproducts", { replace: true });
+      } else if (role === "vendor") {
+        navigate("/", { replace: true });
+      } else {
+        navigate("/", { replace: true }); // fallback
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Invalid email or password. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,8 +107,13 @@ function AdminLogin() {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
-                  Sign in
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="w-100"
+                  disabled={loading}
+                >
+                  {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </Form>
             </Card.Body>
