@@ -34,7 +34,6 @@ const getValidToken = async () => {
   return token;
 };
 
-// ✅ Format ISO date to yyyy-MM-dd for <input type="date">
 const formatDateForInput = (dateStr) => {
   if (!dateStr) return "";
   return new Date(dateStr).toISOString().split("T")[0];
@@ -161,43 +160,92 @@ const ProductForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) return;
+
+  //   try {
+  //     const token = await getValidToken();
+  //     const formPayload = new FormData();
+
+  //     Object.entries(formData).forEach(([key, value]) => {
+  //       if (key === "customFields") return;
+  //       formPayload.append(key, typeof value === "boolean" ? String(value) : value);
+  //     });
+
+  //     formPayload.append("customFields", JSON.stringify(formData.customFields));
+
+  //     images.forEach(({ file }) => {
+  //       if (file) formPayload.append("images", file);
+  //     });
+
+  //     if (id) {
+  //       await updateProduct(id, formPayload, token, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       });
+  //     } else {
+  //       await createProduct(formPayload, token, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       });
+  //     }
+
+  //     alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
+  //     navigate("/viewallproducts");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.message || "❌ Failed to save product");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    try {
-      const token = await getValidToken();
-      const formPayload = new FormData();
+  try {
+    const token = await getValidToken();
+    const formPayload = new FormData();
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key === "customFields") return;
-        formPayload.append(key, typeof value === "boolean" ? String(value) : value);
-      });
+    // Add all regular fields
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "customFields") return; // Handle separately
+      formPayload.append(key, typeof value === "boolean" ? String(value) : value);
+    });
 
-      formPayload.append("customFields", JSON.stringify(formData.customFields));
+    // Add custom fields as JSON string
+    formPayload.append("customFields", JSON.stringify(formData.customFields));
 
-      images.forEach(({ file }) => {
-        if (file) formPayload.append("images", file);
-      });
-
-      if (id) {
-        await updateProduct(id, formPayload, token, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        await createProduct(formPayload, token, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+    // ✅ Add images as base64 strings
+    images.forEach(({ base64 }) => {
+      if (base64) {
+        formPayload.append("images", base64);
       }
+    });
 
-      alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
-      navigate("/viewallproducts");
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "❌ Failed to save product");
+    // Send request
+    if (id) {
+      await updateProduct(id, formPayload, token, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } else {
+      await createProduct(formPayload, token, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     }
-  };
+
+    alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
+    navigate("/viewallproducts");
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "❌ Failed to save product");
+  }
+};
+
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);

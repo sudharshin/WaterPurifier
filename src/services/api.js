@@ -83,22 +83,26 @@ export const searchProducts = (params, token) =>
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
   });
 
-// Create product - skip content-type for FormData
+// ✅ Create product
 export const createProduct = (data, token) => {
-  const headers = { Authorization: `Bearer ${token}` };
-  if (!(data instanceof FormData)) {
-    headers["Content-Type"] = "application/json";
-  }
-  return API.post("/products", data, { headers });
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  return API.post("/products", data, {
+    headers,
+  });
 };
 
-// Update product - skip content-type for FormData
+// ✅ Update product
 export const updateProduct = (id, data, token) => {
-  const headers = { Authorization: `Bearer ${token}` };
-  if (!(data instanceof FormData)) {
-    headers["Content-Type"] = "application/json";
-  }
-  return API.put(`/products/${id}`, data, { headers });
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  return API.put(`/products/${id}`, data, {
+    headers,
+  });
 };
 
 export const deleteProduct = (id, token) =>
