@@ -8,7 +8,6 @@ import {
   refreshAccessToken,
 } from "../../services/api";
 
-// ✅ Helper to get a valid token (refresh if needed)
 const getValidToken = async () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   let token = user.accessToken;
@@ -34,9 +33,31 @@ const getValidToken = async () => {
   return token;
 };
 
+// Format date for input fields
 const formatDateForInput = (dateStr) => {
   if (!dateStr) return "";
   return new Date(dateStr).toISOString().split("T")[0];
+};
+
+const uploadToCloudinary = async (file) => {
+  const data = new FormData();
+  data.append("file", file);
+  data.append("upload_preset", "purifier_preset");
+  data.append("cloud_name", " dam4nl5ra");
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/dam4nl5ra/image/upload`, // Replace this too
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Cloudinary upload failed");
+  }
+
+  const result = await res.json();
+  return result.secure_url;
 };
 
 const ProductForm = () => {
@@ -59,33 +80,47 @@ const ProductForm = () => {
     customFields: [],
   });
 
-  const [images, setImages] = useState([]); // Store image files and base64 previews
+  const [images, setImages] = useState([]); // Store as { file: File, preview: string }
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchProduct = async () => {
+      if (!id) return;
+
       try {
         const token = await getValidToken();
         const res = await getProductById(id, token);
         const p = res.data;
 
-        // ✅ Format date to yyyy-MM-dd for input field
-        const formattedDate = p.date ? formatDateForInput(p.date) : "";
-
         setFormData({
           ...p,
-          date: formattedDate,
+          date: formatDateForInput(p.date),
           customFields: p.customFields || [],
         });
 
-        setImages((p.images || []).map((base64) => ({ base64, file: null })));
+        // For editing: fetch existing image URLs and create dummy File previews
+        const imageObjects = (p.images || []).map((url) => ({
+          file: null,
+          preview: url,
+          uploaded: true,
+        }));
+
+        setImages(imageObjects);
       } catch (err) {
         console.error("Failed to load product:", err);
       }
     };
 
-    if (id) fetchProduct();
+    fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    return () => {
+      images.forEach(({ preview, uploaded }) => {
+        if (!uploaded && preview) URL.revokeObjectURL(preview);
+      });
+    };
+  }, [images]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -94,17 +129,21 @@ const ProductForm = () => {
 
   const handleImageChange = (files) => {
     const fileArray = Array.from(files);
-    fileArray.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prev) => [...prev, { file, base64: reader.result }]);
-      };
-      reader.readAsDataURL(file);
-    });
+    const newImages = fileArray.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+      uploaded: false,
+    }));
+
+    setImages((prev) => [...prev, ...newImages]);
   };
 
   const removeImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+    setImages((prev) => {
+      const removed = prev[index];
+      if (!removed.uploaded && removed.preview) URL.revokeObjectURL(removed.preview);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   const addCustomFieldRow = () => {
@@ -147,105 +186,64 @@ const ProductForm = () => {
     if (!formData.date) newErrors.date = "Date is required";
     else if (selectedDate <= today) newErrors.date = "Date must be in the future";
 
-    if (!formData.isTopSelling && !formData.isFeatured && !formData.isBudgetFriendly) {
+    if (
+      !formData.isTopSelling &&
+      !formData.isFeatured &&
+      !formData.isBudgetFriendly
+    ) {
       newErrors.categories = "Select at least one category";
     }
 
     formData.customFields.forEach((row, index) => {
-      if (!row.name?.trim()) newErrors[`customFields_name_${index}`] = "Field Name is required";
-      if (!row.value?.trim()) newErrors[`customFields_value_${index}`] = "Value is required";
+      if (!row.name?.trim())
+        newErrors[`customFields_name_${index}`] = "Field Name is required";
+      if (!row.value?.trim())
+        newErrors[`customFields_value_${index}`] = "Value is required";
     });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!validateForm()) return;
-
-  //   try {
-  //     const token = await getValidToken();
-  //     const formPayload = new FormData();
-
-  //     Object.entries(formData).forEach(([key, value]) => {
-  //       if (key === "customFields") return;
-  //       formPayload.append(key, typeof value === "boolean" ? String(value) : value);
-  //     });
-
-  //     formPayload.append("customFields", JSON.stringify(formData.customFields));
-
-  //     images.forEach(({ file }) => {
-  //       if (file) formPayload.append("images", file);
-  //     });
-
-  //     if (id) {
-  //       await updateProduct(id, formPayload, token, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-  //     } else {
-  //       await createProduct(formPayload, token, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-  //     }
-
-  //     alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
-  //     navigate("/viewallproducts");
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert(err.message || "❌ Failed to save product");
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  try {
-    const token = await getValidToken();
-    const formPayload = new FormData();
+    try {
+      const token = await getValidToken();
 
-    // Add all regular fields
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === "customFields") return; // Handle separately
-      formPayload.append(key, typeof value === "boolean" ? String(value) : value);
-    });
+      // Upload new images to Cloudinary and keep existing uploaded URLs
+      const uploadedImageUrls = [];
 
-    // Add custom fields as JSON string
-    formPayload.append("customFields", JSON.stringify(formData.customFields));
-
-    // ✅ Add images as base64 strings
-    images.forEach(({ base64 }) => {
-      if (base64) {
-        formPayload.append("images", base64);
+      for (const img of images) {
+        if (img.uploaded) {
+          uploadedImageUrls.push(img.preview);
+        } else {
+          const url = await uploadToCloudinary(img.file);
+          uploadedImageUrls.push(url);
+        }
       }
-    });
 
-    // Send request
-    if (id) {
-      await updateProduct(id, formPayload, token, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    } else {
-      await createProduct(formPayload, token, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const payload = {
+        ...formData,
+        images: uploadedImageUrls,
+        customFields: formData.customFields,
+      };
+
+      if (id) {
+        await updateProduct(id, payload, token);
+      } else {
+        await createProduct(payload, token);
+      }
+
+      alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
+      navigate("/viewallproducts");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "❌ Failed to save product");
     }
-
-    alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
-    navigate("/viewallproducts");
-  } catch (err) {
-    console.error(err);
-    alert(err.message || "❌ Failed to save product");
-  }
-};
-
+  };
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -290,9 +288,13 @@ const ProductForm = () => {
                   {errors.images && <p className="text-danger">{errors.images}</p>}
                   <div className="d-flex mt-2 flex-wrap">
                     {images.map((img, i) => (
-                      <div key={i} className="position-relative me-2 mb-2" style={{ width: 80, height: 80 }}>
+                      <div
+                        key={i}
+                        className="position-relative me-2 mb-2"
+                        style={{ width: 80, height: 80 }}
+                      >
                         <img
-                          src={img.base64}
+                          src={img.preview}
                           alt={`Product ${i}`}
                           style={{
                             width: "100%",
@@ -340,7 +342,9 @@ const ProductForm = () => {
                       min={field.min || undefined}
                       style={{ maxWidth: "300px" }}
                     />
-                    {errors[field.name] && <p className="text-danger">{errors[field.name]}</p>}
+                    {errors[field.name] && (
+                      <p className="text-danger">{errors[field.name]}</p>
+                    )}
                   </Col>
                 </Row>
               ))}
@@ -351,17 +355,21 @@ const ProductForm = () => {
                   <Form.Label>Categories</Form.Label>
                 </Col>
                 <Col md={8}>
-                  {["isTopSelling", "isFeatured", "isBudgetFriendly"].map((cat, i) => (
-                    <Form.Check
-                      key={i}
-                      type="checkbox"
-                      label={cat.replace("is", "").replace(/([A-Z])/g, " $1")}
-                      name={cat}
-                      checked={formData[cat]}
-                      onChange={handleChange}
-                    />
-                  ))}
-                  {errors.categories && <p className="text-danger">{errors.categories}</p>}
+                  {["isTopSelling", "isFeatured", "isBudgetFriendly"].map(
+                    (cat, i) => (
+                      <Form.Check
+                        key={i}
+                        type="checkbox"
+                        label={cat.replace("is", "").replace(/([A-Z])/g, " $1")}
+                        name={cat}
+                        checked={formData[cat]}
+                        onChange={handleChange}
+                      />
+                    )
+                  )}
+                  {errors.categories && (
+                    <p className="text-danger">{errors.categories}</p>
+                  )}
                 </Col>
               </Row>
 
@@ -379,7 +387,9 @@ const ProductForm = () => {
                     onChange={handleChange}
                     style={{ maxWidth: "400px" }}
                   />
-                  {errors.description && <p className="text-danger">{errors.description}</p>}
+                  {errors.description && (
+                    <p className="text-danger">{errors.description}</p>
+                  )}
                 </Col>
               </Row>
 
@@ -396,11 +406,15 @@ const ProductForm = () => {
                           type="text"
                           placeholder="Field Name"
                           value={row.name}
-                          onChange={(e) => updateCustomFieldRow(index, "name", e.target.value)}
+                          onChange={(e) =>
+                            updateCustomFieldRow(index, "name", e.target.value)
+                          }
                           style={{ maxWidth: "200px" }}
                         />
                         {errors[`customFields_name_${index}`] && (
-                          <p className="text-danger">{errors[`customFields_name_${index}`]}</p>
+                          <p className="text-danger">
+                            {errors[`customFields_name_${index}`]}
+                          </p>
                         )}
                       </Col>
                       <Col>
@@ -408,35 +422,41 @@ const ProductForm = () => {
                           type="text"
                           placeholder="Value"
                           value={row.value}
-                          onChange={(e) => updateCustomFieldRow(index, "value", e.target.value)}
+                          onChange={(e) =>
+                            updateCustomFieldRow(index, "value", e.target.value)
+                          }
                           style={{ maxWidth: "200px" }}
                         />
                         {errors[`customFields_value_${index}`] && (
-                          <p className="text-danger">{errors[`customFields_value_${index}`]}</p>
+                          <p className="text-danger">
+                            {errors[`customFields_value_${index}`]}
+                          </p>
                         )}
                       </Col>
                       <Col xs="auto">
-                        <Button variant="danger" onClick={() => removeCustomFieldRow(index)}>
-                          🗑
+                        <Button
+                          variant="danger"
+                          onClick={() => removeCustomFieldRow(index)}
+                        >
+                          Remove
                         </Button>
                       </Col>
                     </Row>
                   ))}
-                  <Button variant="outline-primary" onClick={addCustomFieldRow}>
-                    + Add Field
+                  <Button variant="primary" onClick={addCustomFieldRow}>
+                    Add Row
                   </Button>
                 </Col>
               </Row>
 
               {/* Submit */}
-              <div className="d-flex justify-content-end">
-                <Button variant="secondary" className="me-2" onClick={() => navigate("/viewallproducts")}>
-                  Discard
-                </Button>
-                <Button variant="primary" type="submit">
-                  {id ? "Update Product" : "Add Product"}
-                </Button>
-              </div>
+              <Row className="mb-3">
+                <Col md={{ span: 8, offset: 4 }}>
+                  <Button type="submit" className="w-100">
+                    {id ? "Update" : "Add"} Product
+                  </Button>
+                </Col>
+              </Row>
             </Form>
           </div>
         </Col>

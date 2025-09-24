@@ -87,6 +87,7 @@ export const searchProducts = (params, token) =>
 export const createProduct = (data, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json"
   };
 
   return API.post("/products", data, {
@@ -94,10 +95,13 @@ export const createProduct = (data, token) => {
   });
 };
 
+
+
 // ✅ Update product
 export const updateProduct = (id, data, token) => {
   const headers = {
     Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json"
   };
 
   return API.put(`/products/${id}`, data, {
