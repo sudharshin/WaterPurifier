@@ -9,11 +9,11 @@ const parseProduct = (product) => {
 
   let customFields = [];
   try {
-    if (product.custom_fields) {
+    if (product.customFields) {
       customFields =
-        typeof product.custom_fields === "string"
-          ? JSON.parse(product.custom_fields)
-          : product.custom_fields;
+        typeof product.customFields === "string"
+          ? JSON.parse(product.customFields)
+          : product.customFields;
     }
   } catch (e) {
     console.warn("Failed to parse custom fields for product id", product.id, e);

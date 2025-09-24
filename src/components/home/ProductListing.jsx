@@ -8,7 +8,7 @@ const ProductListing = ({ title, description, products }) => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
-  // ✅ Accept full product
+
   const handleProductClick = (product) => {
     navigate(`/products/${product.id}`, { state: { product } });
   };
@@ -29,48 +29,43 @@ const ProductListing = ({ title, description, products }) => {
   return (
     <section className="py-5" style={{ background: "#fff" }}>
       <Container fluid className="px-4">
-        {/* Title + Description + Button */}
+        {/* Title & Description */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
           <div style={{ maxWidth: "700px" }}>
-            <h3 className="fw-bold mb-2"
+            <h3
+              className="fw-bold mb-2"
               style={{
-                textAlign: 'start',
-                transitionProperty: 'opacity, transform',
-                fontFamily: '"gf_Poppins variant6", Tofu, sans-serif', // ✅ fixed
+                textAlign: "start",
+                fontFamily: '"gf_Poppins variant6", Tofu, sans-serif',
                 fontWeight: 250,
-                fontStyle: 'normal',
-                fontStretch: 'normal',
-                fontOpticalSizing: 'auto',
-                lineHeight: 'initial',
-                opacity: 1,
-                transitionDuration: '350ms',
-                fontSize: '35px',
-                color: '#000000',
+                fontStyle: "normal",
+                fontStretch: "normal",
+                fontOpticalSizing: "auto",
+                lineHeight: "initial",
+                fontSize: "35px",
+                color: "#000000",
               }}
-            >{title}</h3>
+            >
+              {title}
+            </h3>
             {description && (
               <p
                 className="mb-0"
                 style={{
-                  textAlign: 'start',
-                  transitionProperty: 'opacity, transform',
-                  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif', // ✅ fixed
+                  textAlign: "start",
+                  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif',
                   fontWeight: 100,
-                  fontStyle: 'normal',
-                  fontStretch: 'normal',
-                  fontOpticalSizing: 'auto',
-                  opacity: 1,
-                  transitionDuration: '350ms',
+                  fontStyle: "normal",
+                  fontStretch: "normal",
+                  fontOpticalSizing: "auto",
                   fontSize: "15px",
                   lineHeight: "25px",
                   color: "#2A2A2A",
                 }}
-
               >
                 {description}
               </p>
             )}
-
           </div>
 
           {products.length > 6 && (
@@ -89,31 +84,29 @@ const ProductListing = ({ title, description, products }) => {
           ref={scrollRef}
           style={{ paddingBottom: "1rem", scrollBehavior: "smooth" }}
         >
-          {products?.map((p, index) => (
-            <ProductCard
-              key={index}
-              id={p.id}
-              image={
-                p.image?.startsWith("http") || p.image?.startsWith("blob:")
-                  ? p.image
-                  : p.imageUrl?.startsWith("http") || p.imageUrl?.startsWith("blob:")
-                    ? p.imageUrl
-                    : Array.isArray(p.images) && p.images[0]?.startsWith("blob:")
-                      ? p.images[0]
-                      : "/placeholder.png"
-              }
+          {products?.map((p, index) => {
+            // ✅ Use first image from Cloudinary URLs
+            const imageUrl =
+              Array.isArray(p.images) && p.images[0]?.startsWith("http")
+                ? p.images[0]
+                : "/placeholder.png";
 
-              title={p.name || "Untitled Product"}
-              brand={p.brandName || "N/A"}
-              price={user?.role === "vendor" ? p.vendorPrice : p.sellingPrice || 0}
-              // ✅ Pass full product object
-              onClick={() => handleProductClick(p)}
-            />
-          ))}
+            return (
+              <ProductCard
+                key={index}
+                id={p.id}
+                image={imageUrl}
+                title={p.name || "Untitled Product"}
+                brand={p.brandName || "N/A"}
+                price={user?.role === "vendor" ? p.vendorPrice : p.sellingPrice || 0}
+                onClick={() => handleProductClick(p)}
+              />
+            );
+          })}
         </div>
       </Container>
 
-      {/* Extra Styles */}
+      {/* Styles */}
       <style>
         {`
           .hide-scrollbar {
