@@ -26,7 +26,7 @@ const slides = [
   {
     title: "Eco-Friendly",
     highlight: "Sustainable Living",
-    text: "Conserve water and energy while enjoying clean, safe drinking water.",
+    text: "Reduce plastic waste and conserve water with our energy-efficient purification system.",
     img: purifier4,
   },
 ];
@@ -37,7 +37,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [currentSlide]);
 
@@ -49,7 +49,6 @@ const HeroSection = () => {
   return (
     <div className="hero-wrapper">
       <div className="hero-container">
-        {/* Slides */}
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -57,7 +56,8 @@ const HeroSection = () => {
           >
             <div className="hero-content">
               <h1>
-                {slide.title} <br />
+                {slide.title}
+                <br />
                 <span className="highlight">{slide.highlight}</span>
               </h1>
               <p>{slide.text}</p>
@@ -77,7 +77,7 @@ const HeroSection = () => {
           &#10095;
         </button>
 
-        {/* Bottom solid ash band with dots */}
+        {/* Bottom band */}
         <div className="bottom-band">
           <div className="dots-bottom">
             {slides.map((_, idx) => (
@@ -91,25 +91,24 @@ const HeroSection = () => {
         </div>
       </div>
 
+      {/* CSS styles */}
       <style>{`
         .hero-wrapper {
           position: relative;
           width: 100%;
         }
 
-        /* Hero container */
         .hero-container {
           position: relative;
           overflow: hidden;
-          min-height: 70vh;
+          min-height: 75vh;
           background: linear-gradient(135deg, #eaf6ff, #d6eeff);
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: clamp(1rem, 3vw, 3rem) 5%;
+          padding: clamp(1rem, 4vw, 3rem) 5%;
         }
 
-        /* Each slide absolute */
         .slide {
           position: absolute;
           top: 0;
@@ -121,63 +120,69 @@ const HeroSection = () => {
           justify-content: space-between;
           flex-wrap: wrap;
           opacity: 0;
-          transition: all 1s ease-in-out;
+          transform: translateX(30px);
+          transition: all 1s ease;
         }
 
         .slide.active {
           left: 0;
           opacity: 1;
+          transform: translateX(0);
           z-index: 2;
         }
 
         .hero-content {
           flex: 1;
-          min-width: 280px;
+          min-width: 300px;
           max-width: 600px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           padding-left: clamp(2rem, 6vw, 80px);
           z-index: 3;
+          margin-bottom: 100px;
         }
 
         .hero-content h1 {
-          font-size: clamp(1.8rem, 4vw, 3rem);
-          font-weight: 600;
+          font-size: clamp(2rem, 4vw, 3rem);
+          font-weight: 700;
           color: #111;
-          margin-bottom: 1.2rem;
-          line-height: 1.2;
+          margin-bottom: 0.8rem;
         }
 
         .highlight {
-          color: #0d6efd;
+          display: inline-block;
+          font-size: clamp(2.5rem, 5vw, 3.8rem);
+          color: #0066ff;
+          font-weight: 800;
+          line-height: 1.2;
         }
 
         .hero-content p {
-          font-size: clamp(1rem, 2vw, 1.2rem);
-          color: #444;
+          font-size: clamp(1.1rem, 1.7vw, 1.3rem);
+          margin-top: 1.2rem;
           margin-bottom: 2rem;
-          line-height: 1.5;
+          color: #555;
+          max-width: 90%;
         }
 
-        /* ✅ Responsive Button */
         .btn {
-          padding: clamp(0.6rem, 2vw, 0.9rem) clamp(1.2rem, 4vw, 2rem);
-          border-radius: clamp(20px, 5vw, 35px);
-          border: none;
-          font-weight: 600;
-          font-size: clamp(0.9rem, 2.5vw, 1rem);
-          background: #0d6efd;
+          background: linear-gradient(90deg, #0066ff, #0040ff);
+          border-radius: 50px;
+          padding: 0.9rem 2.2rem;
+          font-size: 1.1rem;
+          font-weight: bold;
           color: #fff;
+          border: none;
           cursor: pointer;
-          box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+          box-shadow: 0 6px 20px rgba(0, 100, 255, 0.3);
           transition: all 0.3s ease;
           align-self: flex-start;
         }
 
         .btn:hover {
-          transform: scale(1.05);
-          background: #0056b3;
+          background: #003bb3;
+          transform: translateY(-2px);
         }
 
         .hero-image {
@@ -189,17 +194,24 @@ const HeroSection = () => {
         }
 
         .hero-image img {
-          max-width: 100%;
-          width: clamp(220px, 35vw, 420px);
-          height: auto;
+          width: clamp(300px, 35vw, 500px);
+          filter: drop-shadow(0 10px 30px rgba(0, 100, 255, 0.2));
+          transform: scale(1.05);
+          transition: transform 0.5s ease;
+          position: relative;
+          z-index: 3;
+          margin-bottom: -70px; /* Pull image below container */
         }
 
-        /* Arrows */
+        .slide.active .hero-image img {
+          transform: scale(1.1);
+        }
+
         .arrow {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          background-color: rgba(0,0,0,0.3);
+          background-color: rgba(0, 0, 0, 0.3);
           color: #fff;
           border: none;
           padding: clamp(0.6rem, 1.5vw, 1rem);
@@ -211,7 +223,7 @@ const HeroSection = () => {
         }
 
         .arrow:hover {
-          background-color: rgba(0,0,0,0.6);
+          background-color: rgba(0, 0, 0, 0.6);
         }
 
         .left-arrow {
@@ -222,24 +234,22 @@ const HeroSection = () => {
           right: clamp(10px, 2vw, 20px);
         }
 
-        /* Bottom solid ash band */
         .bottom-band {
           position: absolute;
           bottom: 0;
           left: 0;
           width: 100%;
-          height: clamp(50px, 10vh, 80px);
+          height: clamp(100px, 20vh, 160px); /* Increased height */
           background: #d6d6d6;
           display: flex;
           justify-content: center;
           align-items: center;
-          z-index: 4;
+          z-index: 1;
         }
 
-        /* Bottom Dots */
         .dots-bottom {
           display: flex;
-          gap: clamp(6px, 1vw, 10px);
+          gap: clamp(6px, 1vw, 12px);
         }
 
         .dot {
@@ -253,10 +263,9 @@ const HeroSection = () => {
 
         .dot.active {
           background-color: #0d6efd;
-          transform: scale(1.2);
+          transform: scale(1.5);
         }
 
-        /* Responsive */
         @media (max-width: 992px) {
           .slide {
             flex-direction: column;
@@ -269,7 +278,7 @@ const HeroSection = () => {
           }
 
           .btn {
-            align-self: center; /* center button on smaller screens */
+            align-self: center;
           }
 
           .hero-image img {
