@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Company Info */}
           <Col xs={12} sm={6} md={3}>
             <h4>Opor</h4>
-            <p>
+            <p style={{ fontFamily: "Poppins, Tofu" }}>
               Connecting you to trusted suppliers with quality products, easy
               details, and quick enquiries – all in one place.
             </p>
@@ -25,6 +25,7 @@ const Footer = () => {
                     justifyContent: "center",
                     width: 46,
                     height: 46,
+                     fontFamily: "Poppins, Tofu",
                     borderRadius: "10px",
                     backgroundColor: "#fff",
                     color: "#2D7BA5",
@@ -71,16 +72,16 @@ const Footer = () => {
           </Col>
 
           {/* Address */}
-          <Col xs={12} sm={6} md={3}>
+          <Col xs={12} sm={6} md={3} style={{ fontFamily: "Poppins, Tofu" }}>
             <h6>Address</h6>
-            <p>45 / 5, Bharathiyar 5th street</p>
-            <p>Sankarankovil, Tenkasi</p>
+            <p style={{ fontFamily: "Poppins, Tofu" }}>45 / 5, Bharathiyar 5th street</p>
+            <p style={{ fontFamily: "Poppins, Tofu" }}>Sankarankovil, Tenkasi</p>
             <a href="#" className="map-link">
               See on Google Map
             </a>
 
             <h6 className="mt-3">Office Hours</h6>
-            <p className="office-hours">
+            <p className="office-hours" style={{ fontFamily: "Poppins, Tofu" }}>
               Mon – Fri ( <strong>8AM – 6PM</strong> )
             </p>
           </Col>
@@ -91,7 +92,7 @@ const Footer = () => {
         {/* Bottom Footer */}
         <Row className="align-items-center text-center text-md-start">
           <Col xs={12} md={6}>
-            <p className="footer-bottom mb-0">
+            <p className="footer-bottom mb-0" style={{ fontFamily: "Poppins, Tofu" }}>
               Copyright 2025 all rights reserved
             </p>
           </Col>
@@ -108,12 +109,12 @@ const Footer = () => {
 
       {/* ✅ Inline CSS inside JSX */}
       <style>{`
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-
+       
         .footer {
           background: linear-gradient(135deg, #2D7BA5, #357CA5);
           color: #fff;
           padding-top: 50px;
+          font-family: "Poppins, Tofu";
           padding-bottom: 30px;
           border-top-left-radius: 40px;
           border-top-right-radius: 40px;
@@ -124,12 +125,14 @@ const Footer = () => {
           font-weight: 300;
           font-size: 15px;
           line-height: 25px;
+          font-family: "Poppins, Tofu";
           margin-bottom: 10px;
           color: #fff;
         }
 
         .footer h4 {
           font-weight: 600;
+           fontFamily: "Poppins, Tofu";
           font-size: 24px;
           color: #fff;
         }
@@ -138,6 +141,7 @@ const Footer = () => {
           font-weight: 600;
           font-size: 18px;
           margin-bottom: 20px;
+           fontFamily: "Poppins, Tofu";
           color: #fff;
         }
 
@@ -145,6 +149,7 @@ const Footer = () => {
           color: #fff;
           text-decoration: none;
           font-weight: 400;
+           fontFamily: "Poppins, Tofu";
           font-size: 15px;
         }
 
@@ -169,11 +174,13 @@ const Footer = () => {
           font-weight: 500;
           text-decoration: underline;
           display: inline-block;
+          fontFamily: "Poppins, Tofu";
           margin-bottom: 24px;
         }
 
         .office-hours {
           font-weight: 500;
+          fontFamily: "Poppins, Tofu";
         }
 
         .footer hr {
@@ -183,6 +190,7 @@ const Footer = () => {
 
         .footer-bottom {
           font-size: 15px;
+           fontFamily: "Poppins, Tofu";
           font-weight: 500;
         }
       `}</style>

@@ -36,7 +36,7 @@ const ProductListing = ({ title, description, products }) => {
               className="fw-bold mb-2"
               style={{
                 textAlign: "start",
-                fontFamily: '"gf_Poppins variant6", Tofu, sans-serif',
+                 fontFamily: "Poppins, Tofu",
                 fontWeight: 250,
                 fontStyle: "normal",
                 fontStretch: "normal",
@@ -53,8 +53,8 @@ const ProductListing = ({ title, description, products }) => {
                 className="mb-0"
                 style={{
                   textAlign: "start",
-                  fontFamily: '"gf_Poppins variant0", Tofu, sans-serif',
-                  fontWeight: 100,
+                   fontFamily: "Poppins, Tofu",
+                 fontWeight: 100,
                   fontStyle: "normal",
                   fontStretch: "normal",
                   fontOpticalSizing: "auto",

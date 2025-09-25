@@ -16,6 +16,7 @@ const EnquirySection = () => {
       style={{
         backgroundColor: "#E6F3FB",
         borderRadius: "20px",
+         fontFamily: "Poppins, Tofu",
         overflow: "hidden",
       }}
     >
@@ -43,6 +44,7 @@ const EnquirySection = () => {
                   color: activeBtn === "call" ? "#fff" : "#000",
                   border: "1px solid #ddd",
                   borderRadius: "25px",
+                   fontFamily: "Poppins, Tofu",
                   padding: "10px 28px",
                   fontWeight: "500",
                 }}
@@ -60,6 +62,7 @@ const EnquirySection = () => {
                   color: activeBtn === "email" ? "#fff" : "#000",
                   border: "1px solid #ddd",
                   borderRadius: "25px",
+                   fontFamily: "Poppins, Tofu",
                   padding: "10px 28px",
                   fontWeight: "500",
                 }}
@@ -82,6 +85,7 @@ const EnquirySection = () => {
                   color: activeBtn === "whatsapp" ? "#fff" : "#000",
                   border: "1px solid #ddd",
                   borderRadius: "25px",
+                   fontFamily: "Poppins, Tofu",
                   padding: "10px 28px",
                   fontWeight: "500",
                 }}

@@ -45,7 +45,7 @@ const ProductDetailsCard = ({ brand, image, title, desc, price, onClick }) => {
         <Card.Title
           style={{
             fontSize: "1rem",
-            fontWeight: "600",
+            fontWeight: "200",
             marginBottom: "6px",
             color: "#111827",
           }}
@@ -55,9 +55,9 @@ const ProductDetailsCard = ({ brand, image, title, desc, price, onClick }) => {
 
         <Card.Text
           style={{
-            fontFamily: "Poppins",
+             fontFamily: "Poppins, Tofu",
             fontStyle: "normal",
-            fontWeight: "400",
+            fontWeight: "100",
             fontSize: "14px",
             lineHeight: "23px",
             color: "#383737",
