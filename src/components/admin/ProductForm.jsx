@@ -449,14 +449,55 @@ const ProductForm = () => {
                 </Col>
               </Row>
 
-              {/* Submit */}
               <Row className="mb-3">
                 <Col md={{ span: 8, offset: 4 }}>
-                  <Button type="submit" className="w-100">
-                    {id ? "Update" : "Add"} Product
-                  </Button>
+                  <div className="d-flex justify-content-between">
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        if (id) {
+                          // Editing mode: confirm before leaving
+                          const confirmLeave = window.confirm("Discard changes and go back?");
+                          if (confirmLeave) navigate("/viewallproducts");
+                        } else {
+                          // Adding mode: just clear form
+                          const confirmClear = window.confirm("Clear the form and go back?");
+                          if (confirmClear) {
+                            setFormData({
+                              name: "",
+                              id: "",
+                              brandName: "",
+                              buyingPrice: "",
+                              sellingPrice: "",
+                              vendorPrice: "",
+                              quantity: "",
+                              date: "",
+                              isTopSelling: false,
+                              isFeatured: false,
+                              isBudgetFriendly: false,
+                              description: "",
+                              customFields: [],
+                            });
+                            images.forEach(({ preview, uploaded }) => {
+                              if (!uploaded && preview) URL.revokeObjectURL(preview);
+                            });
+                            setImages([]);
+                            setErrors({});
+                            navigate("/viewallproducts");
+                          }
+                        }
+                      }}
+                    >
+                      Discard
+                    </Button>
+
+                    <Button type="submit">
+                      {id ? "Update" : "Add"} Product
+                    </Button>
+                  </div>
                 </Col>
               </Row>
+
             </Form>
           </div>
         </Col>
