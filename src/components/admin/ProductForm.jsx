@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getProductById,
@@ -8,6 +8,7 @@ import {
   refreshAccessToken,
 } from "../../services/api";
 
+// Get valid token (refresh if needed)
 const getValidToken = async () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   let token = user.accessToken;
@@ -26,35 +27,29 @@ const getValidToken = async () => {
     }
   }
 
-  if (!token) {
-    throw new Error("No valid token found.");
-  }
-
+  if (!token) throw new Error("No valid token found.");
   return token;
 };
 
-// Format date for input fields
+// Format date for date input
 const formatDateForInput = (dateStr) => {
   if (!dateStr) return "";
   return new Date(dateStr).toISOString().split("T")[0];
 };
 
+// Upload to Cloudinary
 const uploadToCloudinary = async (file) => {
   const data = new FormData();
   data.append("file", file);
   data.append("upload_preset", "purifier_preset");
-  data.append("cloud_name", " dam4nl5ra");
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/dam4nl5ra/image/upload`, // Replace this too
-    {
-      method: "POST",
-      body: data,
-    }
-  );
+  data.append("cloud_name", "dam4nl5ra");
 
-  if (!res.ok) {
-    throw new Error("Cloudinary upload failed");
-  }
+  const res = await fetch("https://api.cloudinary.com/v1_1/dam4nl5ra/image/upload", {
+    method: "POST",
+    body: data,
+  });
+
+  if (!res.ok) throw new Error("Cloudinary upload failed");
 
   const result = await res.json();
   return result.secure_url;
@@ -80,13 +75,16 @@ const ProductForm = () => {
     customFields: [],
   });
 
-  const [images, setImages] = useState([]); // Store as { file: File, preview: string }
+  const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) return;
 
+      setLoading(true);
       try {
         const token = await getValidToken();
         const res = await getProductById(id, token);
@@ -98,7 +96,6 @@ const ProductForm = () => {
           customFields: p.customFields || [],
         });
 
-        // For editing: fetch existing image URLs and create dummy File previews
         const imageObjects = (p.images || []).map((url) => ({
           file: null,
           preview: url,
@@ -108,6 +105,9 @@ const ProductForm = () => {
         setImages(imageObjects);
       } catch (err) {
         console.error("Failed to load product:", err);
+        alert("Error loading product data.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -207,13 +207,12 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
+    setSubmitting(true);
     try {
       const token = await getValidToken();
 
-      // Upload new images to Cloudinary and keep existing uploaded URLs
       const uploadedImageUrls = [];
 
       for (const img of images) {
@@ -242,12 +241,23 @@ const ProductForm = () => {
     } catch (err) {
       console.error(err);
       alert(err.message || "❌ Failed to save product");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split("T")[0];
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
+
 
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
@@ -455,49 +465,31 @@ const ProductForm = () => {
                     <Button
                       variant="secondary"
                       onClick={() => {
-                        if (id) {
-                          // Editing mode: confirm before leaving
-                          const confirmLeave = window.confirm("Discard changes and go back?");
-                          if (confirmLeave) navigate("/viewallproducts");
-                        } else {
-                          // Adding mode: just clear form
-                          const confirmClear = window.confirm("Clear the form and go back?");
-                          if (confirmClear) {
-                            setFormData({
-                              name: "",
-                              id: "",
-                              brandName: "",
-                              buyingPrice: "",
-                              sellingPrice: "",
-                              vendorPrice: "",
-                              quantity: "",
-                              date: "",
-                              isTopSelling: false,
-                              isFeatured: false,
-                              isBudgetFriendly: false,
-                              description: "",
-                              customFields: [],
-                            });
-                            images.forEach(({ preview, uploaded }) => {
-                              if (!uploaded && preview) URL.revokeObjectURL(preview);
-                            });
-                            setImages([]);
-                            setErrors({});
-                            navigate("/viewallproducts");
-                          }
-                        }
+                        const confirmDiscard = window.confirm("Discard changes?");
+                        if (confirmDiscard) navigate("/viewallproducts");
                       }}
+                      disabled={submitting}
                     >
                       Discard
                     </Button>
 
-                    <Button type="submit">
-                      {id ? "Update" : "Add"} Product
+                    <Button type="submit" disabled={submitting}>
+                      {submitting ? (
+                        <>
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            className="me-2"
+                          />
+                          Saving...
+                        </>
+                      ) : (
+                        `${id ? "Update" : "Add"} Product`
+                      )}
                     </Button>
                   </div>
                 </Col>
               </Row>
-
             </Form>
           </div>
         </Col>
