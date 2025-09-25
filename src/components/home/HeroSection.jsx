@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import purifier1 from "../../assets/WaterPurifierImgHeroSection.png";
 import purifier2 from "../../assets/WaterPurifierImgHeroSection.png";
 import purifier3 from "../../assets/WaterPurifierImgHeroSection.png";
@@ -33,47 +33,75 @@ const slides = [
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState("next"); // "next" or "prev"
+  const prevSlideRef = useRef(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      nextSlide();
-    }, 6000);
+      goToNextSlide();
+    }, 3000);
     return () => clearInterval(interval);
   }, [currentSlide]);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
-  const prevSlide = () =>
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  const goToSlide = (index) => setCurrentSlide(index);
+  const goToNextSlide = () => {
+    setDirection("next");
+    setCurrentSlide((prev) => {
+      prevSlideRef.current = prev;
+      return (prev + 1) % slides.length;
+    });
+  };
+
+  const goToPrevSlide = () => {
+    setDirection("prev");
+    setCurrentSlide((prev) => {
+      prevSlideRef.current = prev;
+      return (prev - 1 + slides.length) % slides.length;
+    });
+  };
+
+  const goToSlide = (index) => {
+    if (index === currentSlide) return;
+
+    setDirection(index > currentSlide ? "next" : "prev");
+    prevSlideRef.current = currentSlide;
+    setCurrentSlide(index);
+  };
 
   return (
     <div className="hero-wrapper">
       <div className="hero-container">
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`slide ${index === currentSlide ? "active" : ""}`}
-          >
-            <div className="hero-content">
-              <h1>
-                {slide.title}
-                <br />
-                <span className="highlight">{slide.highlight}</span>
-              </h1>
-              <p>{slide.text}</p>
-              <button className="btn">Explore Product →</button>
+        {slides.map((slide, index) => {
+          let className = "slide";
+
+          if (index === currentSlide) {
+            className += ` active ${direction}`;
+          } else if (index === prevSlideRef.current) {
+            className += ` prev-slide ${direction}`;
+          }
+
+          return (
+            <div key={index} className={className}>
+              <div className="hero-content">
+                <h1>
+                  {slide.title}
+                  <br />
+                  <span className="highlight">{slide.highlight}</span>
+                </h1>
+                <p>{slide.text}</p>
+                <button className="btn">Explore Product →</button>
+              </div>
+              <div className="hero-image">
+                <img src={slide.img} alt="Water Purifier" />
+              </div>
             </div>
-            <div className="hero-image">
-              <img src={slide.img} alt="Water Purifier" />
-            </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Navigation arrows */}
-        <button className="arrow left-arrow" onClick={prevSlide}>
+        <button className="arrow left-arrow" onClick={goToPrevSlide}>
           &#10094;
         </button>
-        <button className="arrow right-arrow" onClick={nextSlide}>
+        <button className="arrow right-arrow" onClick={goToNextSlide}>
           &#10095;
         </button>
 
@@ -112,7 +140,6 @@ const HeroSection = () => {
         .slide {
           position: absolute;
           top: 0;
-          left: 100%;
           width: 100%;
           height: 100%;
           display: flex;
@@ -120,15 +147,44 @@ const HeroSection = () => {
           justify-content: space-between;
           flex-wrap: wrap;
           opacity: 0;
-          transform: translateX(30px);
+          transition: all 1s ease;
+          z-index: 1;
+          left: 0;
+          transform: translateX(100%);
+        }
+
+        /* NEXT DIRECTION (Right arrow or auto) */
+        .slide.next.active {
+          opacity: 1;
+          z-index: 3;
+          transform: translateX(0);
+          left: 0;
           transition: all 1s ease;
         }
 
-        .slide.active {
-          left: 0;
-          opacity: 1;
-          transform: translateX(0);
+        .slide.next.prev-slide {
+          opacity: 0;
           z-index: 2;
+          transform: translateX(-100%);
+          left: 0;
+          transition: all 1s ease;
+        }
+
+        /* PREV DIRECTION (Left arrow) */
+        .slide.prev.active {
+          opacity: 1;
+          z-index: 3;
+          transform: translateX(0);
+          left: 0;
+          transition: all 1s ease;
+        }
+
+        .slide.prev.prev-slide {
+          opacity: 0;
+          z-index: 2;
+          transform: translateX(100%);
+          left: 0;
+          transition: all 1s ease;
         }
 
         .hero-content {
