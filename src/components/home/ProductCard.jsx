@@ -12,6 +12,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         className="shadow-sm rounded mb-3 d-flex justify-content-center align-items-center"
         style={{
           height: "300px",
+          fontFamily: "Poppins, Tofu",
           border: "1px solid #ccc",
           backgroundColor: "#F6F6F6", // ✅ ash background
           boxShadow: "none",
@@ -53,9 +54,9 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         {/* Title */}
         <h6
           style={{
-            fontFamily: "gf_Poppins variant6, Tofu, sans-serif",
             fontStyle: "normal",
-            fontWeight: 600,
+             fontFamily: "Poppins, Tofu",
+            fontWeight: 400,
             fontSize: "16px",
             lineHeight: "24px",
             color: "#2A2A2A",
@@ -68,9 +69,9 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         {/* Description / Brand */}
         <p
           style={{
-            fontFamily: "gf_Poppins variant4, Tofu, sans-serif",
-            fontStyle: "normal",
-            fontWeight: 300,
+             fontFamily: "Poppins, Tofu",
+             fontStyle: "normal",
+            fontWeight: 100,
             fontSize: "15px",
             lineHeight: "25px",
             color: "#2A2A2A",
@@ -86,8 +87,8 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
             style={{
               background: "#f1f1f1",
               borderRadius: "6px",
+              fontFamily: "Poppins, Tofu",
               fontSize: "14px",
-              fontFamily: "gf_Poppins variant6, Tofu, sans-serif",
               fontWeight: 600,
               color: "#2A2A2A",
               padding: "4px 10px",
