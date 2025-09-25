@@ -44,7 +44,9 @@ const ProductDetails = () => {
                   objectFit: "contain",
                   cursor: "pointer",
                   border:
-                    selectedImage === img ? "2px solid #003366" : "1px solid #ccc",
+                    selectedImage === img
+                      ? "2px solid #003366"
+                      : "1px solid #ccc",
                 }}
                 onClick={() => setSelectedImage(img)}
               />
@@ -69,22 +71,19 @@ const ProductDetails = () => {
         </Col>
       </Row>
 
-      {/* ✅ Enquiry Button Below */}
-      <div className="text-center mb-4">
-        <Button
-          className="enquiry-btn d-flex align-items-center justify-content-center px-4 py-2 mx-auto"
-          onClick={() => navigate("/#enquiry")}
-          style={{
-            backgroundColor: "#0d6efd",
-            border: "none",
-            borderRadius: "50px",
-            fontWeight: "500",
-            fontSize: "16px",
-          }}
-        >
-          Enquiry <ArrowRight className="ms-2" />
-        </Button>
-      </div>
+      <Button
+        className="enquiry-btn d-flex align-items-center justify-content-center px-4 py-2 mx-auto"
+        onClick={() => navigate("/enquirypopup", { state: { product } })} // 👈 pass product details
+        style={{
+          backgroundColor: "#0d6efd",
+          border: "none",
+          borderRadius: "50px",
+          fontWeight: "500",
+          fontSize: "16px",
+        }}
+      >
+        Enquiry <ArrowRight className="ms-2" />
+      </Button>
 
       {/* ✅ Product Info Section */}
       <div className="text-start mx-auto" style={{ maxWidth: "720px" }}>
@@ -101,9 +100,7 @@ const ProductDetails = () => {
         {/* ✅ Features */}
         {product.features?.length > 0 && (
           <div className="mb-3">
-            <h6 className="custom-heading">
-              Speciality of {product.name}:
-            </h6>
+            <h6 className="custom-heading">Speciality of {product.name}:</h6>
             <ul className="custom-body">
               {product.features.map((f, idx) => (
                 <li key={idx}>{f}</li>
