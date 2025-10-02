@@ -25,6 +25,16 @@ const AppRoutes = () => {
     setProducts(stored);
   }, []);
 
+ /* useEffect(() => {
+  if (location.hash) {
+    const id = location.hash.replace("#", "");
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}, [location]);*/
+
   return (
     <>
       <Navbar products={products} />
@@ -45,7 +55,7 @@ const AppRoutes = () => {
           </Routes>
         </AnimatePresence>
       </div>
-      <Footer />
+      <Footer id="/footer" />
     </>
   );
 };

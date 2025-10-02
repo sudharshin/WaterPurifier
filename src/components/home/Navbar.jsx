@@ -23,12 +23,6 @@ const NavbarComponent = () => {
   // Helper: check if hash matches
   const isHashActive = (hash) => location.hash === hash;
 
-  const scrollToId = (id) => {
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   return (
     <BootstrapNavbar
       bg="white"
@@ -91,7 +85,6 @@ const NavbarComponent = () => {
             <Nav.Link
               onClick={() => {
                 navigate("/#footer");
-                scrollToId("footer");
                 setExpanded(false);
               }}
               className={`me-3 ${
@@ -108,7 +101,6 @@ const NavbarComponent = () => {
             <Nav.Link
               onClick={() => {
                 navigate("/#enquiry");
-                scrollToId("enquiry");
                 setExpanded(false);
               }}
               className={`me-3 ${
@@ -147,7 +139,9 @@ const NavbarComponent = () => {
                   variant="primary"
                   className="px-4"
                   style={{
-                    borderRadius: "20px",
+                    borderRadius: "50px",
+                    background: "#108cd5ff",
+                    border: "1px solid #E0E0E0",
                     fontWeight: "500",
                     fontFamily: '"Poppins", sans-serif',
                   }}

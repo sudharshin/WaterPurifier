@@ -118,7 +118,7 @@ const ProductListing = ({ title, description, products }) => {
           }
 
           .view-all-btn {
-            background-color: #e6f2ff;
+            background: #b5f0f5ff;
             border: none;
             color: #000;
             font-weight: 500;
@@ -128,8 +128,8 @@ const ProductListing = ({ title, description, products }) => {
           }
           .view-all-btn:hover,
           .view-all-btn:active {
-            background-color: #003366 !important;
-            color: #fff !important;
+            background-color: #7ef3feff !important;
+            color: #000 !important;
           }
         `}
       </style>

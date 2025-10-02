@@ -69,7 +69,7 @@ const ProductDetailsCard = ({ brand, image, title, desc, price, onClick }) => {
         <div>
           <span
             style={{
-              backgroundColor: "#E6F2FB",
+              backgroundColor: "#c7ffffff",
               color: "#2A2A2A",
               fontWeight: "600",
               padding: "4px 12px",

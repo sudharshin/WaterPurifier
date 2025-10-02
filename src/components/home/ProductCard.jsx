@@ -85,7 +85,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         <div className="d-flex align-items-center justify-content-start mt-auto">
           <div
             style={{
-              background: "#f1f1f1",
+              background: "#c7ffffff",
               borderRadius: "6px",
               fontFamily: "Poppins, Tofu",
               fontSize: "14px",
