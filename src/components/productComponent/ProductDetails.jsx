@@ -181,6 +181,10 @@ const ProductDetails = () => {
 
       {/* Styles */}
       <style>{`
+        * {
+    font-family: 'Poppins', sans-serif;
+  }
+
         .product-title {
           font-size: 32px;
           font-weight: 700;
