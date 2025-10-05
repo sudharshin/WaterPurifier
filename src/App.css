@@ -19,6 +19,12 @@ body {
   background-color: #fff;
   overflow-x: hidden; /* Prevents horizontal scroll */
 }
+/* === Hide scroll and overflow during transitions === */
+body.hide-scroll {
+  overflow: hidden !important;
+  height: 100vh;
+}
+
 
 /* ===== GLOBAL ELEMENTS ===== */
 img {
@@ -50,6 +56,9 @@ button, .btn {
   cursor: pointer;
   transition: background 0.3s ease-in-out;
 }
+
+
+
 
 .btn-primary {
   background-color: #007bff;
@@ -155,3 +164,5 @@ html {
   padding: 0 !important;
   border-radius: 50%;  /* make it circular */
 }
+
+

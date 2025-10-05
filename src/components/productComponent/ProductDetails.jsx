@@ -39,7 +39,6 @@ const ProductDetails = () => {
   return (
     <Container fluid className="py-5">
       <Row className="gx-4">
-        {/* Left Column - Images and Enquiry */}
         <Col md={4} className="d-none d-md-block">
           <div className="image-panel sticky-panel">
             <div className="main-image-container mb-3">
@@ -79,10 +78,8 @@ const ProductDetails = () => {
           </div>
         </Col>
 
-        {/* Right Column - Product Content */}
         <Col xs={12} md={8}>
-          <div className="product-content scrollable-panel">
-            {/* Mobile Image */}
+          <div className="product-content">
             <div className="text-center mb-4 d-md-none">
               <div className="main-image-container mx-auto">
                 <img
@@ -93,24 +90,18 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Product Title & Price */}
             <div className="section-block">
-              <h1 className="product-title text-uppercase fw-bold text-primary">
+              <h1 className="product-title text-uppercase text-primary">
                 {product.name}
               </h1>
 
               <div className="d-flex align-items-center gap-3 mb-3">
-                <h2 className="text-dark fw-bold m-0">₹{currentPrice}</h2>
-                <h5 className="text-muted text-decoration-line-through m-0">
-                  ₹{originalPrice}
-                </h5>
+                <h2 className="current-price m-0">₹{currentPrice}</h2>
+                <h5 className="original-price m-0">₹{originalPrice}</h5>
                 <span className="badge bg-info text-dark fw-semibold">20% OFF</span>
               </div>
-
-              <hr />
             </div>
 
-            {/* Features */}
             {product.features?.length > 0 && (
               <div className="section-block">
                 <h5 className="section-heading">Speciality of {product.name}:</h5>
@@ -119,22 +110,16 @@ const ProductDetails = () => {
                     <li key={idx}>{feature}</li>
                   ))}
                 </ul>
-                <hr />
               </div>
             )}
 
-            {/* Description */}
             {product.description && (
               <div className="section-block">
-                <h5 className="description-heading text-uppercase fw-bold text-primary mb-3">
-                  Description
-                </h5>
+                {/* Description heading removed as per request */}
                 <p className="product-description">{product.description}</p>
-                <hr />
               </div>
             )}
 
-            {/* Key Features - from customFields */}
             {product.customFields?.length > 0 && (
               <div className="section-block">
                 <h5 className="section-heading text-uppercase mb-3">Key Features</h5>
@@ -144,11 +129,9 @@ const ProductDetails = () => {
                     return value ? <li key={idx}>{truncateText(value, 70)}</li> : null;
                   })}
                 </ul>
-                <hr />
               </div>
             )}
 
-            {/* Styled Specifications Grid */}
             {product.customFields?.length > 0 && (
               <div className="section-block">
                 <h5 className="spec-heading text-uppercase">Specifications</h5>
@@ -172,25 +155,82 @@ const ProductDetails = () => {
         </Col>
       </Row>
 
-      {/* Modal for Image Zoom */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered size="lg">
         <Modal.Body className="p-0">
           <img src={selectedImage} alt="Zoomed" className="img-fluid w-100" />
         </Modal.Body>
       </Modal>
 
-      {/* Styles */}
       <style>{`
+        /* Global font */
         * {
-    font-family: 'Poppins', sans-serif;
-  }
-
-        .product-title {
-          font-size: 32px;
-          font-weight: 700;
-          color: #0033cc;
+          font-family: 'Poppins', sans-serif;
         }
 
+        html, body {
+          height: 100%;
+          overflow-x: hidden;
+        }
+
+        /* Headings */
+        .product-title,
+        .section-heading,
+        .spec-heading {
+          font-weight: 700; /* Bold */
+          color: #0033cc;
+          margin-bottom: 16px;
+        }
+
+        .section-heading,
+        .spec-heading {
+          color: #000;
+        }
+
+        /* Labels */
+        .spec-label {
+          font-weight: 600; /* Semi-bold */
+          color: #222222;
+          text-align: left;
+          word-break: break-word;
+        }
+
+        /* Values */
+        .spec-value,
+        .product-description,
+        .info-list,
+        .features-list {
+          font-weight: 400; /* Light */
+          color: #2a2424ff;
+          font-size: 16px;
+          line-height: 1.6;
+          text-align: left;
+          word-break: break-word;
+        }
+
+        /* Lists */
+        .info-list li,
+        .features-list li {
+          margin-bottom: 8px;
+          list-style-type: disc;
+          font-weight: 400;
+          color:  #2a2424ff;
+        }
+
+        /* Price styling */
+        .d-flex.align-items-center > h2.current-price {
+          font-weight: 700; /* Bold */
+          color: #222;
+          margin: 0;
+        }
+
+        .d-flex.align-items-center > h5.original-price {
+          font-weight: 300; /* Light */
+          color: #888888;
+          margin: 0;
+          text-decoration: line-through;
+        }
+
+        /* Badge */
         .badge.bg-info {
           background-color: #d0ebff;
           color: #0056b3;
@@ -199,48 +239,13 @@ const ProductDetails = () => {
           border-radius: 6px;
         }
 
-        .description-heading {
-          font-size: 16px;
-          font-weight: 600;
-          letter-spacing: 1px;
-        }
-
-        .product-description {
-          font-size: 16px;
-          color: #444;
-          line-height: 1.6;
-        }
-
-        .section-heading {
-          font-size: 18px;
-          font-weight: 600;
-          color: #000;
-        }
-
-        .info-list,
-        .features-list {
-          padding-left: 20px;
-          font-size: 16px;
-          color: #444;
-        }
-
-        .info-list li,
-        .features-list li {
-          margin-bottom: 8px;
-          list-style-type: disc;
-        }
-
+        /* Main container spacing */
         .section-block {
           margin-bottom: 32px;
           width: 100%;
         }
 
-        hr {
-          border: none;
-          border-top: 2px solid #ccc;
-          margin: 32px 0;
-        }
-
+        /* Image containers */
         .main-image-container {
           width: 100%;
           height: 300px;
@@ -259,6 +264,7 @@ const ProductDetails = () => {
           object-fit: contain;
         }
 
+        /* Thumbnail styling */
         .thumbnail-wrapper {
           width: 70px;
           height: 70px;
@@ -288,6 +294,7 @@ const ProductDetails = () => {
           background-color: #e9f2ff;
         }
 
+        /* Enquiry button */
         .enquiry-btn {
           background-color: #0d6efd;
           border-radius: 30px;
@@ -301,63 +308,29 @@ const ProductDetails = () => {
           background-color: #004a9f;
         }
 
+        /* Sticky sidebar panel */
         .sticky-panel {
           position: sticky;
           top: 80px;
         }
 
-        .scrollable-panel {
-          max-height: 80vh;
-          overflow-y: scroll;
+        .product-content {
           padding-right: 1rem;
-          scrollbar-width: none; /* Firefox */
         }
 
-        .scrollable-panel::-webkit-scrollbar {
-          display: none; /* Chrome, Safari */
-        }
-
-        /* Specification Grid Style */
-        .spec-heading {
-          font-size: 18px;
-          font-weight: 700;
-          margin-bottom: 16px;
-          padding-bottom: 8px;
-        }
+        /* Spec grid */
         .spec-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        font-size: 15px;
-        color: #333;
-        border: none;
-        border-radius: 0;
-      }
-
-
-        .spec-grid > div {
-          padding: 12px 16px;
-          border-bottom: 1px solid #c5cad1ff;
-        }
-
-        .spec-grid > div:nth-child(2n) {
-          text-align: right;
-          font-weight: 600;
-        }
-
-        .spec-grid > div:last-child,
-        .spec-grid > div:nth-last-child(2) {
-          border-bottom: none;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px 24px;
+          font-size: 15px;
+          color: #333;
+          border: none;
         }
 
         @media (max-width: 768px) {
           .sticky-panel {
             position: static;
-          }
-
-          .scrollable-panel {
-            max-height: none;
-            overflow-y: visible;
-            padding-right: 0;
           }
 
           .main-image-container {
@@ -375,9 +348,11 @@ const ProductDetails = () => {
 
           .spec-grid {
             grid-template-columns: 1fr;
+            gap: 8px;
           }
 
-          .spec-grid > div:nth-child(2n) {
+          .spec-grid > .spec-label,
+          .spec-grid > .spec-value {
             text-align: left;
           }
         }
