@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
 /* ===== RESET STYLES ===== */
 * {
   margin: 0;
@@ -6,25 +7,34 @@
   box-sizing: border-box;
 }
 
-html {
+html, body {
+  height: auto;           /* Allow natural height */
+  overflow-y: auto;       /* Enable vertical scrolling */
+  overflow-x: hidden;     /* Disable horizontal scrolling */
   font-size: 100%;
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Poppins', 'Tofu';
+  font-family: 'Poppins', 'Tofu', sans-serif;
   font-weight: 600;
   line-height: 1.6;
   color: #333;
   background-color: #fff;
-  overflow-x: hidden; /* Prevents horizontal scroll */
 }
-/* === Hide scroll and overflow during transitions === */
+
+/* Remove these styles unless you actively want to block scrolling temporarily */
+/*
+body.loading {
+  overflow: hidden;
+  height: 100vh;
+}
+
 body.hide-scroll {
   overflow: hidden !important;
   height: 100vh;
 }
-
+*/
 
 /* ===== GLOBAL ELEMENTS ===== */
 img {
@@ -45,7 +55,7 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   font-size: 1rem;
-  font-family: 'Poppins', 'Tofu';
+  font-family: 'Poppins', 'Tofu', sans-serif;
   margin-bottom: 1rem;
 }
 
@@ -57,9 +67,6 @@ button, .btn {
   transition: background 0.3s ease-in-out;
 }
 
-
-
-
 .btn-primary {
   background-color: #007bff;
   color: white;
@@ -67,6 +74,10 @@ button, .btn {
 
 .btn-primary:hover {
   background-color: #0056b3;
+}
+
+.page-transition {
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 /* ===== MOBILE FIRST MEDIA QUERIES ===== */
@@ -142,10 +153,8 @@ button, .btn {
     font-size: 1.8rem;
   }
 }
-/* Creates responsive square boxes */
-/* App.css */
 
-/* === Responsive square box === */
+/* Creates responsive square boxes */
 .aspect-ratio-box {
   width: 280px;
   padding-top: 70%;
@@ -153,9 +162,7 @@ button, .btn {
   border: 1px solid #ccc;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* Small button style */
 .small-btn {
   font-size: 0.7rem;   /* smaller font for × */
   width: 20px;         /* make button compact */
@@ -164,5 +171,3 @@ html {
   padding: 0 !important;
   border-radius: 50%;  /* make it circular */
 }
-
-

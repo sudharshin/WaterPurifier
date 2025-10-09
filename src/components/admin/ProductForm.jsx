@@ -252,7 +252,7 @@ const ProductForm = () => {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+      <Container className="d-flex justify-content-center align-items-center min-vh-100" >
         <Spinner animation="border" variant="primary" />
       </Container>
     );
@@ -260,7 +260,7 @@ const ProductForm = () => {
 
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+    <Container className="d-flex justify-content-center align-items-center min-vh-100"  style={{paddingTop:"30px"}}>
       <Row className="w-100">
         <Col md={{ span: 8, offset: 2 }}>
           <div className="p-4 shadow rounded bg-white">

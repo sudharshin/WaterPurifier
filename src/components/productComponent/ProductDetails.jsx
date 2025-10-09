@@ -1,21 +1,88 @@
-import React, { useState, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+// import React, { useState, useContext, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { Container, Row, Col, Button, Modal } from "react-bootstrap";
+// import { ArrowRight } from "react-bootstrap-icons";
+// import { UserContext } from "../../context/UserContext";
+
+// const ProductDetails = ({ id }) => {
+//   const [product, setProduct] = useState(null);
+//   const [selectedImage, setSelectedImage] = useState(null);
+//   const [showModal, setShowModal] = useState(false);
+
+//   const { user } = useContext(UserContext);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     // Scroll again, in case global didn't fire at the right moment
+//     window.scrollTo(0, 0);
+
+//     // Load product data by ID
+//     const allProducts = JSON.parse(localStorage.getItem("products")) || [];
+//     const found = allProducts.find((p) => String(p.id) === String(id));
+//     setProduct(found);
+//   }, [id]);
+
+//   // Update selectedImage whenever product changes
+//   useEffect(() => {
+//     if (!product) return;
+
+//     const images = product?.images?.length
+//       ? product.images
+//       : [product.image || product.imageUrl || "/placeholder.png"];
+
+//     setSelectedImage(images[0]);
+//   }, [product]);
+
+//   if (!product) {
+//     return (
+//       <Container className="py-5 text-center">
+//         <h4>Product not found</h4>
+//       </Container>
+//     );
+//   }
+
+//   const images = product?.images?.length
+//     ? product.images
+//     : [product.image || product.imageUrl || "/placeholder.png"];
+
+//   const discountPercent = 20;
+//   const currentPrice =
+//     user?.role === "vendor" ? product.vendorPrice : product.sellingPrice;
+//   const originalPrice =
+//     product.originalPrice || Math.round(currentPrice / (1 - discountPercent / 100));
+
+import React, { useState, useContext, useLayoutEffect, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import { ArrowRight } from "react-bootstrap-icons";
 import { UserContext } from "../../context/UserContext";
 
-const ProductDetails = () => {
+const ProductDetails = ({ id }) => {
+  const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // start null
+  const [showModal, setShowModal] = useState(false);
+
   const { user } = useContext(UserContext);
-  const location = useLocation();
-  const { product } = location.state || {};
   const navigate = useNavigate();
 
-  const images = product?.images?.length
-    ? product.images
-    : [product.image || product.imageUrl || "/placeholder.png"];
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
 
-  const [selectedImage, setSelectedImage] = useState(images[0]);
-  const [showModal, setShowModal] = useState(false);
+    const allProducts = JSON.parse(localStorage.getItem("products")) || [];
+    const found = allProducts.find((p) => String(p.id) === String(id));
+    setProduct(found);
+  }, [id]);
+
+  // Update selectedImage whenever product changes
+  useEffect(() => {
+    if (!product) return;
+
+    const images = product?.images?.length
+      ? product.images
+      : [product.image || product.imageUrl || "/placeholder.png"];
+
+    setSelectedImage(images[0]);
+  }, [product]);
 
   if (!product) {
     return (
@@ -24,6 +91,10 @@ const ProductDetails = () => {
       </Container>
     );
   }
+
+  const images = product?.images?.length
+    ? product.images
+    : [product.image || product.imageUrl || "/placeholder.png"];
 
   const discountPercent = 20;
   const currentPrice =
@@ -126,7 +197,7 @@ const ProductDetails = () => {
                 <ul className="features-list">
                   {product.customFields.map((field, idx) => {
                     const value = field.value || field.fieldValue;
-                    return value ? <li key={idx}>{truncateText(value, 70)}</li> : null;
+                    return value ? <li key={idx}>{value}</li> : null;
                   })}
                 </ul>
               </div>
@@ -144,7 +215,7 @@ const ProductDetails = () => {
                     return (
                       <React.Fragment key={idx}>
                         <div className="spec-label">{name}</div>
-                        <div className="spec-value">{truncateText(value, 60)}</div>
+                        <div className="spec-value">{value}</div>
                       </React.Fragment>
                     );
                   })}

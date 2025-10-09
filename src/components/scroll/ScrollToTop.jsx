@@ -1,17 +1,11 @@
-// components/scroll/ScrollToTop.js
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    // Instantly scroll to top (no animation)
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "auto",
-    });
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);  // instant jump to top, no smooth behavior
   }, [pathname]);
 
   return null;
