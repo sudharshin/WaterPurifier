@@ -11,7 +11,6 @@ const App = () => {
   }
 }, []);
 
-// fix
   return (
     <UserProvider>
       <Router>
