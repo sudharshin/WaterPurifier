@@ -31,7 +31,7 @@ function AdminLogin() {
 
       // ✅ Redirect based on role
       if (role === "admin") {
-        navigate("/viewallproducts", { replace: true });
+        navigate("/admin/dashboard", { replace: true });
       } else if (role === "vendor") {
         navigate("/", { replace: true });
       } else {

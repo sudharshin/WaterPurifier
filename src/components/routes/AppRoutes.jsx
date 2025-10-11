@@ -35,7 +35,7 @@ const AppRoutes = () => {
           {/* Protected Routes */}
           <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
           <Route path="/form/:id" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
-          <Route path="/viewallproducts" element={<PrivateRoute><ViewAllProducts /></PrivateRoute>} />
+          <Route path="/admin/dashboard" element={<PrivateRoute><ViewAllProducts /></PrivateRoute>} />
           <Route path="/products/:id" element={<ProductDetailsWrapper />} />
 
         </Routes>

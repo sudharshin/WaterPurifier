@@ -237,7 +237,7 @@ const ProductForm = () => {
       }
 
       alert(`✅ Product ${id ? "updated" : "added"} successfully!`);
-      navigate("/viewallproducts");
+      navigate("/admin/dashboard");
     } catch (err) {
       console.error(err);
       alert(err.message || "❌ Failed to save product");
@@ -466,7 +466,7 @@ const ProductForm = () => {
                       variant="secondary"
                       onClick={() => {
                         const confirmDiscard = window.confirm("Discard changes?");
-                        if (confirmDiscard) navigate("/viewallproducts");
+                        if (confirmDiscard) navigate("/admin/dashboard");
                       }}
                       disabled={submitting}
                     >
