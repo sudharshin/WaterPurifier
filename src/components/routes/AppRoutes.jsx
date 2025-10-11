@@ -7,12 +7,15 @@ import CategoryBasedProductListingPage from "../productComponent/CategoryBasedPr
 import AdminLogin from "../admin/AdminLogin";
 import ProductForm from "../admin/ProductForm";
 import ViewAllProducts from "../admin/ViewAllProducts";
+import AdminDetails from "../admin/AdminDetails";
+import EnquiryDetails from "../admin/EnquiryDetails";
 import ProductDetailsWrapper from "../productComponent/ProductDetailsWrapper";
 
 import PrivateRoute from "./PrivateRoute";
 
 import FadeOnRouteChange from "./FadeOnRouteChange";
 
+import AdminPage from "../admin/dashboard/AdminPage";
 const AppRoutes = () => {
   const location = useLocation();
   const [products, setProducts] = useState([]);
@@ -35,9 +38,12 @@ const AppRoutes = () => {
           {/* Protected Routes */}
           <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
           <Route path="/form/:id" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
-          <Route path="/admin/dashboard" element={<PrivateRoute><ViewAllProducts /></PrivateRoute>} />
-          <Route path="/products/:id" element={<ProductDetailsWrapper />} />
+          {/* <Route path="/newadmin/dashboard" element={<PrivateRoute><ProductInfo /></PrivateRoute>} /> */}
 
+          <Route path="/products/:id" element={<ProductDetailsWrapper />} />
+          <Route path="/admin/details" element={<PrivateRoute><AdminDetails /></PrivateRoute>} />
+          <Route path="/admin/enquiry" element={<PrivateRoute><EnquiryDetails /></PrivateRoute>} />
+         <Route path="/admin/dashboard" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
         </Routes>
       </div>
 
