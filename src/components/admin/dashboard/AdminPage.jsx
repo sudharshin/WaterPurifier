@@ -12,7 +12,6 @@ const AdminPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Handle screen resizing
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -21,7 +20,6 @@ const AdminPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Page content rendering
   const renderContent = () => {
     switch (activePage) {
       case "dashboard":
@@ -37,13 +35,11 @@ const AdminPage = () => {
     }
   };
 
-  // Inline styles
   const baseStyles = {
     container: {
-      height: "100vh",
       display: "flex",
       flexDirection: "column",
-      overflow: "hidden",
+      minHeight: "100vh", // ✅ Ensures full screen height
       fontFamily: "Arial, sans-serif",
     },
     topbar: {
@@ -57,8 +53,6 @@ const AdminPage = () => {
     layout: {
       display: "flex",
       flex: 1,
-      height: "100%",
-      flexDirection: "row",
     },
     sidebar: {
       width: isMobile ? (showSidebar ? "70%" : "0") : "250px",
@@ -71,11 +65,11 @@ const AdminPage = () => {
       overflow: "hidden",
       zIndex: 1000,
       position: isMobile ? "absolute" : "relative",
-      height: "100%",
+      height: isMobile ? "100vh" : "auto",
     },
     overlay: {
       display: isMobile && showSidebar ? "block" : "none",
-      position: "absolute",
+      position: "fixed",
       top: 0,
       left: 0,
       width: "100%",
@@ -87,8 +81,7 @@ const AdminPage = () => {
       flex: 1,
       backgroundColor: "#f8f9fa",
       padding: isMobile ? "15px" : "30px",
-      overflowY: "auto",
-      transition: "padding 0.3s ease",
+      paddingBottom: 0, // ✅ Removes bottom padding
     },
     title: {
       fontWeight: "bold",
@@ -123,16 +116,13 @@ const AdminPage = () => {
             activePage={activePage}
             setActivePage={(page) => {
               setActivePage(page);
-              if (isMobile) setShowSidebar(false); // auto-close on mobile
+              if (isMobile) setShowSidebar(false);
             }}
           />
         </div>
 
-        {/* Overlay (for mobile) */}
-        <div
-          style={baseStyles.overlay}
-          onClick={() => setShowSidebar(false)}
-        ></div>
+        {/* Overlay */}
+        <div style={baseStyles.overlay} onClick={() => setShowSidebar(false)}></div>
 
         {/* Main Content */}
         <div style={baseStyles.mainContent}>

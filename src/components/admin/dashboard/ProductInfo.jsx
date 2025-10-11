@@ -80,6 +80,13 @@ const ProductInfo = () => {
       transition: "all 0.3s ease",
     }),
     cell: { fontSize: "15px", fontWeight: 500, display: "flex", alignItems: "center" },
+    modalBody: {
+      maxHeight: "none",
+      overflowY: "visible",
+    },
+    modalContent: {
+      overflow: "visible",
+    },
   };
 
   if (loading)
@@ -144,8 +151,9 @@ const ProductInfo = () => {
               style={{
                 width: "50px",
                 height: "50px",
-                objectFit: "cover",
+                objectFit: "contain",
                 borderRadius: "8px",
+                backgroundColor: "#f0f0f0",
               }}
             />
           </div>
@@ -195,14 +203,14 @@ const ProductInfo = () => {
         onHide={() => setSelectedProduct(null)}
         size="lg"
         centered
-        scrollable={false} // disable modal scroll
+        scrollable={false} // make sure this is false to avoid internal scroll
       >
         {selectedProduct && (
           <>
             <Modal.Header closeButton>
               <Modal.Title>{selectedProduct.name}</Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{ maxHeight: "none" }}>
+            <Modal.Body style={styles.modalBody}>
               <img
                 src={selectedProduct.images[0]}
                 alt={selectedProduct.name}
