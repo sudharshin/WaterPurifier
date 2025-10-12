@@ -10,12 +10,12 @@ import ViewAllProducts from "../admin/ViewAllProducts";
 import AdminDetails from "../admin/AdminDetails";
 import EnquiryDetails from "../admin/EnquiryDetails";
 import ProductDetailsWrapper from "../productComponent/ProductDetailsWrapper";
-
 import PrivateRoute from "./PrivateRoute";
 
 import FadeOnRouteChange from "./FadeOnRouteChange";
 
 import AdminPage from "../admin/dashboard/AdminPage";
+import VendorRegisterForm from "../home/VendorRegisterForm";
 const AppRoutes = () => {
   const location = useLocation();
   const [products, setProducts] = useState([]);
@@ -34,7 +34,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<CategoryBasedProductListingPage />} />
           <Route path="/login" element={<AdminLogin />} />
-
+          <Route path="/register" element={<VendorRegisterForm />} />
           {/* Protected Routes */}
           <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
           <Route path="/form/:id" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
