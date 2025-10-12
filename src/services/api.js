@@ -149,3 +149,40 @@ export const logoutUser = (token) =>
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     }
   );
+
+
+  // --- Enquiries API ---
+
+// Get all enquiries (admin only)
+export const getEnquiries = (token) =>
+  API.get("/enquiries", {
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+  });
+
+// Get single enquiry by ID
+export const getEnquiryById = (id, token) =>
+  API.get(`/enquiries/${id}`, {
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+  });
+
+// Create new enquiry (public, no auth token needed)
+export const createEnquiry = (data) =>
+  API.post("/enquiries", data, {
+    headers: { "Content-Type": "application/json" },
+  });
+
+// Update enquiry status (admin only)
+export const updateEnquiryStatus = (id, status, token) =>
+  API.put(
+    `/enquiries/${id}/status`,
+    { status },
+    {
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    }
+  );
+
+// Delete enquiry (admin only)
+export const deleteEnquiry = (id, token) =>
+  API.delete(`/enquiries/${id}`, {
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+  });
