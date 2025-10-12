@@ -61,7 +61,7 @@ const ProductForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    id: "",
+    productCode: "",
     brandName: "",
     buyingPrice: "",
     sellingPrice: "",
@@ -93,6 +93,7 @@ const ProductForm = () => {
         setFormData({
           ...p,
           date: formatDateForInput(p.date),
+           productCode: p.productCode || "",
           customFields: p.customFields || [],
         });
 
@@ -331,7 +332,7 @@ const ProductForm = () => {
               {/* Standard Fields */}
               {[
                 { label: "Item Name", name: "name", type: "text" },
-                { label: "Product Code", name: "id", type: "text" },
+                { label: "Product Code", name: "productCode", type: "text" },
                 { label: "Brand Name", name: "brandName", type: "text" },
                 { label: "Buying Price", name: "buyingPrice", type: "number" },
                 { label: "Selling Price", name: "sellingPrice", type: "number" },
