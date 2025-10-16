@@ -39,8 +39,9 @@ const AdminPage = () => {
     container: {
       display: "flex",
       flexDirection: "column",
-      minHeight: "100vh", // ✅ Ensures full screen height
+      minHeight: "100vh",
       fontFamily: "Arial, sans-serif",
+      backgroundColor: "#f8f9fa",
     },
     topbar: {
       display: isMobile ? "flex" : "none",
@@ -53,19 +54,23 @@ const AdminPage = () => {
     layout: {
       display: "flex",
       flex: 1,
+      minHeight: "100vh", // Ensures sidebar fills full height
+      overflow: "hidden",
     },
     sidebar: {
-      width: isMobile ? (showSidebar ? "70%" : "0") : "250px",
-      maxWidth: "250px",
-      backgroundColor: "#357CA5",
+      width: isMobile ? (showSidebar ? "70%" : "0") : "260px",
+      background: "linear-gradient(180deg, #357CA5 0%, #285F7B 100%)",
       color: "white",
-      borderTopRightRadius: "25px",
-      borderBottomRightRadius: "25px",
+      borderTopRightRadius: "30px",
+      borderBottomRightRadius: "30px",
       transition: "all 0.3s ease",
       overflow: "hidden",
       zIndex: 1000,
-      position: isMobile ? "absolute" : "relative",
-      height: isMobile ? "100vh" : "auto",
+      position: isMobile ? "absolute" : "sticky",
+      top: 0,
+      left: 0,
+      height: "100vh", // Full vertical coverage
+      boxShadow: "4px 0 10px rgba(0, 0, 0, 0.15)",
     },
     overlay: {
       display: isMobile && showSidebar ? "block" : "none",
@@ -81,13 +86,17 @@ const AdminPage = () => {
       flex: 1,
       backgroundColor: "#f8f9fa",
       padding: isMobile ? "15px" : "30px",
-      paddingBottom: 0, // ✅ Removes bottom padding
+      paddingBottom: 0,
+      overflowX: "auto", // Allows horizontal scrolling
+      overflowY: "auto",
+      transition: "all 0.3s ease",
     },
     title: {
       fontWeight: "bold",
       textTransform: "capitalize",
       marginBottom: "20px",
       fontSize: isMobile ? "20px" : "26px",
+      color: "#333",
     },
   };
 
@@ -107,6 +116,7 @@ const AdminPage = () => {
         >
           <FaBars style={{ color: "#0d6efd" }} />
         </Button>
+        <h5 style={{ margin: 0 }}>Admin Panel</h5>
       </div>
 
       <div style={baseStyles.layout}>
@@ -121,8 +131,11 @@ const AdminPage = () => {
           />
         </div>
 
-        {/* Overlay */}
-        <div style={baseStyles.overlay} onClick={() => setShowSidebar(false)}></div>
+        {/* Overlay for mobile */}
+        <div
+          style={baseStyles.overlay}
+          onClick={() => setShowSidebar(false)}
+        ></div>
 
         {/* Main Content */}
         <div style={baseStyles.mainContent}>

@@ -57,14 +57,39 @@ const ProductInfo = () => {
   );
 
   const styles = {
-    container: { width: "100%", display: "flex", flexDirection: "column", gap: "10px" },
-    toolbar: { display: "flex", gap: "10px", marginBottom: "15px" },
+    container: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      gap: "10px",
+    },
+    toolbar: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "10px",
+      justifyContent: "flex-start",
+      marginBottom: "15px",
+    },
+    scrollContainer: {
+      overflowX: "auto",
+      overflowY: "hidden",
+      whiteSpace: "nowrap",
+      WebkitOverflowScrolling: "touch",
+    },
+    tableWrapper: {
+      minWidth: "900px", // ensures scrolling when small screen
+      display: "flex",
+      flexDirection: "column",
+      gap: "10px",
+    },
     headers: {
       display: "grid",
       gridTemplateColumns: "0.5fr 1fr 2fr 1fr 1fr 1fr 1fr",
       fontWeight: 600,
       padding: "10px 20px",
       borderBottom: "2px solid #ccc",
+      backgroundColor: "#f9f9f9",
+      borderRadius: "8px",
     },
     headerCell: { display: "flex", alignItems: "center" },
     card: (selected) => ({
@@ -79,13 +104,15 @@ const ProductInfo = () => {
       cursor: "pointer",
       transition: "all 0.3s ease",
     }),
-    cell: { fontSize: "15px", fontWeight: 500, display: "flex", alignItems: "center" },
+    cell: {
+      fontSize: "15px",
+      fontWeight: 500,
+      display: "flex",
+      alignItems: "center",
+    },
     modalBody: {
       maxHeight: "none",
       overflowY: "visible",
-    },
-    modalContent: {
-      overflow: "visible",
     },
   };
 
@@ -116,67 +143,80 @@ const ProductInfo = () => {
         </Button>
       </div>
 
-      {/* Field Labels */}
-      <div style={styles.headers}>
-        <div style={styles.headerCell}></div>
-        <div style={styles.headerCell}>Image</div>
-        <div style={styles.headerCell}>Product Name</div>
-        <div style={styles.headerCell}>Brand Name</div>
-        <div style={styles.headerCell}>Buying Price</div>
-        <div style={styles.headerCell}>Vendor Price</div>
-        <div style={styles.headerCell}>Quantity</div>
+      {/* Scrollable Section */}
+      <div style={styles.scrollContainer}>
+        <div style={styles.tableWrapper}>
+          {/* Field Labels */}
+          <div style={styles.headers}>
+            <div style={styles.headerCell}></div>
+            <div style={styles.headerCell}>Image</div>
+            <div style={styles.headerCell}>Product Name</div>
+            <div style={styles.headerCell}>Brand Name</div>
+            <div style={styles.headerCell}>Buying Price</div>
+            <div style={styles.headerCell}>Vendor Price</div>
+            <div style={styles.headerCell}>Quantity</div>
+          </div>
+
+          {/* Product Cards */}
+          {currentProducts.map((product) => (
+            <div
+              key={product.id}
+              style={styles.card(selectedIds.includes(product.id))}
+              onClick={() => setSelectedProduct(product)}
+            >
+              {/* Checkbox */}
+              <div style={styles.cell} onClick={(e) => e.stopPropagation()}>
+                <Form.Check
+                  type="checkbox"
+                  checked={selectedIds.includes(product.id)}
+                  onChange={() => toggleSelect(product.id)}
+                />
+              </div>
+
+              {/* Image */}
+              <div style={styles.cell}>
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "contain",
+                    borderRadius: "8px",
+                    backgroundColor: "#f0f0f0",
+                  }}
+                />
+              </div>
+
+              {/* Product Name */}
+              <div style={styles.cell}>{product.name}</div>
+
+              {/* Brand Name */}
+              <div style={styles.cell}>{product.brandName}</div>
+
+              {/* Buying Price */}
+              <div style={styles.cell}>₹{product.buyingPrice}</div>
+
+              {/* Vendor Price */}
+              <div style={styles.cell}>₹{product.vendorPrice}</div>
+
+              {/* Quantity */}
+              <div style={styles.cell}>{product.quantity}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Product Cards */}
-      {currentProducts.map((product) => (
-        <div
-          key={product.id}
-          style={styles.card(selectedIds.includes(product.id))}
-          onClick={() => setSelectedProduct(product)}
-        >
-          {/* Checkbox */}
-          <div style={styles.cell} onClick={(e) => e.stopPropagation()}>
-            <Form.Check
-              type="checkbox"
-              checked={selectedIds.includes(product.id)}
-              onChange={() => toggleSelect(product.id)}
-            />
-          </div>
-
-          {/* Image */}
-          <div style={styles.cell}>
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              style={{
-                width: "50px",
-                height: "50px",
-                objectFit: "contain",
-                borderRadius: "8px",
-                backgroundColor: "#f0f0f0",
-              }}
-            />
-          </div>
-
-          {/* Product Name */}
-          <div style={styles.cell}>{product.name}</div>
-
-          {/* Brand Name */}
-          <div style={styles.cell}>{product.brandName}</div>
-
-          {/* Buying Price */}
-          <div style={styles.cell}>₹{product.buyingPrice}</div>
-
-          {/* Vendor Price */}
-          <div style={styles.cell}>₹{product.vendorPrice}</div>
-
-          {/* Quantity */}
-          <div style={styles.cell}>{product.quantity}</div>
-        </div>
-      ))}
-
       {/* Pagination */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "15px", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "15px",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
         <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>
           Previous
         </Button>
@@ -203,7 +243,7 @@ const ProductInfo = () => {
         onHide={() => setSelectedProduct(null)}
         size="lg"
         centered
-        scrollable={false} // make sure this is false to avoid internal scroll
+        scrollable={false}
       >
         {selectedProduct && (
           <>
@@ -248,7 +288,8 @@ const ProductInfo = () => {
               <p>
                 <strong>Featured:</strong> {selectedProduct.isFeatured ? "Yes" : "No"} |{" "}
                 <strong>Top Selling:</strong> {selectedProduct.isTopSelling ? "Yes" : "No"} |{" "}
-                <strong>Budget Friendly:</strong> {selectedProduct.isBudgetFriendly ? "Yes" : "No"}
+                <strong>Budget Friendly:</strong>{" "}
+                {selectedProduct.isBudgetFriendly ? "Yes" : "No"}
               </p>
             </Modal.Body>
             <Modal.Footer>

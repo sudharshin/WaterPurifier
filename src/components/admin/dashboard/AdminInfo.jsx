@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Spinner, Pagination } from "react-bootstrap";
+import { Button, Spinner, Pagination, Form } from "react-bootstrap";
 import { FaSync } from "react-icons/fa";
 
 const AdminInfo = () => {
-  const [admins, setAdmins] = useState([
+  const [admins] = useState([
     { id: 1, email: "john@example.com", role: "Super Admin" },
     { id: 2, email: "jane@example.com", role: "Moderator" },
     { id: 3, email: "alex@example.com", role: "Editor" },
@@ -21,6 +21,7 @@ const AdminInfo = () => {
   const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
 
   // Responsive handling
@@ -37,9 +38,16 @@ const AdminInfo = () => {
 
   const isMobile = windowWidth <= 768;
 
+  // Search filter
+  const filteredAdmins = admins.filter(
+    (admin) =>
+      admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      admin.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Pagination
-  const totalPages = Math.ceil(admins.length / itemsPerPage);
-  const paginatedAdmins = admins.slice(
+  const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage);
+  const paginatedAdmins = filteredAdmins.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -52,18 +60,26 @@ const AdminInfo = () => {
     },
     headerRow: {
       display: "flex",
-      justifyContent: "flex-end", // ✅ move refresh button to right
+      justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: "10px",
+      flexWrap: "wrap",
+      marginBottom: "15px",
+      gap: "10px",
     },
-    title: {
-      fontSize: isMobile ? "18px" : "22px",
-      fontWeight: 600,
-      margin: 0,
-      color: "#333",
+    leftControls: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+    },
+    searchInput: {
+      width: isMobile ? "100%" : "250px", // ✅ fixed shorter width on desktop
+      borderRadius: "6px",
+      border: "1px solid #ccc",
+      padding: "6px 10px",
+      fontSize: "14px",
     },
     refreshButton: {
-      backgroundColor: "#6c757d", // ✅ ash color
+      backgroundColor: "#6c757d",
       color: "#fff",
       border: "none",
       display: "flex",
@@ -72,6 +88,7 @@ const AdminInfo = () => {
       padding: "6px 12px",
       borderRadius: "6px",
       fontSize: "14px",
+      height: "38px",
     },
     tableHeader: {
       display: "flex",
@@ -122,6 +139,19 @@ const AdminInfo = () => {
     <div style={styles.container}>
       {/* Header Row */}
       <div style={styles.headerRow}>
+        <div style={styles.leftControls}>
+          <Form.Control
+            type="text"
+            placeholder="Search by email or role..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            style={styles.searchInput}
+          />
+        </div>
+
         <Button
           style={styles.refreshButton}
           onClick={handleRefresh}
@@ -146,45 +176,53 @@ const AdminInfo = () => {
           </div>
 
           {/* Data Rows */}
-          {paginatedAdmins.map((admin) => (
-            <div key={admin.id} style={styles.tableRow}>
-              <div style={styles.colEmail}>{admin.email}</div>
-              <div style={styles.colRole}>{admin.role}</div>
-            </div>
-          ))}
+          {paginatedAdmins.length > 0 ? (
+            paginatedAdmins.map((admin) => (
+              <div key={admin.id} style={styles.tableRow}>
+                <div style={styles.colEmail}>{admin.email}</div>
+                <div style={styles.colRole}>{admin.role}</div>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: "center", marginTop: "15px" }}>
+              No matching records found.
+            </p>
+          )}
 
           {/* Pagination */}
-          <div style={styles.paginationContainer}>
-            <Pagination>
-              <Pagination.First
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              />
-              <Pagination.Prev
-                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                disabled={currentPage === 1}
-              />
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Pagination.Item
-                  key={i + 1}
-                  active={i + 1 === currentPage}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </Pagination.Item>
-              ))}
-              <Pagination.Next
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-              />
-              <Pagination.Last
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages}
-              />
-            </Pagination>
-          </div>
+          {filteredAdmins.length > itemsPerPage && (
+            <div style={styles.paginationContainer}>
+              <Pagination>
+                <Pagination.First
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                />
+                <Pagination.Prev
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                />
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <Pagination.Item
+                    key={i + 1}
+                    active={i + 1 === currentPage}
+                    onClick={() => setCurrentPage(i + 1)}
+                  >
+                    {i + 1}
+                  </Pagination.Item>
+                ))}
+                <Pagination.Next
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                />
+                <Pagination.Last
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
+            </div>
+          )}
         </>
       )}
     </div>
