@@ -55,7 +55,7 @@ const NavbarComponent = () => {
               marginRight: "8px",
             }}
           />
-          Opor
+          Leomax
         </BootstrapNavbar.Brand>
 
         {/* Toggler */}
