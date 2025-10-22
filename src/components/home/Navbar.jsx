@@ -7,6 +7,7 @@ import {
   Navbar as BootstrapNavbar,
 } from "react-bootstrap";
 import { UserContext } from "../../context/UserContext";
+import logo from "../../assets/logo.png"; // your logo path
 
 const NavbarComponent = () => {
   const { user, logout } = useContext(UserContext);
@@ -17,139 +18,167 @@ const NavbarComponent = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
-    setExpanded(false);
   };
 
-  // Helper: check if hash matches
   const isHashActive = (hash) => location.hash === hash;
 
   return (
     <BootstrapNavbar
-      bg="white"
-      expand="lg"
-      fixed="top"
+      expand="md"
       expanded={expanded}
-      onToggle={(isExpanded) => setExpanded(isExpanded)}
-      className="shadow-sm"
-      style={{ minHeight: "56px" }}
+      fixed="top"
+      className="py-2"
+      style={{
+        backgroundColor: "white",
+        borderBottom: "1px solid #eee",
+       zIndex: 1000,
+       // minHeight: "10px",
+      }}
     >
-      <Container fluid>
-        {/* Logo */}
-        <BootstrapNavbar.Brand
-          as={NavLink}
-          to="/"
-          onClick={() => setExpanded(false)}
-          className="fw-bold d-flex align-items-center text-primary"
-          style={{
-            fontSize: "20px",
-            fontFamily: '"Poppins", sans-serif',
-            textDecoration: "none",
-          }}
-        >
-          <div
-            style={{
-              width: "16px",
-              height: "16px",
-              backgroundColor: "#D6F0FF",
-              borderRadius: "50%",
-              marginRight: "8px",
+      <Container fluid className="px-4">
+        {/* Left Side - Logo and Nav Links */}
+        <div className="d-flex align-items-center">
+          {/* Logo */}
+          <BootstrapNavbar.Brand
+            onClick={() => {
+              navigate("/");
+              setExpanded(false);
             }}
+            style={{ cursor: "pointer" }}
+            className="d-flex align-items-center me-4"
+          >
+            <img
+              src={logo}
+              alt="Logo"
+              style={{
+                height: "90px", // larger logo
+                width: "auto",
+                objectFit: "contain",
+              }}
+            />
+          </BootstrapNavbar.Brand>
+
+          {/* Navbar Toggle (for mobile) */}
+          <BootstrapNavbar.Toggle
+            aria-controls="responsive-navbar-nav"
+            onClick={() => setExpanded(expanded ? false : true)}
+            className="ms-auto d-md-none"
           />
-          Opor
-        </BootstrapNavbar.Brand>
+        </div>
 
-        {/* Toggler */}
-        <BootstrapNavbar.Toggle aria-controls="navbarScroll" />
-
-        {/* Collapse */}
-        <BootstrapNavbar.Collapse id="navbarScroll">
-          <Nav className="me-auto">
-            {/* Home */}
-            <Nav.Link
-              as={NavLink}
-              to="/#home"
-              onClick={() => setExpanded(false)}
-              className={({ isActive }) =>
-                `me-3 ${
-                  isActive
-                    ? "fw-bold text-primary border-bottom border-primary"
-                    : ""
-                }`
-              }
-              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
-            >
-              Home
-            </Nav.Link>
-
-            {/* About Us */}
-            <Nav.Link
-              onClick={() => {
-                navigate("/#footer");
-                setExpanded(false);
+        {/* Collapsible Menu */}
+        <BootstrapNavbar.Collapse id="responsive-navbar-nav">
+          <div className="d-flex w-100 justify-content-between align-items-center flex-column flex-md-row">
+            {/* Left Section - Navigation Links */}
+            <Nav
+              className="d-flex align-items-center"
+              style={{
+                gap: "35px",
+                fontFamily: '"Poppins", sans-serif',
+                fontWeight: 400,
+                fontSize: "17px",
               }}
-              className={`me-3 ${
-                isHashActive("#footer")
-                  ? "fw-bold text-primary border-bottom border-primary"
-                  : ""
-              }`}
-              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
             >
-              About Us
-            </Nav.Link>
-
-            {/* Contact */}
-            <Nav.Link
-              onClick={() => {
-                navigate("/#enquiry");
-                setExpanded(false);
-              }}
-              className={`me-3 ${
-                isHashActive("#enquiry")
-                  ? "fw-bold text-primary border-bottom border-primary"
-                  : ""
-              }`}
-              style={{ fontFamily: '"Poppins", sans-serif', fontWeight: "600" }}
-            >
-              Contact
-            </Nav.Link>
-          </Nav>
-
-          {/* Right side */}
-          <div className="d-flex align-items-center ms-auto">
-            {user ? (
-              <Button
-                variant="outline-danger"
-                onClick={handleLogout}
-                className="px-4"
+              <Nav.Link
+                onClick={() => {
+                  navigate("/#home");
+                  setExpanded(false);
+                }}
+                className={`${
+                  isHashActive("#home")
+                    ? "text-primary border-bottom border-primary"
+                    : "text-dark"
+                }`}
                 style={{
-                  borderRadius: "20px",
-                  fontWeight: "500",
-                  fontFamily: '"Poppins", sans-serif',
+                  paddingBottom: "1px",
+                  transition: "color 0.3s ease",
+                  whiteSpace: "nowrap",
                 }}
               >
-                Logout
-              </Button>
-            ) : (
-              <NavLink
-                to="/login"
-                onClick={() => setExpanded(false)}
-                style={{ textDecoration: "none" }}
+                Home
+              </Nav.Link>
+
+              <Nav.Link
+                onClick={() => {
+                  navigate("/aboutus");
+                  setExpanded(false);
+                }}
+                className={`${
+                  isHashActive("#aboutus")
+                    ? "text-primary border-bottom border-primary"
+                    : "text-dark"
+                }`}
+                style={{
+                  paddingBottom: "1px",
+                  transition: "color 0.3s ease",
+                  whiteSpace: "nowrap",
+                }}
               >
+                About Us
+              </Nav.Link>
+
+              <Nav.Link
+                onClick={() => {
+                  navigate("/contactus");
+                  setExpanded(false);
+                }}
+                className={`${
+                  isHashActive("#contactus")
+                    ? "text-primary border-bottom border-primary"
+                    : "text-dark"
+                }`}
+                style={{
+                  paddingBottom: "1px",
+                  transition: "color 0.3s ease",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Contact
+              </Nav.Link>
+            </Nav>
+
+            {/* Right Section - Login/Logout */}
+            <div className="d-flex align-items-center mt-3 mt-md-0">
+              {user ? (
                 <Button
-                  variant="primary"
+                  variant="outline-danger"
+                  onClick={() => {
+                    handleLogout();
+                    setExpanded(false);
+                  }}
                   className="px-4"
                   style={{
-                    borderRadius: "50px",
-                    background: "#108cd5ff",
-                    border: "1px solid #E0E0E0",
+                    borderRadius: "20px",
                     fontWeight: "500",
                     fontFamily: '"Poppins", sans-serif',
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  Login
+                  Logout
                 </Button>
-              </NavLink>
-            )}
+              ) : (
+                <NavLink
+                  to="/login"
+                  style={{ textDecoration: "none" }}
+                  onClick={() => setExpanded(false)}
+                >
+                  <Button
+                    variant="primary"
+                    className="px-4"
+                    style={{
+                      borderRadius: "50px",
+                      background: "#266990",
+                      border: "1px solid #E0E0E0",
+                      fontWeight: "500",
+                      fontFamily: '"Poppins", sans-serif',
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Login
+                  </Button>
+                </NavLink>
+              )}
+            </div>
           </div>
         </BootstrapNavbar.Collapse>
       </Container>

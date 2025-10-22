@@ -60,7 +60,7 @@ const ProductListing = ({ title, description, products }) => {
                   fontOpticalSizing: "auto",
                   fontSize: "15px",
                   lineHeight: "25px",
-                  color: "#2A2A2A",
+                  color: "#383737",
                 }}
               >
                 {description}
@@ -120,7 +120,7 @@ const ProductListing = ({ title, description, products }) => {
           .view-all-btn {
             background: #b5f0f5ff;
             border: none;
-            color: #000;
+            color: #000000;
             font-weight: 500;
             border-radius: 8px;
             white-space: nowrap;
@@ -129,7 +129,7 @@ const ProductListing = ({ title, description, products }) => {
           .view-all-btn:hover,
           .view-all-btn:active {
             background-color: #7ef3feff !important;
-            color: #000 !important;
+            color: #000000 !important;
           }
         `}
       </style>

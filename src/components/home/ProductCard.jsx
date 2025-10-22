@@ -59,7 +59,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
             fontWeight: 400,
             fontSize: "16px",
             lineHeight: "24px",
-            color: "#2A2A2A",
+            color: "#000000",
             marginBottom: "6px",
           }}
         >
@@ -74,7 +74,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
             fontWeight: 100,
             fontSize: "15px",
             lineHeight: "25px",
-            color: "#2A2A2A",
+            color: "#383737",
             marginBottom: "10px",
           }}
         >
@@ -85,12 +85,13 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         <div className="d-flex align-items-center justify-content-start mt-auto">
           <div
             style={{
-              background: "#c7ffffff",
+              background: "#FFFFFF",
               borderRadius: "6px",
+              border: "1px solid #D9D9D9",
               fontFamily: "Poppins, Tofu",
               fontSize: "14px",
               fontWeight: 600,
-              color: "#2A2A2A",
+              color: "#1E1E1E",
               padding: "4px 10px",
             }}
           >
