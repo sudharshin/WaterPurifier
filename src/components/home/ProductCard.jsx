@@ -13,7 +13,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         style={{
           height: "300px",
           fontFamily: "Poppins, Tofu",
-          border: "1px solid #ccc",
+          border: "1px solid #D4D4D4",
           backgroundColor: "#F6F6F6", // ✅ ash background
           boxShadow: "none",
           borderRadius: "20px",
@@ -59,7 +59,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
             fontWeight: 400,
             fontSize: "16px",
             lineHeight: "24px",
-            color: "#2A2A2A",
+            color: "#000000",
             marginBottom: "6px",
           }}
         >
@@ -71,10 +71,10 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
           style={{
              fontFamily: "Poppins, Tofu",
              fontStyle: "normal",
-            fontWeight: 100,
-            fontSize: "15px",
-            lineHeight: "25px",
-            color: "#2A2A2A",
+            fontWeight: 300,
+            fontSize: "14px",
+            lineHeight: "23px",
+            color: "#383737",
             marginBottom: "10px",
           }}
         >
@@ -82,19 +82,21 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
         </p>
 
         {/* Price */}
-        <div className="d-flex align-items-center justify-content-start mt-auto">
+        <div className="d-flex align-items-center justify-content-start mt-1">
           <div
             style={{
-              background: "#c7ffffff",
-              borderRadius: "6px",
+              background: "#FFFFFF",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
               fontFamily: "Poppins, Tofu",
               fontSize: "14px",
-              fontWeight: 600,
-              color: "#2A2A2A",
+              fontWeight: 500,
+              lineHeight: "16px",
+              color: "#1E1E1E",
               padding: "4px 10px",
             }}
           >
-            ₹{price}
+            ₹ {price}
           </div>
         </div>
       </div>

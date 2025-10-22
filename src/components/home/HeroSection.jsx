@@ -264,27 +264,25 @@ const HeroSection = () => {
           padding: 0 4vw; /* Matching horizontal padding from hero-container */
         }
 
-        .rp-hero-btn {
-          background-color: white;
-          color: #1e72c0;
-          font-weight: 600;
-          /* Adjusted clamp values for slightly tighter padding on large screens */
-          padding: clamp(12px, 1.5vh, 18px) clamp(25px, 3vw, 50px); 
-          /* Decreased Font Size */
-          font-size: clamp(0.8rem, 1.2vw, 1.0rem); 
-          border-radius: 50px;
-          border: none;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 0.2vw 0.8vw rgba(0, 0, 0, 0.1); /* Shadow scales */
-          white-space: nowrap; /* Prevents text from wrapping on small screens */
-        }
+.rp-hero-btn {
+  background-color: white;
+  color: #1e72c0;
+  font-weight: 600;
+  padding: clamp(12px, 1.5vh, 18px) clamp(25px, 3vw, 50px);
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0.2vw 0.8vw rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
 
-        .rp-hero-btn:hover {
-          background-color: #f0f0f0;
-          transform: translateY(-0.3vh);
-          box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
-        }
+.rp-hero-btn:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-0.3vh);
+  box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
+}
 
         /* Arrows */
         .rp-hero-arrow {
@@ -356,6 +354,11 @@ const HeroSection = () => {
             /* DECREASED HEIGHT (was 55vh) */
             height: 45vh; 
           }
+            .rp-hero-btn {
+    padding: 10px 24px !important;
+    font-size: 0.85rem !important;
+    max-width: 220px !important;
+  }
         }
 
         /* CRITICAL MOBILE ADJUSTMENT: Rebalancing content for small screens */
@@ -364,11 +367,16 @@ const HeroSection = () => {
             /* DECREASED HEIGHT for mobile (was 40vh) */
             height: 35vh; 
           }
+            .rp-hero-btn {
+    padding: 8px 20px !important;
+    font-size: 0.75rem !important;
+    max-width: 180px !important;
+  }
           
           .rp-hero-container {
-            flex-direction: row; 
-            padding: 0 1rem; 
-            gap: 0.5rem; 
+            flex-direction: row;
+            padding: 0 1rem;
+            gap: 0.5rem;
           }
           
           .rp-hero-content {
@@ -440,6 +448,12 @@ const HeroSection = () => {
                 width: 16px;
                 height: 16px;
               }
+                .rp-hero-btn {
+    padding: 6px 16px !important;
+    font-size: 0.7rem !important;
+    max-width: 150px !important;
+    
+  }
         }
       `}</style>
     </div>
@@ -447,3 +461,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+
