@@ -60,6 +60,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
             fontSize: "16px",
             lineHeight: "24px",
             color: "#000000",
+            color: "#000000",
             marginBottom: "6px",
           }}
         >

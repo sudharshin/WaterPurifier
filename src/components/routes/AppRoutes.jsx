@@ -10,7 +10,8 @@ import ViewAllProducts from "../admin/ViewAllProducts";
 import ProductDetailsWrapper from "../productComponent/ProductDetailsWrapper";
 
 import PrivateRoute from "./PrivateRoute";
-
+import AboutUs from "../home/AboutUs";
+import ContactUs from "../home/ContactUs";
 import FadeOnRouteChange from "./FadeOnRouteChange";
 
 const AppRoutes = () => {
@@ -31,7 +32,9 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<CategoryBasedProductListingPage />} />
           <Route path="/login" element={<AdminLogin />} />
-
+          <Route path="/register" element={<VendorRegisterForm />} />
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/contactus" element={<ContactUs />} />
           {/* Protected Routes */}
           <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
           <Route path="/form/:id" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
