@@ -760,7 +760,7 @@ const HeroSection = () => {
 }
     /* ✅ Large screens / desktops (≥1200px) */
   @media (min-width: 1200px) {
-    .rp-hero-wrapper { height: 55vh; }
+    .rp-hero-wrapper { height: 45vh; }
     .rp-hero-container { max-width: 1400px; padding: 0 5vw; }
     .rp-hero-content h1 { font-size: clamp(3rem, 2vw, 4.5rem); }
     .rp-hero-highlight { font-size: clamp(3rem, 2vw, 4.5rem); }
@@ -773,7 +773,7 @@ const HeroSection = () => {
 
   /* ✅ Extra large screens (≥1600px, 4K setups) */
   @media (min-width: 1600px) {
-    .rp-hero-wrapper { height: 60vh; }
+    .rp-hero-wrapper { height: 45vh; }
     .rp-hero-container { max-width: 1600px; }
     .rp-hero-content h1,
     .rp-hero-highlight { font-size: 4.8rem; }
