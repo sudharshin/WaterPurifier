@@ -27,56 +27,53 @@ const NavbarComponent = () => {
       expand="md"
       expanded={expanded}
       fixed="top"
-      className="py-2"
+      className="py-1"
       style={{
         backgroundColor: "white",
         borderBottom: "1px solid #eee",
-       zIndex: 1000,
-       // minHeight: "10px",
+        zIndex: 1000,
+        minHeight: "60px",
       }}
     >
-      <Container fluid className="px-4">
-        {/* Left Side - Logo and Nav Links */}
-        <div className="d-flex align-items-center">
-          {/* Logo */}
-          <BootstrapNavbar.Brand
-            onClick={() => {
-              navigate("/");
-              setExpanded(false);
+      <Container fluid className="px-4 d-flex justify-content-between align-items-center">
+        {/* Left Side - Logo */}
+        <BootstrapNavbar.Brand
+          onClick={() => {
+            navigate("/");
+            setExpanded(false);
+          }}
+          style={{ cursor: "pointer" }}
+          className="d-flex align-items-center"
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              height: "60px",
+              width: "auto",
+              objectFit: "contain",
             }}
-            style={{ cursor: "pointer" }}
-            className="d-flex align-items-center me-4"
-          >
-            <img
-              src={logo}
-              alt="Logo"
-              style={{
-                height: "90px", // larger logo
-                width: "auto",
-                objectFit: "contain",
-              }}
-            />
-          </BootstrapNavbar.Brand>
-
-          {/* Navbar Toggle (for mobile) */}
-          <BootstrapNavbar.Toggle
-            aria-controls="responsive-navbar-nav"
-            onClick={() => setExpanded(expanded ? false : true)}
-            className="ms-auto d-md-none"
           />
-        </div>
+        </BootstrapNavbar.Brand>
+
+        {/* Navbar Toggle (moved to right side) */}
+        <BootstrapNavbar.Toggle
+          aria-controls="responsive-navbar-nav"
+          onClick={() => setExpanded(expanded ? false : true)}
+          className="border-0 d-md-none ms-auto"
+        />
 
         {/* Collapsible Menu */}
-        <BootstrapNavbar.Collapse id="responsive-navbar-nav">
+        <BootstrapNavbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
           <div className="d-flex w-100 justify-content-between align-items-center flex-column flex-md-row">
-            {/* Left Section - Navigation Links */}
+            {/* Navigation Links */}
             <Nav
               className="d-flex align-items-center"
               style={{
-                gap: "35px",
+                gap: "30px",
                 fontFamily: '"Poppins", sans-serif',
                 fontWeight: 400,
-                fontSize: "17px",
+                fontSize: "16px",
               }}
             >
               <Nav.Link
@@ -146,7 +143,7 @@ const NavbarComponent = () => {
                     handleLogout();
                     setExpanded(false);
                   }}
-                  className="px-4"
+                  className="px-3"
                   style={{
                     borderRadius: "20px",
                     fontWeight: "500",
@@ -164,7 +161,7 @@ const NavbarComponent = () => {
                 >
                   <Button
                     variant="primary"
-                    className="px-4"
+                    className="px-3"
                     style={{
                       borderRadius: "50px",
                       background: "#266990",

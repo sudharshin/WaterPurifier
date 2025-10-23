@@ -8,7 +8,6 @@ import AdminLogin from "../admin/AdminLogin";
 import ProductForm from "../admin/ProductForm";
 import ViewAllProducts from "../admin/ViewAllProducts";
 import ProductDetailsWrapper from "../productComponent/ProductDetailsWrapper";
-
 import PrivateRoute from "./PrivateRoute";
 import AboutUs from "../home/AboutUs";
 import ContactUs from "../home/ContactUs";
@@ -32,7 +31,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<CategoryBasedProductListingPage />} />
           <Route path="/login" element={<AdminLogin />} />
-          <Route path="/register" element={<VendorRegisterForm />} />
+          {/* <Route path="/register" element={<VendorRegisterForm />} /> */}
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/contactus" element={<ContactUs />} />
           {/* Protected Routes */}
