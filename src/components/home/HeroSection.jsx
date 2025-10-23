@@ -769,18 +769,56 @@ const HeroSection = () => {
     .rp-hero-btn { font-size: 1rem; padding: 14px 45px; }
     .rp-hero-arrow { padding: 1rem; }
     .rp-hero-arrow svg { width: 28px; height: 28px; }
+    .rp-hero-bottom-band-container {
+    padding-left: 5vw; /* Match .rp-hero-container */
+  }
   }
 
-  /* ✅ Extra large screens (≥1600px, 4K setups) */
-  @media (min-width: 1600px) {
-    .rp-hero-wrapper { height: 45vh; }
-    .rp-hero-container { max-width: 1600px; }
-    .rp-hero-content h1,
-    .rp-hero-highlight { font-size: 4.8rem; }
-    .rp-hero-content p { font-size: 1.2rem; }
-    .rp-hero-image img { width: 24vw; }
-    .rp-hero-btn { padding: 16px 50px; font-size: 1.1rem; }
+/* ✅ Extra large screens (≥1600px, 4K setups) */
+@media (min-width: 1600px) {
+  .rp-hero-wrapper { height: 45vh; }
+
+  .rp-hero-container { 
+    max-width: 1600px; 
+    padding: 0 5vw; /* keep same inner padding */
   }
+
+  .rp-hero-content h1,
+  .rp-hero-highlight { font-size: 4.8rem; }
+
+  .rp-hero-content p { font-size: 1.2rem; }
+
+  .rp-hero-image img { width: 24vw; }
+
+  .rp-hero-btn { padding: 16px 50px; font-size: 1.1rem; }
+
+  /* ✅ Button alignment fix */
+  .rp-hero-bottom-band-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: calc((100vw - 1600px) / 2 + 5vw);
+    /* Matches the hero text start position perfectly */
+  }
+}
+
+
+@media (max-width: 600px) {
+  .rp-hero-bottom-band-container {
+    padding-left: 1rem; /* Match .rp-hero-container */
+  }
+}
+
+@media (max-width: 480px) {
+  .rp-hero-bottom-band-container {
+    padding-left: 0.5rem; /* Match .rp-hero-container */
+  }
+}
+
+}
+
 
       `}</style>
     </div>
