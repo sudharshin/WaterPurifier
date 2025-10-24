@@ -5,7 +5,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
   return (
     <div
       className="col-12 col-sm-6 col-md-4 col-lg-2 px-2 flex-shrink-0 d-flex flex-column"
-      style={{ minHeight: "380px" }}
+      style={{ minHeight: "400px" }}
     >
       {/* Product Image */}
       <Card
@@ -14,7 +14,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
           height: "300px",
           fontFamily: "Poppins, Tofu",
           border: "1px solid #D4D4D4",
-          backgroundColor: "#F6F6F6", // ✅ ash background
+          backgroundColor: "#F6F6F6",
           boxShadow: "none",
           borderRadius: "20px",
           transition: "transform 0.3s ease",
@@ -42,7 +42,7 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
               objectFit: "contain",
               transition: "transform 0.3s ease-in-out",
               background: "transparent",
-              mixBlendMode: "multiply", // ✅ removes white bg effect
+              mixBlendMode: "multiply",
             }}
             className="product-image"
           />
@@ -50,40 +50,59 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
       </Card>
 
       {/* Product Info */}
-      <div className="mt-3 text-start d-flex flex-column flex-grow-1">
-        {/* Title */}
+      <div
+        className="text-start d-flex flex-column flex-grow-1"
+        style={{
+          gap: "8px",
+          maxWidth: "286px",
+        }}
+      >
+        {/* Product Name */}
         <h6
           style={{
+            fontFamily: "Poppins",
             fontStyle: "normal",
-             fontFamily: "Poppins, Tofu",
             fontWeight: 400,
-            fontSize: "16px",
-            lineHeight: "24px",
+            fontSize: "18px",
+            lineHeight: "32px",
             color: "#000000",
-            color: "#000000",
-            marginBottom: "6px",
+            margin: 0,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           {title}
         </h6>
 
-        {/* Description / Brand */}
+        {/* Brand / Description */}
         <p
           style={{
-             fontFamily: "Poppins, Tofu",
-             fontStyle: "normal",
+            fontFamily: "Poppins",
+            fontStyle: "normal",
             fontWeight: 300,
             fontSize: "14px",
             lineHeight: "23px",
             color: "#383737",
-            marginBottom: "10px",
+            margin: 0,
+            display: "-webkit-box",
+            WebkitLineClamp: 2, // ✅ two lines only
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "286px",
           }}
         >
           {brand}
         </p>
 
         {/* Price */}
-        <div className="d-flex align-items-center justify-content-start mt-1">
+        <div
+          className="d-flex align-items-center justify-content-start"
+          style={{
+            marginTop: "8px",
+          }}
+        >
           <div
             style={{
               background: "#FFFFFF",
@@ -95,6 +114,10 @@ const ProductCard = ({ image, title, brand, price, onClick }) => {
               lineHeight: "16px",
               color: "#1E1E1E",
               padding: "4px 10px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
             }}
           >
             ₹ {price}

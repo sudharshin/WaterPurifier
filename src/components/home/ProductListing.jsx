@@ -27,65 +27,31 @@ const ProductListing = ({ title, description, products }) => {
   };
 
   return (
-    <section className="py-5" style={{ background: "#fff" }}>
-      <Container fluid className="px-4">
+    <section className="py-5 bg-white">
+      <Container fluid className="px-3 px-md-4">
         {/* Title & Description */}
-        <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
           <div style={{ maxWidth: "700px" }}>
-            <h3
-              className="fw-bold mb-2"
-              style={{
-                textAlign: "start",
-                 fontFamily: "Poppins, Tofu",
-                fontWeight: 500,
-                fontStyle: "normal",
-                fontStretch: "normal",
-                fontOpticalSizing: "auto",
-                lineHeight: "initial",
-                fontSize: "40px",
-                color: "#000000",
-              }}
-            >
-              {title}
-            </h3>
-            {description && (
-              <p
-                className="mb-0"
-                style={{
-                  textAlign: "start",
-                   fontFamily: "Poppins, Tofu",
-                 fontWeight: 300,
-                  fontStyle: "normal",
-                  fontStretch: "normal",
-                  fontOpticalSizing: "auto",
-                  fontSize: "18px",
-                  lineHeight: "30px",
-                  color: "#2A2A2A",
-                }}
-              >
-                {description}
-              </p>
-            )}
+            <h3 className="fw-bold mb-2 product-title">{title}</h3>
+            {description && <p className="mb-0 product-description">{description}</p>}
           </div>
 
           {products.length > 6 && (
             <Button
-              className="view-all-btn d-flex align-items-center justify-content-center gap-2 px-4 py-2 mt-3 mt-md-0"
+              className="view-all-btn mt-2 mt-md-0"
               onClick={() => scroll("all")}
             >
-              View All <span style={{ fontSize: "1rem" }}>→</span>
+              View All <span className="arrow">→</span>
             </Button>
           )}
         </div>
 
         {/* Scrollable Row of Product Cards */}
         <div
-          className="d-flex overflow-auto flex-nowrap hide-scrollbar"
+          className="d-flex overflow-auto flex-nowrap hide-scrollbar pb-2"
           ref={scrollRef}
-          style={{ paddingBottom: "1rem", scrollBehavior: "smooth" }}
         >
           {products?.map((p, index) => {
-            // ✅ Use first image from Cloudinary URLs
             const imageUrl =
               Array.isArray(p.images) && p.images[0]?.startsWith("http")
                 ? p.images[0]
@@ -117,33 +83,73 @@ const ProductListing = ({ title, description, products }) => {
             display: none;
           }
 
-        .view-all-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #D3EDFC;
-  border: none;
-  color: #000000;
-  font-weight: 500;
-  font-size: 16px;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
+          .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #D3EDFC;
+            border: none;
+            color: #000;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            font-family: "Poppins", sans-serif;
+          }
 
-.arrow-box {
-  background: #ffffff;
-  color: #000000;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
+          .product-title {
+            font-family: "Poppins", sans-serif;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 2.5rem; /* default desktop */
+            line-height: 1.2;
+            color: #000;
+          }
 
+          .product-description {
+            font-family: "Poppins", sans-serif;
+            font-weight: 300;
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.6;
+            color: #2A2A2A;
+          }
 
+          .arrow {
+            font-size: 1rem;
+          }
+
+          /* Responsive Adjustments */
+          @media (max-width: 992px) {
+            .product-title {
+              font-size: 2rem;
+            }
+            .product-description {
+              font-size: 1rem;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .product-title {
+              font-size: 1.75rem;
+            }
+            .product-description {
+              font-size: 0.95rem;
+            }
+            .view-all-btn {
+              align-self: flex-start;
+            }
+          }
+
+          @media (max-width: 576px) {
+            .product-title {
+              font-size: 1.5rem;
+            }
+            .product-description {
+              font-size: 0.9rem;
+            }
+          }
         `}
       </style>
     </section>
