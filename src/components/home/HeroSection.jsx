@@ -225,7 +225,7 @@ const HeroSection = () => {
   .rp-hero-highlight { font-size: clamp(1.5rem, 3vw, 2.8rem); }
   .rp-hero-content p { font-size: clamp(0.8rem, 1.5vw, 0.95rem); }
   .rp-hero-image img { width: 60vw; bottom: -5vh; }
-  .rp-hero-btn { padding: 10px 24px; font-size: 0.85rem; max-width: 220px; }
+  .rp-hero-btn { padding: 10px 24px; font-size: 0.75rem; max-width: 220px; }
   .rp-hero-arrow { padding: 0.8rem; }
   .rp-hero-arrow svg { width: 22px; height: 22px; }
   .rp-hero-dot {
@@ -243,7 +243,7 @@ const HeroSection = () => {
   .rp-hero-highlight { font-size: clamp(1.3rem, 4vw, 2.2rem); }
   .rp-hero-content p { font-size: clamp(0.7rem, 2.5vw, 0.9rem); }
   .rp-hero-image img { width: 60vw; bottom: -4vh; }
-  .rp-hero-btn { padding: 8px 20px; font-size: 0.75rem; max-width: 180px; }
+  .rp-hero-btn { padding: 8px 20px; font-size: 0.65rem; max-width: 180px; }
   .rp-hero-arrow { padding: 0.7rem; }
   .rp-hero-arrow svg { width: 20px; height: 20px; }
   .rp-hero-dot {
@@ -261,7 +261,7 @@ const HeroSection = () => {
   .rp-hero-highlight { font-size: clamp(1.1rem, 5vw, 1.8rem); }
   .rp-hero-content p { font-size: clamp(0.65rem, 3vw, 0.85rem); }
   .rp-hero-image img { width: 60vw; bottom: -3vh; }
-  .rp-hero-btn { padding: 6px 16px; font-size: 0.7rem; max-width: 150px; }
+  .rp-hero-btn { padding: 6px 16px; font-size: 0.55rem; max-width: 150px; }
   .rp-hero-arrow { padding: 0.5rem; }
   .rp-hero-arrow svg { width: 16px; height: 16px; }
   .rp-hero-dot {
