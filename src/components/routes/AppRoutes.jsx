@@ -26,24 +26,83 @@ const AppRoutes = () => {
     <FadeOnRouteChange duration={500}>
       <Navbar products={products} />
 
-      <div style={{ paddingTop: "50px", paddingBottom: "80px", minHeight: "100vh" }}>
+      {/* Main content wrapper */}
+      <div className="main-content">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<CategoryBasedProductListingPage />} />
           <Route path="/login" element={<AdminLogin />} />
-          {/* <Route path="/register" element={<VendorRegisterForm />} /> */}
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/contactus" element={<ContactUs />} />
-          {/* Protected Routes */}
-          <Route path="/form" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
-          <Route path="/form/:id" element={<PrivateRoute><ProductForm /></PrivateRoute>} />
-          <Route path="/admin/dashboard" element={<PrivateRoute><ViewAllProducts /></PrivateRoute>} />
-          <Route path="/products/:id" element={<ProductDetailsWrapper />} />
 
+          {/* Protected Routes */}
+          <Route
+            path="/form"
+            element={
+              <PrivateRoute>
+                <ProductForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/form/:id"
+            element={
+              <PrivateRoute>
+                <ProductForm />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <PrivateRoute>
+                <ViewAllProducts />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/products/:id" element={<ProductDetailsWrapper />} />
         </Routes>
       </div>
 
       <Footer />
+
+      {/* Responsive CSS */}
+      <style>{`
+        .main-content {
+          padding-top: 90px;
+          padding-bottom: 80px;
+          min-height: 100vh;
+          margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+          .main-content {
+            padding-top: 80px;
+            padding-bottom: 70px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .main-content {
+            padding-top: 70px;
+            padding-bottom: 60px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .main-content {
+            padding-top: 60px;
+            padding-bottom: 50px;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .main-content {
+            padding-top: 50px;
+            padding-bottom: 40px;
+          }
+        }
+      `}</style>
     </FadeOnRouteChange>
   );
 };

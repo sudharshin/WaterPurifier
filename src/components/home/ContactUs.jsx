@@ -17,7 +17,7 @@ const ContactUs = () => {
           <div className="contact-left">
             <h2 className="left-heading">
               HAVE A PRODUCT QUESTION?
-              <br /> ASK US NOW !
+              <br /> ASK US NOW!
             </h2>
             <p className="left-desc">
               Share your needs, and we’ll match you with the right product at
@@ -63,7 +63,6 @@ const ContactUs = () => {
 
             <textarea placeholder="Message" rows="4"></textarea>
 
-            {/* Correct Connected Submit Button */}
             <div className="submit-wrapper">
               <button type="submit" className="submit-btn">
                 Submit
@@ -108,6 +107,8 @@ const ContactUs = () => {
           font-size: 42px;
           font-weight: 600;
           color: #fff;
+          text-align: center;
+          padding: 0 10px;
         }
 
         /* Contact Section */
@@ -175,6 +176,10 @@ const ContactUs = () => {
           margin-top: 10px;
         }
 
+        .social-icons i {
+          font-size: 18px;
+        }
+
         /* Form Styling */
         .contact-form {
           flex: 1.2;
@@ -210,7 +215,6 @@ const ContactUs = () => {
           resize: none;
         }
 
-        /* Corrected Submit Button */
         .submit-wrapper {
           display: flex;
           align-items: center;
@@ -252,10 +256,121 @@ const ContactUs = () => {
           background-color: #111;
         }
 
-        /* Responsive */
+        /* Responsive Media Queries */
+        @media (max-width: 1024px) {
+          .contact-section {
+            padding: 60px 60px;
+          }
+
+          .left-heading {
+            font-size: 36px;
+          }
+        }
+
         @media (max-width: 768px) {
+          .contact-section {
+            padding: 50px 30px;
+          }
+
           .contact-container {
             flex-direction: column;
+            gap: 30px;
+          }
+
+          .left-heading {
+            font-size: 32px;
+          }
+
+          .left-desc {
+            max-width: 100%;
+          }
+
+          .form-row {
+            flex-direction: column;
+          }
+
+          .contact-form input {
+            width: 100%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-text {
+            font-size: 28px;
+          }
+
+          .contact-section {
+            padding: 40px 20px;
+          }
+
+          .left-heading {
+            font-size: 26px;
+          }
+
+          .submit-btn {
+            padding: 10px 25px;
+            font-size: 14px;
+          }
+
+          .submit-arrow {
+            width: 40px;
+            height: 40px;
+          }
+
+          .social-icons i {
+            font-size: 16px;
+          }
+        }
+
+        @media (max-width: 414px) {
+          .hero-text {
+            font-size: 26px;
+          }
+
+          .left-heading {
+            font-size: 24px;
+          }
+
+          .contact-section {
+            padding: 35px 15px;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .hero-text {
+            font-size: 22px;
+          }
+
+          .left-heading {
+            font-size: 22px;
+          }
+
+          .contact-section {
+            padding: 30px 10px;
+          }
+        }
+
+        @media (max-width: 350px) {
+          .hero-text {
+            font-size: 20px;
+          }
+
+          .left-heading {
+            font-size: 20px;
+          }
+
+          .social-icons i {
+            font-size: 14px;
+          }
+        }
+
+        @media (max-width: 300px) {
+          .hero-text {
+            font-size: 18px;
+          }
+
+          .left-heading {
+            font-size: 18px;
           }
         }
       `}</style>
