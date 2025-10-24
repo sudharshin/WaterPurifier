@@ -123,6 +123,7 @@ const HeroSection = () => {
           position: relative;
           font-family: 'Poppins', sans-serif;
           background-color: #f7f9fc;
+          border-radius: 10px;
         }
 
         .rp-hero-slides { position: relative; width: 100%; height: 100%; }
@@ -227,6 +228,10 @@ const HeroSection = () => {
   .rp-hero-btn { padding: 10px 24px; font-size: 0.85rem; max-width: 220px; }
   .rp-hero-arrow { padding: 0.8rem; }
   .rp-hero-arrow svg { width: 22px; height: 22px; }
+  .rp-hero-dot {
+    height: 0.9vh;
+    width: 0.9vh;
+  }
 }
 
 /* Small screens / mobile */
@@ -241,6 +246,10 @@ const HeroSection = () => {
   .rp-hero-btn { padding: 8px 20px; font-size: 0.75rem; max-width: 180px; }
   .rp-hero-arrow { padding: 0.7rem; }
   .rp-hero-arrow svg { width: 20px; height: 20px; }
+  .rp-hero-dot {
+    height: 0.7vh;
+    width: 0.7vh;
+  }
 }
 
 /* Extra small / very small screens */
@@ -255,6 +264,10 @@ const HeroSection = () => {
   .rp-hero-btn { padding: 6px 16px; font-size: 0.7rem; max-width: 150px; }
   .rp-hero-arrow { padding: 0.5rem; }
   .rp-hero-arrow svg { width: 16px; height: 16px; }
+  .rp-hero-dot {
+    height: 0.6vh;
+    width: 0.6vh;
+  }
 }
 
       `}</style>
