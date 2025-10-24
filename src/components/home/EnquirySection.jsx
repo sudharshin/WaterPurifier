@@ -3,20 +3,32 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import enquiryImg from "../../assets/EnquirySectionImg.png"; // ✅ Replace with your image path
 
 const EnquirySection = () => {
-  const phoneNumber = "+1234567890"; // ✅ Replace with your number
-  const email = "support@example.com"; // ✅ Replace with your email
-  const whatsappNumber = "+1234567890"; // ✅ Replace with your WhatsApp number
+  const phoneNumber = "+1234567890";
+  const email = "support@example.com";
+  const whatsappNumber = "+1234567890";
 
-  // Track which button is active
   const [activeBtn, setActiveBtn] = useState(null);
+
+  // Button style function
+  const buttonStyle = (isActive) => ({
+    backgroundColor: isActive ? "#266990" : "#FFFFFF",
+    color: isActive ? "#FFFFFF" : "#000000",
+    border: "1px solid #CCCCCC",
+    borderRadius: "25px",
+    fontFamily: "Poppins, Tofu",
+    padding: "10px 28px",
+    fontWeight: "500",
+    transition: "all 0.3s ease",
+    boxShadow: isActive ? "0 2px 6px rgba(0,0,0,0.1)" : "none",
+  });
 
   return (
     <section
       className="py-5"
       style={{
-        backgroundColor: "#E6F3FB",
+        backgroundColor: "#D3EDFC",
         borderRadius: "20px",
-         fontFamily: "Poppins, Tofu",
+        fontFamily: "Poppins, Tofu",
         overflow: "hidden",
       }}
     >
@@ -36,59 +48,32 @@ const EnquirySection = () => {
             <div className="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap">
               {/* Call Button */}
               <Button
-                href={`tel:${phoneNumber}`}
                 onClick={() => setActiveBtn("call")}
-                style={{
-                  backgroundColor:
-                    activeBtn === "call" ? "#003366" : "#fff",
-                  color: activeBtn === "call" ? "#fff" : "#000",
-                  border: "1px solid #ddd",
-                  borderRadius: "25px",
-                   fontFamily: "Poppins, Tofu",
-                  padding: "10px 28px",
-                  fontWeight: "500",
-                }}
+                href={`tel:${phoneNumber}`}
+                style={buttonStyle(activeBtn === "call")}
               >
                 Call
               </Button>
 
               {/* Email Button */}
               <Button
-                href={`mailto:${email}?subject=Enquiry&body=Hi, I’d like to know more about your products.`}
                 onClick={() => setActiveBtn("email")}
-                style={{
-                  backgroundColor:
-                    activeBtn === "email" ? "#003366" : "#fff",
-                  color: activeBtn === "email" ? "#fff" : "#000",
-                  border: "1px solid #ddd",
-                  borderRadius: "25px",
-                   fontFamily: "Poppins, Tofu",
-                  padding: "10px 28px",
-                  fontWeight: "500",
-                }}
+                href={`mailto:${email}?subject=Enquiry&body=Hi, I’d like to know more about your products.`}
+                style={buttonStyle(activeBtn === "email")}
               >
                 Email
               </Button>
 
               {/* WhatsApp Button */}
               <Button
+                onClick={() => setActiveBtn("whatsapp")}
                 href={`https://wa.me/${whatsappNumber.replace(
                   "+",
                   ""
                 )}?text=Hi, I am interested in your products and would like to know more.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => setActiveBtn("whatsapp")}
-                style={{
-                  backgroundColor:
-                    activeBtn === "whatsapp" ? "#003366" : "#fff",
-                  color: activeBtn === "whatsapp" ? "#fff" : "#000",
-                  border: "1px solid #ddd",
-                  borderRadius: "25px",
-                   fontFamily: "Poppins, Tofu",
-                  padding: "10px 28px",
-                  fontWeight: "500",
-                }}
+                style={buttonStyle(activeBtn === "whatsapp")}
               >
                 Whatsapp
               </Button>
@@ -102,7 +87,7 @@ const EnquirySection = () => {
               alt="Enquiry"
               className="img-fluid"
               style={{
-                maxHeight: "420px", // ✅ makes the man image taller
+                maxHeight: "420px",
                 width: "auto",
                 objectFit: "contain",
               }}

@@ -115,7 +115,7 @@ export const deleteProduct = (id, token) =>
   });
 
 // Auth
-export const refreshToken = (token) => API.post("/auth/refresh", { token });
+export const refreshToken = (refreshToken) => API.post("/auth/refresh", { refreshToken });
 
 // --- Auth APIs ---
 // Register

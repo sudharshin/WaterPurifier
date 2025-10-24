@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Modal, Form, Button, Spinner, Row, Col, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { createEnquiry } from "../../services/api";
 
 const EnquiryModal = ({ show, onClose, product }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",   // changed from address to phone (matches your backend)
-    message: "", // added message field to send enquiry message
+    phone: "",
+    message: "",
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +28,6 @@ const EnquiryModal = ({ show, onClose, product }) => {
     setError(null);
 
     try {
-      // Prepare data for backend - productId from product.id
       const data = {
         productId: product?.id,
         name: formData.name,
@@ -34,7 +36,7 @@ const EnquiryModal = ({ show, onClose, product }) => {
         message: formData.message,
       };
 
-      await createEnquiry(data);  // real API call
+      await createEnquiry(data);
 
       setSubmitted(true);
       setSubmitting(false);
@@ -69,6 +71,7 @@ const EnquiryModal = ({ show, onClose, product }) => {
             )}
 
             <Form onSubmit={handleSubmit}>
+              {/* Product Name */}
               <Row className="mb-3 align-items-center">
                 <Col xs={12} md={4} className="text-md-end mb-1 mb-md-0">
                   <Form.Label>Product</Form.Label>
@@ -84,6 +87,7 @@ const EnquiryModal = ({ show, onClose, product }) => {
                 </Col>
               </Row>
 
+              {/* Name */}
               <Row className="mb-3 align-items-center">
                 <Col xs={12} md={4} className="text-md-end mb-1 mb-md-0">
                   <Form.Label>Name</Form.Label>
@@ -97,11 +101,11 @@ const EnquiryModal = ({ show, onClose, product }) => {
                     placeholder="Enter your name"
                     required
                     className="rounded"
-                    style={{ width: "100%" }}
                   />
                 </Col>
               </Row>
 
+              {/* Email */}
               <Row className="mb-3 align-items-center">
                 <Col xs={12} md={4} className="text-md-end mb-1 mb-md-0">
                   <Form.Label>Email</Form.Label>
@@ -115,11 +119,11 @@ const EnquiryModal = ({ show, onClose, product }) => {
                     placeholder="Enter your email"
                     required
                     className="rounded"
-                    style={{ width: "100%" }}
                   />
                 </Col>
               </Row>
 
+              {/* Phone */}
               <Row className="mb-3 align-items-center">
                 <Col xs={12} md={4} className="text-md-end mb-1 mb-md-0">
                   <Form.Label>Phone</Form.Label>
@@ -132,11 +136,11 @@ const EnquiryModal = ({ show, onClose, product }) => {
                     onChange={handleChange}
                     placeholder="Enter your phone number (optional)"
                     className="rounded"
-                    style={{ width: "100%" }}
                   />
                 </Col>
               </Row>
 
+              {/* Message */}
               <Row className="mb-4 align-items-center">
                 <Col xs={12} md={4} className="text-md-end mb-1 mb-md-0">
                   <Form.Label>Message</Form.Label>
@@ -151,61 +155,46 @@ const EnquiryModal = ({ show, onClose, product }) => {
                     placeholder="Enter your enquiry message"
                     required
                     className="rounded"
-                    style={{ width: "100%" }}
                   />
                 </Col>
               </Row>
 
-              <div className="d-flex justify-content-end flex-wrap gap-2">
-                <Button variant="secondary" onClick={onClose} disabled={submitting}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={submitting} className="btn-primary px-4">
-                  {submitting ? (
-                    <>
-                      <Spinner animation="border" size="sm" className="me-2" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit"
-                  )}
-                </Button>
+              {/* Buttons */}
+              <div className="d-flex flex-column align-items-center gap-2">
+                <div className="d-flex justify-content-end w-100 gap-2 flex-wrap">
+                  <Button variant="secondary" onClick={onClose} disabled={submitting}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={submitting} className="btn-primary px-4">
+                    {submitting ? (
+                      <>
+                        <Spinner animation="border" size="sm" className="me-2" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
+                  </Button>
+                </div>
+
+                {/* Bulk order link */}
+                <div className="mt-3 text-center">
+                  For bulk orders, register as a{" "}
+                  <span
+                    style={{ color: "#0d6efd", cursor: "pointer", textDecoration: "underline" }}
+                    onClick={() => {
+                      onClose();
+                      navigate("/register"); // adjust route to your VendorRegisterPage
+                    }}
+                  >
+                    vendor
+                  </span>
+                </div>
               </div>
             </Form>
           </>
         )}
       </div>
-
-      <style>{`
-        .modal-content {
-          border-radius: 12px;
-          box-shadow: 0 0 16px rgba(0,0,0,0.1);
-          border: none;
-        }
-        .form-label {
-          font-weight: 500;
-          color: #333;
-        }
-        .form-control {
-          border: 1px solid #ced4da;
-          font-size: 15px;
-        }
-        .btn-primary {
-          background-color: #0d6efd;
-          border: none;
-          font-weight: 500;
-        }
-        .btn-primary:hover {
-          background-color: #0056b3;
-        }
-        .btn-secondary {
-          background-color: #6c757d;
-          border: none;
-        }
-        .btn-secondary:hover {
-          background-color: #5a6268;
-        }
-      `}</style>
     </Modal>
   );
 };
