@@ -26,14 +26,7 @@ const NavbarComponent = () => {
       expand="md"
       expanded={expanded}
       fixed="top"
-      className="py-0 custom-navbar"
-      style={{
-        backgroundColor: "white",
-        borderBottom: "1px solid #eee",
-        zIndex: 1000,
-        height: "50px",
-        padding: "0 40px",
-      }}
+      className="custom-navbar"
     >
       {/* Logo */}
       <BootstrapNavbar.Brand
@@ -41,113 +34,57 @@ const NavbarComponent = () => {
           navigate("/");
           setExpanded(false);
         }}
-        style={{
-          cursor: "pointer",
-          marginRight: "80px",
-          display: "flex",
-          alignItems: "center",
-        }}
+        className="navbar-logo"
       >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{
-            height: "45px",
-            width: "auto",
-            objectFit: "contain",
-            marginTop: "2px",
-          }}
-        />
+        <img src={logo} alt="Logo" className="logo-img" />
       </BootstrapNavbar.Brand>
 
-      {/* Mobile Toggle */}
+      {/* Toggle Button (Mobile) */}
       <BootstrapNavbar.Toggle
         aria-controls="responsive-navbar-nav"
         onClick={() => setExpanded(expanded ? false : true)}
-        className="border-0 d-md-none ms-auto"
+        className="border-0 ms-auto"
       />
 
-      {/* Collapsible Content */}
+      {/* Collapsible Nav Links */}
       <BootstrapNavbar.Collapse
         id="responsive-navbar-nav"
         className="justify-content-between align-items-center collapse-area"
       >
-        <Nav
-          className="align-items-center nav-links"
-          style={{
-            display: "flex",
-            gap: "60px",
-            fontFamily: '"Poppins", sans-serif',
-            fontWeight: 400,
-            fontSize: "16px",
-          }}
-        >
-          {/* Home */}
+        <Nav className="nav-links">
           <Nav.Link
             onClick={() => {
               navigate("/");
               setExpanded(false);
             }}
-            className={`${
-              isActive("/")
-                ? "text-primary border-bottom border-primary"
-                : "text-dark"
-            }`}
-            style={{
-              paddingBottom: "2px",
-              transition: "color 0.3s ease",
-              whiteSpace: "nowrap",
-              borderBottomWidth: isActive("/") ? "2px" : "0px",
-            }}
+            className={`nav-item-link ${isActive("/") ? "active-link" : ""}`}
           >
             Home
           </Nav.Link>
 
-          {/* About */}
           <Nav.Link
             onClick={() => {
               navigate("/aboutus");
               setExpanded(false);
             }}
-            className={`${
-              isActive("/aboutus")
-                ? "text-primary border-bottom border-primary"
-                : "text-dark"
-            }`}
-            style={{
-              paddingBottom: "2px",
-              transition: "color 0.3s ease",
-              whiteSpace: "nowrap",
-              borderBottomWidth: isActive("/aboutus") ? "2px" : "0px",
-            }}
+            className={`nav-item-link ${isActive("/aboutus") ? "active-link" : ""}`}
           >
             About Us
           </Nav.Link>
 
-          {/* Contact */}
           <Nav.Link
             onClick={() => {
               navigate("/contactus");
               setExpanded(false);
             }}
-            className={`${
-              isActive("/contactus")
-                ? "text-primary border-bottom border-primary"
-                : "text-dark"
-            }`}
-            style={{
-              paddingBottom: "2px",
-              transition: "color 0.3s ease",
-              whiteSpace: "nowrap",
-              borderBottomWidth: isActive("/contactus") ? "2px" : "0px",
-            }}
+            className={`nav-item-link ${isActive("/contactus") ? "active-link" : ""}`}
           >
             Contact
           </Nav.Link>
         </Nav>
 
-        {/* Right Section - Login/Logout */}
-        <div className="d-flex align-items-center justify-content-md-end justify-content-center gap-2 mobile-auth">
+        {/* Login / Logout */}
+        <div className="auth-section">
           {user ? (
             <Button
               variant="outline-danger"
@@ -155,15 +92,7 @@ const NavbarComponent = () => {
                 handleLogout();
                 setExpanded(false);
               }}
-              className="px-3"
-              style={{
-                borderRadius: "20px",
-                fontWeight: "500",
-                fontFamily: '"Poppins", sans-serif',
-                whiteSpace: "nowrap",
-                height: "32px",
-                lineHeight: "1",
-              }}
+              className="auth-btn logout-btn"
             >
               Logout
             </Button>
@@ -173,73 +102,167 @@ const NavbarComponent = () => {
               style={{ textDecoration: "none" }}
               onClick={() => setExpanded(false)}
             >
-              <Button
-                variant="primary"
-                className="px-3"
-                style={{
-                  borderRadius: "50px",
-                  background: "#266990",
-                  border: "1px solid #E0E0E0",
-                  fontWeight: "500",
-                  fontFamily: '"Poppins", sans-serif',
-                  whiteSpace: "nowrap",
-                  height: "32px",
-                  lineHeight: "1",
-                }}
-              >
-                Login
-              </Button>
+              <Button className="auth-btn login-btn">Login</Button>
             </NavLink>
           )}
         </div>
       </BootstrapNavbar.Collapse>
 
-      {/* Custom CSS */}
+      {/* ✅ Updated Styling with Larger Logo */}
       <style>{`
-        /* Reduce extra space inside navbar collapse */
-        .collapse-area {
-          padding: 6px 0 !important;
+        .custom-navbar {
+          background-color: white;
+          border-bottom: 1px solid #eee;
+          z-index: 1000;
+          padding: 4px 28px;
+          height: 52px;
+          display: flex;
+          align-items: center;
+          transition: all 0.3s ease-in-out;
         }
 
-        .navbar-collapse {
-          background-color: white !important;
-          border-top: 1px solid #eee;
+        .navbar-logo {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          margin-right: 50px;
         }
 
-        /* Mobile nav alignment */
+        /* ✅ Larger, clear, visible logo on all screens */
+        .logo-img {
+          height: 85px;
+          width: auto;
+          object-fit: contain;
+          filter: drop-shadow(0 0 1px rgba(0,0,0,0.15));
+          transition: all 0.3s ease-in-out;
+        }
+
+        .nav-links {
+          display: flex;
+          align-items: center;
+          gap: 40px;
+          font-family: "Poppins", sans-serif;
+          font-weight: 400;
+          font-size: 15px;
+        }
+
+        .nav-item-link {
+          color: #212529;
+          transition: all 0.3s ease;
+          padding-bottom: 2px;
+          white-space: nowrap;
+          border-bottom: 2px solid transparent;
+        }
+
+        .nav-item-link:hover {
+          color: #266990;
+        }
+
+        .active-link {
+          color: #266990 !important;
+          border-bottom-color: #266990 !important;
+        }
+
+        .auth-section {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .auth-btn {
+          border-radius: 50px;
+          font-family: "Poppins", sans-serif;
+          font-weight: 500;
+          height: 30px;
+          line-height: 1;
+          font-size: 13px;
+          padding: 0 16px;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .login-btn {
+          background: #266990;
+          border: 1px solid #E0E0E0;
+        }
+
+        .login-btn:hover {
+          background: #1f5676;
+        }
+
+        .logout-btn {
+          border-radius: 20px;
+          padding: 0 14px;
+        }
+
+        /* ✅ Responsive Adjustments */
+        @media (max-width: 991px) {
+          .custom-navbar {
+            padding: 6px 18px;
+            height: 50px;
+          }
+
+          .logo-img {
+            height: 76px;
+          }
+
+          .nav-links {
+            gap: 30px;
+            font-size: 14px;
+          }
+        }
+
         @media (max-width: 767px) {
           .custom-navbar {
+            padding: 8px 16px;
             height: auto;
-            min-height: 55px;
-            padding: 8px 20px;
           }
 
           .navbar-collapse.show {
             display: flex !important;
             flex-direction: column;
             align-items: center;
-            background-color: white !important;
+            background-color: white;
             width: 100%;
-            padding: 10px 0 !important;
+            padding: 10px 0;
           }
 
           .nav-links {
             flex-direction: column !important;
-            gap: 18px !important;
+            gap: 14px;
+            font-size: 13px;
             margin-bottom: 10px;
           }
 
-          .mobile-auth {
+          .auth-section {
             flex-direction: column;
+            gap: 6px;
+          }
+
+          /* Larger logo still visible on mobile */
+          .logo-img {
+            height: 56px;
+          }
+
+          .auth-btn {
+            font-size: 12px;
+            height: 28px;
+            padding: 0 14px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .logo-img {
+            height: 56px;
+          }
+
+          .nav-links {
+            font-size: 12px;
             gap: 10px;
           }
 
-          .navbar-toggler {
-            border: none;
-          }
-
-          .navbar-toggler:focus {
-            box-shadow: none;
+          .auth-btn {
+            font-size: 11px;
+            height: 26px;
           }
         }
       `}</style>
