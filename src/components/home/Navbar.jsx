@@ -6,7 +6,7 @@ import {
   Navbar as BootstrapNavbar,
 } from "react-bootstrap";
 import { UserContext } from "../../context/UserContext";
-import logo from "../../assets/logo.png"; // your logo path
+import logo from "../../assets/Logo.png"; // your logo path
 
 const NavbarComponent = () => {
   const { user, logout } = useContext(UserContext);
