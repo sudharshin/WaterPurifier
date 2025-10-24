@@ -42,7 +42,7 @@ const NavbarComponent = () => {
       {/* Toggle Button (Mobile) */}
       <BootstrapNavbar.Toggle
         aria-controls="responsive-navbar-nav"
-        onClick={() => setExpanded(expanded ? false : true)}
+        onClick={() => setExpanded(!expanded)}
         className="border-0 ms-auto"
       />
 
@@ -108,17 +108,16 @@ const NavbarComponent = () => {
         </div>
       </BootstrapNavbar.Collapse>
 
-      {/* ✅ Updated Styling with Larger Logo */}
+      {/* ✅ Responsive Styling */}
       <style>{`
         .custom-navbar {
           background-color: white;
           border-bottom: 1px solid #eee;
           z-index: 1000;
-          padding: 4px 28px;
-          height: 52px;
           display: flex;
           align-items: center;
           transition: all 0.3s ease-in-out;
+          padding: 4px 28px;
         }
 
         .navbar-logo {
@@ -128,9 +127,8 @@ const NavbarComponent = () => {
           margin-right: 50px;
         }
 
-        /* ✅ Larger, clear, visible logo on all screens */
         .logo-img {
-          height: 85px;
+          height: 70px;
           width: auto;
           object-fit: contain;
           filter: drop-shadow(0 0 1px rgba(0,0,0,0.15));
@@ -194,76 +192,36 @@ const NavbarComponent = () => {
           padding: 0 14px;
         }
 
-        /* ✅ Responsive Adjustments */
+        /* Responsive adjustments */
         @media (max-width: 991px) {
-          .custom-navbar {
-            padding: 6px 18px;
-            height: 50px;
-          }
-
-          .logo-img {
-            height: 76px;
-          }
-
-          .nav-links {
-            gap: 30px;
-            font-size: 14px;
-          }
+          .custom-navbar { padding: 6px 18px; }
+          .logo-img { height: 60px; }
+          .nav-links { gap: 30px; font-size: 14px; }
         }
 
         @media (max-width: 767px) {
-          .custom-navbar {
-            padding: 8px 16px;
-            height: auto;
-          }
-
-          .navbar-collapse.show {
-            display: flex !important;
-            flex-direction: column;
-            align-items: center;
-            background-color: white;
-            width: 100%;
-            padding: 10px 0;
-          }
-
-          .nav-links {
-            flex-direction: column !important;
-            gap: 14px;
-            font-size: 13px;
-            margin-bottom: 10px;
-          }
-
-          .auth-section {
-            flex-direction: column;
-            gap: 6px;
-          }
-
-          /* Larger logo still visible on mobile */
-          .logo-img {
-            height: 56px;
-          }
-
-          .auth-btn {
-            font-size: 12px;
-            height: 28px;
-            padding: 0 14px;
-          }
+          .custom-navbar { padding: 6px 12px; }
+          .logo-img { height: 50px; }
+          .nav-links { flex-direction: column !important; gap: 12px; margin-bottom: 8px; font-size: 13px; }
+          .auth-section { flex-direction: column; gap: 6px; }
+          .auth-btn { font-size: 12px; height: 28px; padding: 0 12px; }
         }
 
         @media (max-width: 480px) {
-          .logo-img {
-            height: 56px;
-          }
+          .custom-navbar { padding: 4px 10px; }
+          .logo-img { height: 42px; }
+          .nav-links { font-size: 12px; gap: 8px; }
+          .auth-btn { font-size: 11px; height: 26px; padding: 0 10px; }
+        }
 
-          .nav-links {
-            font-size: 12px;
-            gap: 10px;
-          }
+        @media (max-width: 375px) {
+          .custom-navbar { padding: 3px 8px; }
+          .logo-img { height: 38px; }
+        }
 
-          .auth-btn {
-            font-size: 11px;
-            height: 26px;
-          }
+        @media (max-width: 320px) {
+          .custom-navbar { padding: 2px 6px; }
+          .logo-img { height: 34px; }
         }
       `}</style>
     </BootstrapNavbar>
