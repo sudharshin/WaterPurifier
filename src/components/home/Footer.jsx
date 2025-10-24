@@ -9,7 +9,7 @@ const Footer = () => {
         <Row className="gy-4 text-center text-md-start">
           {/* Company Info */}
           <Col xs={12} sm={6} md={3}>
-            <h4>Opor</h4>
+            <h4>Leomax</h4>
             <p style={{ fontFamily: "Poppins, Tofu" }}>
               Connecting you to trusted suppliers with quality products, easy
               details, and quick enquiries – all in one place.

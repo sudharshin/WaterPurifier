@@ -37,12 +37,12 @@ const ProductListing = ({ title, description, products }) => {
               style={{
                 textAlign: "start",
                  fontFamily: "Poppins, Tofu",
-                fontWeight: 250,
+                fontWeight: 500,
                 fontStyle: "normal",
                 fontStretch: "normal",
                 fontOpticalSizing: "auto",
                 lineHeight: "initial",
-                fontSize: "35px",
+                fontSize: "40px",
                 color: "#000000",
               }}
             >
@@ -54,13 +54,13 @@ const ProductListing = ({ title, description, products }) => {
                 style={{
                   textAlign: "start",
                    fontFamily: "Poppins, Tofu",
-                 fontWeight: 100,
+                 fontWeight: 300,
                   fontStyle: "normal",
                   fontStretch: "normal",
                   fontOpticalSizing: "auto",
-                  fontSize: "15px",
-                  lineHeight: "25px",
-                  color: "#383737",
+                  fontSize: "18px",
+                  lineHeight: "30px",
+                  color: "#2A2A2A",
                 }}
               >
                 {description}
@@ -117,20 +117,33 @@ const ProductListing = ({ title, description, products }) => {
             display: none;
           }
 
-          .view-all-btn {
-            background: #b5f0f5ff;
-            border: none;
-            color: #000000;
-            font-weight: 500;
-            border-radius: 8px;
-            white-space: nowrap;
-            transition: all 0.3s ease-in-out;
-          }
-          .view-all-btn:hover,
-          .view-all-btn:active {
-            background-color: #7ef3feff !important;
-            color: #000000 !important;
-          }
+        .view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #D3EDFC;
+  border: none;
+  color: #000000;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.arrow-box {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
         `}
       </style>
     </section>
